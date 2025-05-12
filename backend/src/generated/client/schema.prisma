@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String  @id @default(cuid())
+  email      String  @unique
+  username   String  @unique
+  name       String?
+  bio        String?
+  password   String
+  profilePic String  @default("https://i.kinja-img.com/img/qzymr0obqkcnkkj5m4bj")
+
+  isPrivate Boolean @default(false) // for private accounts
+  isDeleted Boolean @default(false) // for soft deleting accounts
+
+  followedBy Follows[] @relation("followedBy") // list of who follows this user
+  following  Follows[] @relation("following") // list of who this user follows
+
+  createdItineraries Itinerary[] @relation("createdItineraries")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([username])
+}
+
+model Follows {
+  followedById String
+  followedBy   User   @relation("followedBy", fields: [followedById], references: [id])
+  followingId  String
+  following    User   @relation("following", fields: [followingId], references: [id])
+
+  status FollowStatus @default(pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([followedById, followingId])
+}
+
+enum FollowStatus {
+  pending
+  accepted
+  rejected
+}
+
+model Itinerary {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  media       String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
+
+  // each itinerary has a list of itinerary items
+  itineraryItems ItineraryItem[] @relation("itineraryItem")
+
+  // each itinerary has an owner
+  ownerId String
+  owner   User   @relation("createdItineraries", fields: [ownerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItineraryItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  media       String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
+
+  // can have 0 or 1 locations
+  location Location? @relation("itineraryItemLocation")
+
+  order Int // for ordering list of items in Itinerary
+
+  // each itinerary item belongs to an itinerary
+  itineraryId String
+  itinerary   Itinerary @relation("itineraryItem", fields: [itineraryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([itineraryId, order])
+}
+
+model Location {
+  id String @id @default(cuid())
+
+  // each location associated with an itinerary item
+  itineraryItemId String        @unique
+  itineraryItem   ItineraryItem @relation("itineraryItemLocation", fields: [itineraryItemId], references: [id])
+
+  // optional fields to include in a location
+  city    String?
+  country String?
+  address String?
+  lat     Float?
+  lng     Float?
+}
