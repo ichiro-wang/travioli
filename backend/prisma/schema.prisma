@@ -21,7 +21,7 @@ model User {
   name       String?
   bio        String?
   password   String
-  profilePic String  @default("https://i.kinja-img.com/img/qzymr0obqkcnkkj5m4bj")
+  profilePic String  @default("defaultProfile.jpg")
 
   isPrivate Boolean @default(false) // for private accounts
   isDeleted Boolean @default(false) // for soft deleting accounts

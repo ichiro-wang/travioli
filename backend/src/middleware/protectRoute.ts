@@ -1,24 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { tokenType } from "../utils/generateToken.js";
-import { User } from "../generated/client/index.js";
 import prisma from "../db/prisma.js";
 import internalServerError from "../utils/internalServerError.js";
-
-// defining what goes in the jwt payload
-export interface DecodedToken extends JwtPayload {
-  userId: string;
-  tokenType: tokenType;
-}
-
-// allow user in requests
-declare global {
-  namespace Express {
-    export interface Request {
-      user: Partial<User>;
-    }
-  }
-}
+import { DecodedToken } from "../types/global.js";
 
 const protectRoute = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
