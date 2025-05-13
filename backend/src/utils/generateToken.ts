@@ -3,9 +3,11 @@ import { Response } from "express";
 import { DecodedToken, TokenType } from "../types/global.js";
 
 /**
- * generate JWT token
- * include whether this was generated via a refresh token, or thru authenticating user credentials
- * will use for flagging sensitive operations
+ * generate a JWT token
+ * @param userId to include in the payload
+ * @param isRefreshToken for checking whether JWT token was generated via a refresh token or thru authenticating user credentials. used for flagging sensitive operations
+ * @param res Response object from controller
+ * @returns JWT token
  */
 const generateToken = (userId: string, isRefreshToken: boolean, res: Response): string => {
   const DAYS = 7;

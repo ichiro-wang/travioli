@@ -1,9 +1,11 @@
 import { Response } from "express";
 
-/* 
-helper function for handling internal server errors to avoid repetition
-error is unknown type since it comes from the Try-Catch Block 
-*/
+/**
+ * helper function for handling internal server errors
+ * @param location where the error happened. eg - signup controller
+ * @param error simply pass in the Error object that was caught
+ * @param res simply pass in the Response object from the controller
+ */
 const internalServerError = (location: string, error: unknown, res: Response) => {
   let errorMessage: string;
   if (error instanceof Error) {
