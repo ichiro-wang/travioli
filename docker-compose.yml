@@ -1,3 +1,5 @@
+# containerized dev environment
+
 services:
   backend:
     build:
@@ -6,6 +8,7 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - backend_node_modules:/usr/src/app/node_modules
+    # DNS resolves request origin and database
     environment:
       - PORT=5000
       - REQUEST_ORIGINS=http://localhost:5000,http://frontend:5173
@@ -24,12 +27,12 @@ services:
       - ./frontend:/usr/src/app
       - frontend_node_modules:/usr/src/app/node_modules
     environment:
-      - VITE_PORT=5173
+      - PORT=5173
       - VITE_BACKEND_URL=http://backend:5000
-    ports:
-      - 5173:5173
+    command: npm run dev
     container_name: travioli-frontend
   db:
+    # running local postgres db for development
     image: postgres
     environment:
       # hardcoding only for dev purposes
@@ -39,6 +42,18 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
     container_name: travioli-database
+  nginx:
+    # for reverse proxying requests from frontend to backend. see /nginx/dev.conf
+    image: nginx:1.19-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+      - db
+    container_name: travioli-nginx
 
 volumes:
   frontend_node_modules:
