@@ -10,12 +10,12 @@ import authRoutes from "./routes/auth.route.js";
 
 const app = express();
 
-app.use(morgan("dev"));
+app.use(morgan("dev")); // for logging requests
 app.use(cookieParser());
 app.use(express.json());
 
+// read allowed origins from environment variables, then allow with CORS
 const allowedOrigins = process.env.REQUEST_ORIGINS?.split(",");
-
 app.use(
   cors({
     origin: (origin, callback) => {

@@ -1,58 +1,44 @@
 import { CookieOptions, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import prisma from "../db/prisma.js";
-import isValidEmail from "../utils/isValidEmail.js";
 import generateToken from "../utils/generateToken.js";
 import internalServerError from "../utils/internalServerError.js";
+import sanitizeUser from "../utils/sanitizeUser.js";
+import { loginSchema, signupSchema } from "../schemas/auth.schemas.js";
+import validateData from "../utils/validateData.js";
 
-// method simply for testing connection
-export const pingPong = (req: Request, res: Response) => {
+/**
+ * method simply for testing backend connection
+ */
+export const pingPong = (req: Request, res: Response): void => {
   res.status(200).json({ message: "pong" });
   return;
 };
 
-// what the backend api is expecting to be included in the request body
-interface SignupRequestBody {
-  email: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export const signup = async (
-  req: Request<{}, {}, Partial<SignupRequestBody>>,
-  res: Response
-): Promise<void> => {
+/**
+ * - signup
+ * - request body should include: email, username, password, confirmPassword
+ */
+export const signup = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, username, password, confirmPassword } = req.body;
+    // using Zod to validate request body data
+    const data = validateData(signupSchema, req.body, res);
+    if (!data) return;
 
-    // ensure all fields were sent
-    if (!email || !username || !password || !confirmPassword) {
-      res.status(400).json({ message: "Please fill in all fields" });
-      return;
-    }
+    // destructure the parsed data from Zod
+    const { email, username, password } = data;
 
-    // ensure passwords match
-    if (password !== confirmPassword) {
-      res.status(400).json({ message: "Passwords do not match" });
-      return;
-    }
+    // parallel check for if email and username are unique
+    const [emailExists, usernameExists] = await Promise.all([
+      prisma.user.findUnique({ where: { email } }),
+      prisma.user.findUnique({ where: { username } }),
+    ]);
 
-    // validate email format
-    if (!isValidEmail(email)) {
-      res.status(400).json({ message: `Email ${email} is not of valid format` });
-      return;
-    }
-
-    // ensure the email does not exist already
-    const emailExists = await prisma.user.findUnique({ where: { email } });
     if (emailExists) {
       res.status(400).json({ message: `Account with the email ${email} already exists` });
       return;
     }
 
-    // ensure the username does not exist already
-    const usernameExists = await prisma.user.findUnique({ where: { username } });
     if (usernameExists) {
       res.status(400).json({ message: `Account with the username ${username} already exists` });
       return;
@@ -62,7 +48,7 @@ export const signup = async (
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // creating new user with hashed password
+    // creating new user with hashed password. throws error if fail
     const newUser = await prisma.user.create({
       data: {
         email,
@@ -71,50 +57,32 @@ export const signup = async (
       },
     });
 
-    // check if creation successful
-    if (newUser) {
-      // generate jwt token
-      generateToken(newUser.id, false, res);
+    // generate jwt token
+    generateToken(newUser.id, false, res);
 
-      // return user with useful data as a json object with created status
-      const filteredUser = {
-        id: newUser.id,
-        email: newUser.email,
-        username: newUser.username,
-        profilePic: newUser.profilePic,
-        name: newUser.name,
-        bio: newUser.bio,
-      };
-      res.status(201).json({ user: filteredUser });
-    } else {
-      res.status(400).json({ message: "Failed to create user" });
-    }
+    // return user with sanitized data as a json object with created status
+    const filteredUser = sanitizeUser(newUser);
+    res.status(201).json({ user: filteredUser });
   } catch (error: unknown) {
     internalServerError("signup controller", error, res);
   }
 };
 
-// what the backend api is expecting to be included in the request body
-interface LoginRequestBody {
-  email: string;
-  password: string;
-}
-
-export const login = async (
-  req: Request<{}, {}, Partial<LoginRequestBody>>,
-  res: Response
-): Promise<void> => {
+/**
+ * - login
+ * - request body should include: email, password
+ */
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    // using Zod to validate request body data
+    const data = validateData(signupSchema, req.body, res);
+    if (!data) return;
 
-    // ensure all fields were sent
-    if (!email || !password) {
-      res.status(400).json({ message: "Please fill in all fields" });
-      return;
-    }
+    // destructure the parsed data from Zod
+    const { email, password } = data;
 
     // look for a matching user
-    const user = await prisma.user.findUnique({ where: { email, isDeleted: false } });
+    const user = await prisma.user.findFirst({ where: { email, isDeleted: false } });
 
     // no user found
     if (!user) {
@@ -123,31 +91,26 @@ export const login = async (
     }
 
     // make sure password is correct
-    const isPasswordCorrect = bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      res.status(400).json({ message: "Password incorrect" });
+      res.status(400).json({ message: "Invalid credentials" });
       return;
     }
 
     // after validating user, generate jwt token
     generateToken(user.id, false, res);
 
-    // return user with useful data as a json object
-    const filteredUser = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      profilePic: user.profilePic,
-      name: user.name,
-      bio: user.bio,
-    };
-
+    // return user with sanitized data
+    const filteredUser = sanitizeUser(user);
     res.status(200).json({ user: filteredUser });
   } catch (error: unknown) {
     internalServerError("login controller", error, res);
   }
 };
 
+/**
+ * - logout
+ */
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     // set jwt cookie to be empty string with max age of 0
@@ -158,30 +121,28 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
       secure: process.env.NODE_ENV !== "development",
     };
     res.cookie("jwt", "", options);
+
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error: unknown) {
     internalServerError("logout controller", error, res);
   }
 };
 
+/**
+ * - this method is for checking if a user is logged in
+ */
 export const getMe = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user;
 
+    // if user is not logged in
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(401).json({ message: "User not authorized. Please log in" });
       return;
     }
 
-    const filteredUser = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      profilePic: user.profilePic,
-      name: user.name,
-      bio: user.bio,
-    };
-
+    // return user with sanitized data
+    const filteredUser = sanitizeUser(user);
     res.status(200).json({ user: filteredUser });
   } catch (error: unknown) {
     internalServerError("getMe controller", error, res);
