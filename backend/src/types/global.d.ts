@@ -17,3 +17,13 @@ declare global {
     }
   }
 }
+
+export interface SanitizedUser {
+  id: string;
+  username: string;
+  name: string | null;
+  bio: string | null;
+  profilePic: string;
+  isPrivate: boolean;
+  email: string | null;
+}

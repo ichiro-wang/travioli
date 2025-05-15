@@ -1,8 +1,14 @@
 import { z } from "zod";
 
-export const cuidParamsSchema = z.object({
+export const cuidSchema = z.object({
   id: z.string().cuid(),
 });
+
+export const cuidParamsSchema = z.object({
+  params: cuidSchema,
+});
+
+export type CuidParams = z.infer<typeof cuidParamsSchema>["params"];
 
 export const usernameSchema = z
   .string()
