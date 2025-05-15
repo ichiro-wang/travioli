@@ -11,7 +11,8 @@ services:
     # DNS resolves request origin and database
     environment:
       - PORT=5000
-      - REQUEST_ORIGINS=http://localhost:5000,http://frontend:5173
+      - NODE_ENV=development
+      - REQUEST_ORIGIN=http://frontend:5173
       - DATABASE_URL=postgresql://user:password@db:5432/devdb
     ports:
       - 5000:5000
