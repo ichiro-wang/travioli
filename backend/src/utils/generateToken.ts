@@ -12,7 +12,7 @@ import { DecodedToken, TokenType } from "../types/global.js";
 const generateToken = (userId: string, isRefreshToken: boolean, res: Response): string => {
   const DAYS = 7;
 
-  const tokenType: TokenType = isRefreshToken ? "REFRESH" : "ACCESS";
+  const tokenType: TokenType = isRefreshToken ? "refresh" : "access";
   const payload: DecodedToken = { userId, tokenType };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET!, {

@@ -1,7 +1,7 @@
 import { User } from "../generated/client/index.js";
 
 // for checking whether the token was created from a refresh token or through authenticating
-export type TokenType = "ACCESS" | "REFRESH";
+export type TokenType = "access" | "refresh";
 
 // defining what goes in the jwt payload
 export interface DecodedToken extends JwtPayload {
@@ -12,7 +12,7 @@ export interface DecodedToken extends JwtPayload {
 // allow user in requests
 declare global {
   namespace Express {
-    export interface Request {
+    interface Request {
       user: User;
     }
   }
