@@ -7,29 +7,24 @@ import morgan from "morgan";
 import cors from "cors";
 import http from "http";
 import authRoutes from "./routes/auth.route.js";
+import usersRoutes from "./routes/users.route.js";
 
 const app = express();
 
-app.use(morgan("dev")); // for logging requests
+app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined")); // for logging requests
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json()); // for reading json data
 
-// read allowed origins from environment variables, then allow with CORS
-const allowedOrigins = process.env.REQUEST_ORIGINS?.split(",");
+// allow frontend to access backend
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins?.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`${origin} not allowed by CORS`));
-      }
-    },
+    origin: process.env.REQUEST_ORIGIN,
     credentials: true,
   })
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoutes);
 
 const server: http.Server = http.createServer(app);
 

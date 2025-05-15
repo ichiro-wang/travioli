@@ -1,8 +1,11 @@
 {
   "watch": ["src"],
   "ext": "ts,json",
-  "ignore": ["node_modules"],
+  "ignore": ["node_modules", "src/generated"],
   "exec": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/server.ts",
   "legacyWatch": true,
-  "delay": "5000ms"
+  "delay": "4000ms",
+  "watchOptions": {
+    "interval": 4000
+  }
 }

@@ -4,8 +4,7 @@ import prisma from "../db/prisma.js";
 import generateToken from "../utils/generateToken.js";
 import internalServerError from "../utils/internalServerError.js";
 import sanitizeUser from "../utils/sanitizeUser.js";
-import { loginSchema, signupSchema } from "../schemas/auth.schemas.js";
-import validateData from "../utils/validateData.js";
+import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
 
 /**
  * method simply for testing backend connection
@@ -19,14 +18,10 @@ export const pingPong = (req: Request, res: Response): void => {
  * - signup
  * - request body should include: email, username, password, confirmPassword
  */
-export const signup = async (req: Request, res: Response): Promise<void> => {
+export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): Promise<void> => {
   try {
-    // using Zod to validate request body data
-    const data = validateData(signupSchema, req.body, res);
-    if (!data) return;
-
-    // destructure the parsed data from Zod
-    const { email, username, password } = data;
+    // ensure data is validated first. check validateData middleware
+    const { email, username, password } = req.body;
 
     // parallel check for if email and username are unique
     const [emailExists, usernameExists] = await Promise.all([
@@ -38,7 +33,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ message: `Account with the email ${email} already exists` });
       return;
     }
-
     if (usernameExists) {
       res.status(400).json({ message: `Account with the username ${username} already exists` });
       return;
@@ -72,14 +66,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
  * - login
  * - request body should include: email, password
  */
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Promise<void> => {
   try {
-    // using Zod to validate request body data
-    const data = validateData(signupSchema, req.body, res);
-    if (!data) return;
-
-    // destructure the parsed data from Zod
-    const { email, password } = data;
+    // ensure data is validated first. check validateData middleware
+    const { email, password } = req.body;
 
     // look for a matching user
     const user = await prisma.user.findFirst({ where: { email, isDeleted: false } });

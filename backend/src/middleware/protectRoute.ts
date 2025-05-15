@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import prisma from "../db/prisma.js";
 import internalServerError from "../utils/internalServerError.js";
 import { DecodedToken } from "../types/global.js";
@@ -22,9 +22,8 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction): Pr
     }
 
     // find user and select useful fields
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { id: decoded.userId, isDeleted: false },
-      select: { id: true, email: true, username: true, profilePic: true, name: true, bio: true },
     });
 
     if (!user) {

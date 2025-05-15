@@ -3,21 +3,20 @@ import prisma from "../db/prisma.js";
 import sanitizeUser from "../utils/sanitizeUser.js";
 import internalServerError from "../utils/internalServerError.js";
 import { $Enums } from "../generated/client/index.js";
-import { idParamSchema } from "../schemas/common.schema.js";
-import validateData from "../utils/validateData.js";
-import { updateProfileSchema } from "../schemas/user.schemas.js";
+import {
+  GetProfileParams,
+  UpdateProfileBody,
+  UpdateProfileParams,
+} from "../schemas/users.schemas.js";
 
 /**
  * - gets a user profile based on user ID
  * - their posted itineraries should be retrieved using the itinerary controller
  */
-export const getProfile = async (req: Request, res: Response): Promise<void> => {
+export const getProfile = async (req: Request<GetProfileParams>, res: Response): Promise<void> => {
   try {
-    // using Zod to validate request body data
-    const data = validateData(idParamSchema, req.params, res);
-    if (!data) return;
-
-    const { id: userId } = data;
+    // ensure data is validated first. check validateData middleware
+    const { id: userId } = req.params;
 
     // find the user with requested ID, and not deleted
     const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
@@ -83,19 +82,14 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
  * - a user can only update their own profile
  * - any fields the user wishes to update shall be included in the request body: **name, username, bio, isPrivate**
  */
-export const updateProfile = async (req: Request, res: Response): Promise<void> => {
+export const updateProfile = async (
+  req: Request<UpdateProfileParams, {}, UpdateProfileBody>,
+  res: Response
+): Promise<void> => {
   try {
-    // using Zod to validate request body data
-    const paramsData = validateData(idParamSchema, req.params, res);
-    if (!paramsData) return;
-
-    const { id: userId } = paramsData;
-
-    // extract optional values from request body
-    const bodyData = validateData(updateProfileSchema, req.body, res);
-    if (!bodyData) return;
-
-    const { name, username, bio, isPrivate } = bodyData;
+    // ensure data is validated first. check validateData middleware
+    const { id: userId } = req.params;
+    const { name, username, bio, isPrivate } = req.body;
 
     // don't allow update if the request is not for self
     if (userId !== req.user?.id) {
