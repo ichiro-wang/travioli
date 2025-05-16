@@ -9,8 +9,8 @@ import internalServerError from "../utils/internalServerError.js";
 const validateData = (schema: ZodTypeAny) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("req.body:", { ...req.body });
-      console.log("req.params:", { ...req.params });
+      // console.log("req.body:", { ...req.body });
+      // console.log("req.params:", { ...req.params });
       schema.parse(req);
       next();
     } catch (error: unknown) {

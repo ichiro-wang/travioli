@@ -33,6 +33,7 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction): Pr
 
     // add user to Request
     req.user = user;
+    req.tokenType = decoded.tokenType;
 
     next();
   } catch (error: unknown) {
