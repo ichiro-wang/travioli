@@ -4,7 +4,7 @@ import prisma from "../db/prisma.js";
 import internalServerError from "../utils/internalServerError.js";
 import { DecodedToken } from "../types/global.js";
 
-const protectRoute = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const token = req.cookies.jwt;
 
@@ -37,8 +37,8 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction): Pr
 
     next();
   } catch (error: unknown) {
-    internalServerError("protectRoute middleware", error, res);
+    internalServerError("authenticateToken middleware", error, res);
   }
 };
 
-export default protectRoute;
+export default authenticateToken;
