@@ -52,7 +52,7 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
     });
 
     // generate jwt token
-    generateToken(newUser.id, false, res);
+    generateToken(newUser.id, "access", res);
 
     // return user with sanitized data as a json object with created status
     const filteredUser = sanitizeUser(newUser);
@@ -88,7 +88,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     }
 
     // after validating user, generate jwt token
-    generateToken(user.id, false, res);
+    generateToken(user.id, "access", res);
 
     // return user with sanitized data
     const filteredUser = sanitizeUser(user);

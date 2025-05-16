@@ -9,10 +9,9 @@ import { DecodedToken, TokenType } from "../types/global.js";
  * @param res Response object from controller
  * @returns JWT token
  */
-const generateToken = (userId: string, isRefreshToken: boolean, res: Response): string => {
+const generateToken = (userId: string, tokenType: TokenType, res: Response): string => {
   const DAYS = 7;
 
-  const tokenType: TokenType = isRefreshToken ? "REFRESH" : "ACCESS";
   const payload: DecodedToken = { userId, tokenType };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET!, {

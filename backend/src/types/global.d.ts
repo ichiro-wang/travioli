@@ -1,7 +1,9 @@
 import { User } from "../generated/client/index.js";
 
 // for checking whether the token was created from a refresh token or through authenticating
-export type TokenType = "ACCESS" | "REFRESH";
+export type TokenType = "access" | "refresh";
+
+// export type FollowStatus = "accepted" | "pending" | "rejected";
 
 // defining what goes in the jwt payload
 export interface DecodedToken extends JwtPayload {
@@ -9,11 +11,12 @@ export interface DecodedToken extends JwtPayload {
   tokenType: TokenType;
 }
 
-// allow user in requests
+// allow user and JWT cookie in requests
 declare global {
   namespace Express {
-    export interface Request {
+    interface Request {
       user: User;
+      tokenType: TokenType;
     }
   }
 }

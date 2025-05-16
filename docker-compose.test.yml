@@ -1,0 +1,34 @@
+# containerized test environment
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/usr/src/app
+      - backend_test_node_modules:/usr/src/app/node_modules
+    # DNS resolves request origin and database
+    environment:
+      - PORT=5000
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://user:password@db:5432/testdb
+    command: npm run test
+    depends_on:
+      - db
+    container_name: travioli-backend-test
+  db:
+    # running local postgres db for testing
+    image: postgres
+    environment:
+      # hardcoding only for test purposes
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testdb
+    volumes:
+      - test_database:/var/lib/postgresql/data
+    container_name: travioli-database-test
+
+volumes:
+  backend_test_node_modules:
+  test_database:
