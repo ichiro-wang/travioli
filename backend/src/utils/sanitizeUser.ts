@@ -7,7 +7,7 @@ import { SanitizedUser } from "../types/global.js";
  * @param includeEmail whether to include email in sanitized User object or not
  * @returns the sanitized User object: id, username, name, bio, profilePic, email (if includeEmail is true)
  */
-const sanitizeUser = (user: User, includeEmail = false): SanitizedUser => {
+export const sanitizeUser = (user: User, includeEmail = false): SanitizedUser => {
   return {
     id: user.id,
     username: user.username,
@@ -18,5 +18,3 @@ const sanitizeUser = (user: User, includeEmail = false): SanitizedUser => {
     ...(includeEmail ? { email: user.email } : { email: null }),
   };
 };
-
-export default sanitizeUser;

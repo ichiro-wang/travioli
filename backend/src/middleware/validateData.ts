@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodTypeAny } from "zod";
-import internalServerError from "../utils/internalServerError.js";
+import { internalServerError } from "../utils/internalServerError.js";
 
 /**
  * middleware for validating input data
  * @param schema the schema you want to follow
  */
-const validateData = (schema: ZodTypeAny) => {
+export const validateData = (schema: ZodTypeAny) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       // console.log("req.body:", { ...req.body });
@@ -20,10 +20,8 @@ const validateData = (schema: ZodTypeAny) => {
         }));
         res.status(400).json({ message: "Invalid data", details: errorMessages });
       } else {
-        internalServerError("validateData middleware", error, res);
+        internalServerError(error, res);
       }
     }
   };
 };
-
-export default validateData;

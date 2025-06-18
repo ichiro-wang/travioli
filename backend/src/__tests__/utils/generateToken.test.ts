@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { Response } from "express";
 import jwt from "jsonwebtoken";
-import generateToken from "../../utils/generateToken.js";
+import { generateToken } from "../../utils/generateToken.js";
 
 vi.mock("jsonwebtoken");
 

@@ -11,7 +11,7 @@ export type CheckUsernameParams = z.infer<typeof checkUsernameSchema>["params"];
 
 export const getFollowListSchema = z.object({
   body: z.object({
-    type: z.enum(["followers", "following"]),
+    type: z.enum(["followedBy", "following"]),
   }),
   params: cuidSchema,
 });

@@ -1,9 +1,9 @@
 import { CookieOptions, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import prisma from "../db/prisma.js";
-import generateToken from "../utils/generateToken.js";
-import internalServerError from "../utils/internalServerError.js";
-import sanitizeUser from "../utils/sanitizeUser.js";
+import { generateToken } from "../utils/generateToken.js";
+import { internalServerError } from "../utils/internalServerError.js";
+import { sanitizeUser } from "../utils/sanitizeUser.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
 
 /**
@@ -58,7 +58,7 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
     const filteredUser = sanitizeUser(newUser);
     res.status(201).json({ user: filteredUser });
   } catch (error: unknown) {
-    internalServerError("signup controller", error, res);
+    internalServerError(error, res);
   }
 };
 
@@ -94,7 +94,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     const filteredUser = sanitizeUser(user);
     res.status(200).json({ user: filteredUser });
   } catch (error: unknown) {
-    internalServerError("login controller", error, res);
+    internalServerError(error, res);
   }
 };
 
@@ -114,7 +114,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error: unknown) {
-    internalServerError("logout controller", error, res);
+    internalServerError(error, res);
   }
 };
 
@@ -123,18 +123,18 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
  */
 export const getMe = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = req.user;
+    const loggedInUser = req.user;
 
     // if user is not logged in
-    if (!user) {
+    if (!loggedInUser) {
       res.status(401).json({ message: "User not authorized. Please log in" });
       return;
     }
 
     // return user with sanitized data
-    const filteredUser = sanitizeUser(user);
+    const filteredUser = sanitizeUser(loggedInUser);
     res.status(200).json({ user: filteredUser });
   } catch (error: unknown) {
-    internalServerError("getMe controller", error, res);
+    internalServerError(error, res);
   }
 };

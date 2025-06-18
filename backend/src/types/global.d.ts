@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { User } from "../generated/client/index.js";
 
 // for checking whether the token was created from a refresh token or through authenticating
@@ -19,6 +20,13 @@ declare global {
       tokenType: TokenType;
     }
   }
+}
+
+export interface FollowedBy {
+  followedBy: User;
+}
+export interface Following {
+  following: User;
 }
 
 export interface SanitizedUser {

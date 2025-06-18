@@ -9,7 +9,7 @@ import { DecodedToken, TokenType } from "../types/global.js";
  * @param res Response object from controller
  * @returns JWT token
  */
-const generateToken = (userId: string, tokenType: TokenType, res: Response): string => {
+export const generateToken = (userId: string, tokenType: TokenType, res: Response): string => {
   const DAYS = 7;
 
   const payload: DecodedToken = { userId, tokenType };
@@ -27,5 +27,3 @@ const generateToken = (userId: string, tokenType: TokenType, res: Response): str
 
   return token;
 };
-
-export default generateToken;

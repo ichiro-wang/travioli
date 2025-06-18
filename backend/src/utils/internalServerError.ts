@@ -6,7 +6,7 @@ import { Response } from "express";
  * @param error simply pass in the Error object that was caught
  * @param res simply pass in the Response object from the controller
  */
-const internalServerError = (location: string, error: unknown, res: Response) => {
+export const internalServerError = (error: unknown, res: Response) => {
   let errorMessage: string;
   if (error instanceof Error) {
     errorMessage = error.message;
@@ -16,6 +16,7 @@ const internalServerError = (location: string, error: unknown, res: Response) =>
     console.error("Unknown error object:", error);
   }
 
+  const location = internalServerError.caller.name;
   console.error(`Error in ${location.toLowerCase()}:`, errorMessage);
 
   res.status(500).json({
@@ -23,5 +24,3 @@ const internalServerError = (location: string, error: unknown, res: Response) =>
     ...(process.env.NODE_ENV === "development" && { error: errorMessage }),
   });
 };
-
-export default internalServerError;

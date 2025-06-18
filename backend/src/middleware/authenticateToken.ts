@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../db/prisma.js";
-import internalServerError from "../utils/internalServerError.js";
+import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken } from "../types/global.js";
 
-const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const authenticateToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const token = req.cookies.jwt;
 
@@ -37,8 +41,6 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 
     next();
   } catch (error: unknown) {
-    internalServerError("authenticateToken middleware", error, res);
+    internalServerError(error, res);
   }
 };
-
-export default authenticateToken;
