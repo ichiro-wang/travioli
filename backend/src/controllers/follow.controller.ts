@@ -1,7 +1,7 @@
 import prisma from "../db/prisma.js";
 import { Request, Response } from "express";
 import { CuidParams } from "../schemas/common.schema.js";
-import { GetFollowListBody } from "../schemas/users.schemas.js";
+import { GetFollowListSchema, getFollowListSchema } from "../schemas/follow.schema.js";
 import { $Enums } from "../generated/client/index.js";
 import { FollowedBy, Following, SanitizedUser } from "../types/global.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
@@ -13,13 +13,12 @@ import { internalServerError } from "../utils/internalServerError.js";
  * check if the user is private first
  */
 export const getFollowList = async (
-  req: Request<CuidParams, {}, GetFollowListBody>,
+  req: Request<GetFollowListSchema>,
   res: Response
 ): Promise<void> => {
   try {
     // ensure data is validated first. check validateData middleware
-    const { id: userId } = req.params;
-    const { type } = req.body;
+    const { id: userId, type } = req.params;
 
     // first find the requested user
     const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
@@ -82,7 +81,7 @@ export const getFollowList = async (
 
 export const followUser = async (req: Request<CuidParams>, res: Response): Promise<void> => {
   try {
-    const { id: userId } = req.params
+    const { id: userId } = req.params;
   } catch (error: unknown) {
     internalServerError(error, res);
   }

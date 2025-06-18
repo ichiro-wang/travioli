@@ -9,15 +9,6 @@ export const checkUsernameSchema = z.object({
 
 export type CheckUsernameParams = z.infer<typeof checkUsernameSchema>["params"];
 
-export const getFollowListSchema = z.object({
-  body: z.object({
-    type: z.enum(["followedBy", "following"]),
-  }),
-  params: cuidSchema,
-});
-
-export type GetFollowListBody = z.infer<typeof getFollowListSchema>["body"];
-
 export const updateProfileSchema = z.object({
   body: z.object({
     username: usernameSchema.optional(),

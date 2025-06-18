@@ -5,14 +5,13 @@
 
 import express from "express";
 import { authenticateToken } from "../middleware/authenticateToken.js";
-import { getFollowListSchema } from "../schemas/users.schemas.js";
+import { getFollowListSchema } from "../schemas/follow.schema.js";
 import { validateData } from "../middleware/validateData.js";
 import { getFollowList } from "../controllers/follow.controller.js";
 
 const router = express.Router();
 
-router.get("/:id/followedBy", authenticateToken, validateData(getFollowListSchema), getFollowList);
-router.get("/:id/following", authenticateToken, validateData(getFollowListSchema), getFollowList);
+router.get("/:id/:type(followedBy|following)", authenticateToken, validateData(getFollowListSchema), getFollowList);
 
 /**
  * TODO
