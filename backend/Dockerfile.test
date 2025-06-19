@@ -7,7 +7,3 @@ COPY package*.json ./
 RUN npm install --include=dev
 
 COPY ./ ./
-
-ENTRYPOINT [ "npm", "run" ]
-# default arg if nothing specified
-CMD ["test"] 

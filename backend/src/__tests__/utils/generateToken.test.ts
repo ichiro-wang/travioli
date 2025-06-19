@@ -13,7 +13,7 @@ describe("generateToken middleware", () => {
   let mockResponse = {} as Response;
 
   beforeEach(() => {
-    process.env.JWT_SECRET = "lebronthegoat";
+    process.env.ACCESS_TOKEN_SECRET = "lebronthegoat";
 
     mockSign.mockReturnValue("mocked_jwt_token");
 
@@ -25,7 +25,7 @@ describe("generateToken middleware", () => {
   });
 
   it("should generate access token and set cookie", () => {
-    const token = generateToken("some_user_id", "access", mockResponse);
+    const token = generateToken(mockResponse, "some_user_id", "access");
 
     expect(token).toStrictEqual("mocked_jwt_token");
 
@@ -44,7 +44,7 @@ describe("generateToken middleware", () => {
   });
 
   it("should generate a refresh token", () => {
-    const token = generateToken("some_user_id", "refresh", mockResponse);
+    const token = generateToken(mockResponse, "some_user_id", "refresh");
 
     expect(token).toStrictEqual("mocked_jwt_token");
 
