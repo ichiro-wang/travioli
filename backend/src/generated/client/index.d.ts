@@ -46,7 +46,8 @@ export namespace $Enums {
   export const FollowStatus: {
   pending: 'pending',
   accepted: 'accepted',
-  rejected: 'rejected'
+  rejected: 'rejected',
+  unfollowed: 'unfollowed'
 };
 
 export type FollowStatus = (typeof FollowStatus)[keyof typeof FollowStatus]

@@ -54,9 +54,10 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
     // generate jwt token
     generateToken(newUser.id, "access", res);
 
-    // return user with sanitized data as a json object with created status
-    const filteredUser = sanitizeUser(newUser);
+    // return user with sanitized data, includeEmail=true
+    const filteredUser = sanitizeUser(newUser, true);
     res.status(201).json({ user: filteredUser });
+    return;
   } catch (error: unknown) {
     internalServerError(error, res);
   }
@@ -90,9 +91,10 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     // after validating user, generate jwt token
     generateToken(user.id, "access", res);
 
-    // return user with sanitized data
-    const filteredUser = sanitizeUser(user);
+    // return user with sanitized data, includeEmail=true
+    const filteredUser = sanitizeUser(user, true);
     res.status(200).json({ user: filteredUser });
+    return;
   } catch (error: unknown) {
     internalServerError(error, res);
   }
@@ -113,6 +115,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     res.cookie("jwt", "", options);
 
     res.status(200).json({ message: "Logged out successfully" });
+    return;
   } catch (error: unknown) {
     internalServerError(error, res);
   }
@@ -131,9 +134,10 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // return user with sanitized data
-    const filteredUser = sanitizeUser(loggedInUser);
+    // return user with sanitized data, includeEmail=true
+    const filteredUser = sanitizeUser(loggedInUser, true);
     res.status(200).json({ user: filteredUser });
+    return;
   } catch (error: unknown) {
     internalServerError(error, res);
   }

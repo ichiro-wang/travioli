@@ -192,7 +192,8 @@ exports.Prisma.NullsOrder = {
 exports.FollowStatus = exports.$Enums.FollowStatus = {
   pending: 'pending',
   accepted: 'accepted',
-  rejected: 'rejected'
+  rejected: 'rejected',
+  unfollowed: 'unfollowed'
 };
 
 exports.Prisma.ModelName = {
