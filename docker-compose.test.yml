@@ -13,6 +13,7 @@ services:
       - PORT=5000
       - NODE_ENV=test
       - DATABASE_URL=postgresql://user:password@db:5432/testdb
+    command: npm run test
     depends_on:
       - db
     container_name: travioli-backend-test
