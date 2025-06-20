@@ -21,6 +21,7 @@ export const pingPong = (req: Request, res: Response): void => {
 export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): Promise<void> => {
   try {
     // ensure data is validated first. check validateData middleware
+    // password === confirmPassword handled in zod schema
     const { email, username, password } = req.body;
 
     // parallel check for if email and username are unique
@@ -34,7 +35,7 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
       return;
     }
     if (usernameExists) {
-      res.status(400).json({ message: `Account with the username ${username} already exists` });
+      res.status(400).json({ message: `Account with the username @${username} already exists` });
       return;
     }
 
@@ -52,14 +53,14 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
     });
 
     // generate jwt token
-    generateToken(newUser.id, "access", res);
+    generateToken(res, newUser.id, "access");
 
     // return user with sanitized data, includeEmail=true
     const filteredUser = sanitizeUser(newUser, true);
     res.status(201).json({ user: filteredUser });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "signup controller");
   }
 };
 
@@ -73,10 +74,10 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     const { email, password } = req.body;
 
     // look for a matching user
-    const user = await prisma.user.findFirst({ where: { email, isDeleted: false } });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     // no user found
-    if (!user) {
+    if (!user || user.isDeleted) {
       res.status(400).json({ message: "User not found" });
       return;
     }
@@ -89,14 +90,14 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     }
 
     // after validating user, generate jwt token
-    generateToken(user.id, "access", res);
+    generateToken(res, user.id, "access");
 
     // return user with sanitized data, includeEmail=true
     const filteredUser = sanitizeUser(user, true);
     res.status(200).json({ user: filteredUser });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "login controller");
   }
 };
 
@@ -117,7 +118,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ message: "Logged out successfully" });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "logout controller");
   }
 };
 
@@ -139,6 +140,6 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ user: filteredUser });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "getMe controller");
   }
 };

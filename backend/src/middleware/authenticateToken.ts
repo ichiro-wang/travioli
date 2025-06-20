@@ -19,7 +19,13 @@ export const authenticateToken = async (
     }
 
     // check if token is valid
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
+    const secretKey = process.env.ACCESS_TOKEN_SECRET;
+
+    if (!secretKey) {
+      throw new Error("No secret key provided for JWT");
+    }
+
+    const decoded = jwt.verify(token, secretKey) as DecodedToken;
     if (!decoded) {
       res.status(401).json({ message: "Unauthorized - Invalid token" });
       return;
@@ -41,6 +47,6 @@ export const authenticateToken = async (
 
     next();
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "authenticateToken middleware");
   }
 };

@@ -4,17 +4,28 @@ import { DecodedToken, TokenType } from "../types/global.js";
 
 /**
  * generate a JWT token
- * @param userId to include in the payload
- * @param isRefreshToken for checking whether JWT token was generated via a refresh token or thru authenticating user credentials. used for flagging sensitive operations
  * @param res Response object from controller
+ * @param userId to include in the payload
+ * @param tokenType for checking whether JWT token was generated via a refresh token or thru authenticating user credentials. used for flagging sensitive operations
  * @returns JWT token
  */
-export const generateToken = (userId: string, tokenType: TokenType, res: Response): string => {
+export const generateToken = (
+  res: Response,
+  userId: string,
+  tokenType: TokenType = "access"
+): string => {
   const DAYS = 7;
 
+  // the JWT payload consists of the user ID and type: access|refresh
   const payload: DecodedToken = { userId, tokenType };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, {
+  const secretKey = process.env.ACCESS_TOKEN_SECRET;
+
+  if (!secretKey) {
+    throw new Error("No secret key provided for JWT");
+  }
+
+  const token = jwt.sign(payload, secretKey, {
     expiresIn: `${DAYS}d`,
   });
 

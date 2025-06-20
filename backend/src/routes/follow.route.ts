@@ -12,18 +12,10 @@ import { followUser, getFollowList } from "../controllers/follow.controller.js";
 const router = express.Router();
 
 router.post("/:id/follow", authenticateToken, validateData(followUserSchema), followUser);
-router.patch(
-  "/:id/follow/:type(accept|reject|cancel|unfollow)",
-  authenticateToken,
-  validateData(followUserSchema),
-  followUser
-);
-router.get(
-  "/:id/:type(followedBy|following)",
-  authenticateToken,
-  validateData(getFollowListSchema),
-  getFollowList
-);
+// type: accept|reject|cancel|unfollow
+router.patch("/:id/follow/:type", authenticateToken, validateData(followUserSchema), followUser);
+// type: followedBy|following
+router.get("/:id/:type", authenticateToken, validateData(getFollowListSchema), getFollowList);
 
 /**
  * TODO

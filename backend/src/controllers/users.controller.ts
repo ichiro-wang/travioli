@@ -22,24 +22,26 @@ export const checkUsername = async (
     // ensure data is validated first. check validateData middleware
     const { username } = req.params;
 
+    // check if the username is same as current user's
     if (username === req.user?.username) {
-      res.status(409).json({ message: `The username ${username} is already taken` });
+      res.status(409).json({ message: `The username @${username} is already your username` });
       return;
     }
 
     // find a user with the given username
-    const user = await prisma.user.findFirst({ where: { username, isDeleted: false } });
+    const user = await prisma.user.findUnique({ where: { username } });
 
     // if a user is not found
-    if (!user) {
-      res.status(200).json({ message: `The username ${username} is available` });
+    if (!user || user.isDeleted) {
+      res.status(200).json({ message: `The username @${username} is available` });
       return;
     }
 
     // if a user with that username is found
-    res.status(409).json({ message: `The username ${username} is already taken` });
+    res.status(409).json({ message: `The username @${username} is already taken` });
+    return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "checkUsername controller");
   }
 };
 
@@ -52,17 +54,18 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
     // ensure data is validated first. check validateData middleware
     const { id: userId } = req.params;
 
-    // find the user with requested ID, and not deleted
-    const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
+    // find the user with requested ID
+    const user = await prisma.user.findUnique({ where: { id: userId } });
 
-    // if the user exists (or account not soft deleted)
-    if (!user) {
+    // if the user not exists (or account soft deleted)
+    if (!user || user.isDeleted) {
       res.status(404).json({ message: "User with given ID not found" });
       return;
     }
 
     // check if user is requesting own profile
-    const isSelf = user.id === req.user?.id;
+    const currentUserId = req.user.id;
+    const isSelf = user.id === currentUserId;
     const filteredUser = sanitizeUser(user);
 
     // get followedBy and following counts to include in profile details
@@ -73,14 +76,14 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
     ]);
 
     // default values for if user is following another. not following is functionally same as rejected
-    let followStatus: $Enums.FollowStatus = "rejected";
+    let followStatus: $Enums.FollowStatus = "unfollowed";
 
     if (!isSelf && req.user) {
       // check if the requestING user is following the requestED user
       const follow = await prisma.follows.findUnique({
         where: {
           followedById_followingId: {
-            followedById: req.user.id,
+            followedById: currentUserId,
             followingId: user.id,
           },
         },
@@ -89,7 +92,7 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
         },
       });
 
-      followStatus = follow?.status ?? "rejected";
+      followStatus = follow?.status ?? "unfollowed";
     }
 
     // return the user profile with additional details
@@ -102,8 +105,9 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
         followStatus,
       },
     });
+    return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "getProfile controller");
   }
 };
 
@@ -120,18 +124,19 @@ export const updateProfile = async (
     // ensure data is validated first. check validateData middleware
     const { id: userId } = req.params;
     const { name, username, bio, isPrivate } = req.body;
+    const currentUserId = req.user.id;
 
     // don't allow update if the request is not for self
-    if (userId !== req.user?.id) {
+    if (userId !== currentUserId) {
       res.status(403).json({ message: "Cannot update profile of another user" });
       return;
     }
 
     // find the user with requested ID, and not deleted
-    const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
+    const user = await prisma.user.findUnique({ where: { id: userId } });
 
     // if the user exists (or account not soft deleted)
-    if (!user) {
+    if (!user || user.isDeleted) {
       res.status(404).json({ message: "User with given ID not found" });
       return;
     }
@@ -149,12 +154,14 @@ export const updateProfile = async (
 
     const filteredUser = sanitizeUser(updatedUser);
     res.status(200).json({ user: filteredUser });
+    return;
   } catch (error: any) {
     if (error.code === "P2002") {
       // P2002 is a prisma error code: "Unique constraint failed on the {constraint}". see prisma documentation for more
+      // we use this to make sure the user updates fields such that they satisfy unique constraints in the database
       res.status(409).json({ message: "Username already taken. Please select a unique username" });
     } else {
-      internalServerError(error as unknown, res);
+      internalServerError(error as unknown, res, "updateProfile controller");
     }
   }
 };
@@ -190,7 +197,10 @@ export const deleteAccount = async (
       where: { id: userId },
       data: { isDeleted: true },
     });
+
+    res.status(204).json({ message: `User @${deletedUser.username}'s account deleted` });
+    return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "deleteAccount controller");
   }
 };

@@ -13,8 +13,8 @@ export type CuidParams = z.infer<typeof cuidParamsSchema>["params"];
 export const usernameSchema = z
   .string()
   .trim()
-  .min(3)
-  .max(30)
+  .min(3, { message: "Username can have minimum 3 characters" })
+  .max(30, { message: "Username can have maximum 30 characters" })
   .regex(/^[a-zA-Z0-9_]+$/, {
     message: "Username can only contain letters, numbers, and underscores",
   });

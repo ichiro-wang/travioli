@@ -9,18 +9,18 @@ import { internalServerError } from "../utils/internalServerError.js";
 export const validateData = (schema: ZodTypeAny) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      // console.log("req.body:", { ...req.body });
-      // console.log("req.params:", { ...req.params });
       schema.parse(req);
       next();
     } catch (error: unknown) {
       if (error instanceof ZodError) {
-        const errorMessages = error.errors.map((issue: any) => ({
-          message: `${issue.path.join(".")} is ${issue.message}`,
-        }));
-        res.status(400).json({ message: "Invalid data", details: errorMessages });
+        const errorMessages = error.errors.map((issue) => issue.message);
+
+        // if just one error, return directly. else, return the array of error messages
+        const message = errorMessages.length === 1 ? errorMessages[0] : errorMessages;
+
+        res.status(400).json({ message });
       } else {
-        internalServerError(error, res);
+        internalServerError(error, res, "validateData middleware");
       }
     }
   };

@@ -4,8 +4,9 @@ import { Response } from "express";
  * helper function for handling internal server errors
  * @param error simply pass in the Error object that was caught
  * @param res simply pass in the Response object from the controller
+ * @param location where the error occured
  */
-export const internalServerError = (error: unknown, res: Response) => {
+export const internalServerError = (error: unknown, res: Response, location?: string) => {
   let errorMessage: string;
   if (error instanceof Error) {
     errorMessage = error.message;
@@ -15,8 +16,8 @@ export const internalServerError = (error: unknown, res: Response) => {
     console.error("Unknown error object:", error);
   }
 
-  const location = internalServerError.caller.name; // get function name of where the error occured
-  console.error(`Error in ${location.toLowerCase()}:`, errorMessage);
+  const errorLocation = location ? location.toLowerCase() : "controller";
+  console.error(`Error in ${errorLocation}:`, errorMessage);
 
   res.status(500).json({
     message: "Internal Server Error",
