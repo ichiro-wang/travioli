@@ -16,6 +16,11 @@ const testUsers = {
     username: "bronnyjames",
     password: "password",
   },
+  deletedUser: {
+    email: "deleted@gmail.com",
+    username: "deleted",
+    password: "password",
+  },
 };
 
 export const setUpTestData = async () => {
@@ -38,6 +43,18 @@ export const setUpTestData = async () => {
     },
   });
 
+  const toBeDeletedUser = await prisma.user.create({
+    data: {
+      ...testUsers.deletedUser,
+      password: hashedPassword,
+    },
+  });
+
+  const deletedUser = await prisma.user.update({
+    where: { id: toBeDeletedUser.id },
+    data: { isDeleted: true },
+  });
+
   // login so we can get the JWT cookie to include in all our requests
   const loginRes = await request(app)
     .post(LOGIN_URL)
@@ -46,6 +63,7 @@ export const setUpTestData = async () => {
   return {
     user: { ...testUsers.user, id: user.id },
     otherUser: { ...testUsers.otherUser, id: otherUser.id },
+    deletedUser: { ...testUsers.deletedUser, id: deletedUser.id },
     jwtCookie: loginRes.headers["set-cookie"],
   };
 };
