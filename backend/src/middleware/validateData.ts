@@ -15,10 +15,8 @@ export const validateData = (schema: ZodTypeAny) => {
       if (error instanceof ZodError) {
         const errorMessages = error.errors.map((issue) => issue.message);
 
-        // if just one error, return directly. else, return the array of error messages
-        const message = errorMessages.length === 1 ? errorMessages[0] : errorMessages;
-
-        res.status(400).json({ message });
+        res.status(400).json({ message: "Invalid input data", errors: errorMessages });
+        return;
       } else {
         internalServerError(error, res, "validateData middleware");
       }

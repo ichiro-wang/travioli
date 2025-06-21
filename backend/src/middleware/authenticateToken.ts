@@ -32,11 +32,11 @@ export const authenticateToken = async (
     }
 
     // find user and select useful fields
-    const user = await prisma.user.findFirst({
-      where: { id: decoded.userId, isDeleted: false },
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
     });
 
-    if (!user) {
+    if (!user || user.isDeleted) {
       res.status(404).json({ message: "User not found" });
       return;
     }

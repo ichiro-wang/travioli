@@ -158,6 +158,8 @@ exports.Prisma.ItineraryItemScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  estimatedCost: 'estimatedCost',
+  currency: 'currency',
   media: 'media',
   order: 'order',
   itineraryId: 'itineraryId',
@@ -192,8 +194,7 @@ exports.Prisma.NullsOrder = {
 exports.FollowStatus = exports.$Enums.FollowStatus = {
   pending: 'pending',
   accepted: 'accepted',
-  rejected: 'rejected',
-  unfollowed: 'unfollowed'
+  notFollowing: 'notFollowing'
 };
 
 exports.Prisma.ModelName = {

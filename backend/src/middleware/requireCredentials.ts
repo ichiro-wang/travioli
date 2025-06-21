@@ -12,3 +12,5 @@ export const requireCredentials = (req: Request, res: Response, next: NextFuncti
 
   // TODO
 };
+
+// to be used once i implement access/refresh tokens differently, nothing for now

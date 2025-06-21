@@ -30,7 +30,7 @@ export const getFollowList = async (
     }
 
     const isSelf = user.id === currentUserId; // is the requested user the same as the requesting user
-    let followStatus: $Enums.FollowStatus = "rejected"; // the following status of the requesting user to the requested user
+    let followStatus: $Enums.FollowStatus = "notFollowing"; // the following status of the requesting user to the requested user
 
     if (!isSelf && req.user) {
       // check if the requesting user is following this user
@@ -43,7 +43,7 @@ export const getFollowList = async (
         },
       });
 
-      followStatus = follow?.status ?? "rejected";
+      followStatus = follow?.status ?? "notFollowing";
     }
 
     // if the requested user is private and requesting user is not following them
@@ -237,7 +237,7 @@ export const updateFollowStatus = async (
           },
         },
         data: {
-          status: "rejected",
+          status: "notFollowing",
         },
       });
     } else if (actionType === "reject") {
@@ -258,7 +258,7 @@ export const updateFollowStatus = async (
           },
         },
         data: {
-          status: "rejected",
+          status: "notFollowing",
         },
       });
     } else {
@@ -280,7 +280,7 @@ export const updateFollowStatus = async (
           },
         },
         data: {
-          status: "unfollowed",
+          status: "notFollowing",
         },
       });
     }

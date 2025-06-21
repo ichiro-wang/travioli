@@ -38,3 +38,5 @@ export const generateToken = (
 
   return token;
 };
+
+// TODO: adjust based on access or refresh token

@@ -22,7 +22,8 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
   try {
     // ensure data is validated first. check validateData middleware
     // password === confirmPassword handled in zod schema
-    const { email, username, password } = req.body;
+    const { email, username: usernameReceived, password } = req.body;
+    const username = usernameReceived.toLowerCase();
 
     // parallel check for if email and username are unique
     const [emailExists, usernameExists] = await Promise.all([
@@ -130,6 +131,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     const loggedInUser = req.user;
 
     // if user is not logged in
+    // this should be caught by authenticateToken.ts middleware, not here
     if (!loggedInUser) {
       res.status(401).json({ message: "User not authorized. Please log in" });
       return;

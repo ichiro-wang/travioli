@@ -18,3 +18,9 @@ export const usernameSchema = z
   .regex(/^[a-zA-Z0-9_]+$/, {
     message: "Username can only contain letters, numbers, and underscores",
   });
+
+export const emailSchema = z.string().trim().email({ message: "Invalid email format" });
+
+export const passwordSchema = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long" });

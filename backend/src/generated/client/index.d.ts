@@ -46,8 +46,7 @@ export namespace $Enums {
   export const FollowStatus: {
   pending: 'pending',
   accepted: 'accepted',
-  rejected: 'rejected',
-  unfollowed: 'unfollowed'
+  notFollowing: 'notFollowing'
 };
 
 export type FollowStatus = (typeof FollowStatus)[keyof typeof FollowStatus]
@@ -4750,10 +4749,12 @@ export namespace Prisma {
   }
 
   export type ItineraryItemAvgAggregateOutputType = {
+    estimatedCost: number | null
     order: number | null
   }
 
   export type ItineraryItemSumAggregateOutputType = {
+    estimatedCost: number | null
     order: number | null
   }
 
@@ -4761,6 +4762,8 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
+    estimatedCost: number | null
+    currency: string | null
     order: number | null
     itineraryId: string | null
     createdAt: Date | null
@@ -4771,6 +4774,8 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
+    estimatedCost: number | null
+    currency: string | null
     order: number | null
     itineraryId: string | null
     createdAt: Date | null
@@ -4781,6 +4786,8 @@ export namespace Prisma {
     id: number
     name: number
     description: number
+    estimatedCost: number
+    currency: number
     media: number
     order: number
     itineraryId: number
@@ -4791,10 +4798,12 @@ export namespace Prisma {
 
 
   export type ItineraryItemAvgAggregateInputType = {
+    estimatedCost?: true
     order?: true
   }
 
   export type ItineraryItemSumAggregateInputType = {
+    estimatedCost?: true
     order?: true
   }
 
@@ -4802,6 +4811,8 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    estimatedCost?: true
+    currency?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -4812,6 +4823,8 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    estimatedCost?: true
+    currency?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -4822,6 +4835,8 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    estimatedCost?: true
+    currency?: true
     media?: true
     order?: true
     itineraryId?: true
@@ -4920,6 +4935,8 @@ export namespace Prisma {
     id: string
     name: string
     description: string | null
+    estimatedCost: number | null
+    currency: string | null
     media: string[]
     order: number
     itineraryId: string
@@ -4950,6 +4967,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    estimatedCost?: boolean
+    currency?: boolean
     media?: boolean
     order?: boolean
     itineraryId?: boolean
@@ -4963,6 +4982,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    estimatedCost?: boolean
+    currency?: boolean
     media?: boolean
     order?: boolean
     itineraryId?: boolean
@@ -4975,6 +4996,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    estimatedCost?: boolean
+    currency?: boolean
     media?: boolean
     order?: boolean
     itineraryId?: boolean
@@ -4987,6 +5010,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    estimatedCost?: boolean
+    currency?: boolean
     media?: boolean
     order?: boolean
     itineraryId?: boolean
@@ -4994,7 +5019,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "media" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
+  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "estimatedCost" | "currency" | "media" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
   export type ItineraryItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | ItineraryItem$locationArgs<ExtArgs>
     itinerary?: boolean | ItineraryDefaultArgs<ExtArgs>
@@ -5016,6 +5041,8 @@ export namespace Prisma {
       id: string
       name: string
       description: string | null
+      estimatedCost: number | null
+      currency: string | null
       media: string[]
       order: number
       itineraryId: string
@@ -5449,6 +5476,8 @@ export namespace Prisma {
     readonly id: FieldRef<"ItineraryItem", 'String'>
     readonly name: FieldRef<"ItineraryItem", 'String'>
     readonly description: FieldRef<"ItineraryItem", 'String'>
+    readonly estimatedCost: FieldRef<"ItineraryItem", 'Float'>
+    readonly currency: FieldRef<"ItineraryItem", 'String'>
     readonly media: FieldRef<"ItineraryItem", 'String[]'>
     readonly order: FieldRef<"ItineraryItem", 'Int'>
     readonly itineraryId: FieldRef<"ItineraryItem", 'String'>
@@ -7070,6 +7099,8 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
+    estimatedCost: 'estimatedCost',
+    currency: 'currency',
     media: 'media',
     order: 'order',
     itineraryId: 'itineraryId',
@@ -7172,20 +7203,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7196,6 +7213,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -7437,6 +7468,8 @@ export namespace Prisma {
     id?: StringFilter<"ItineraryItem"> | string
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
+    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    currency?: StringNullableFilter<"ItineraryItem"> | string | null
     media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
@@ -7450,6 +7483,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    estimatedCost?: SortOrderInput | SortOrder
+    currency?: SortOrderInput | SortOrder
     media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
@@ -7467,6 +7502,8 @@ export namespace Prisma {
     NOT?: ItineraryItemWhereInput | ItineraryItemWhereInput[]
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
+    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    currency?: StringNullableFilter<"ItineraryItem"> | string | null
     media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
@@ -7480,6 +7517,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    estimatedCost?: SortOrderInput | SortOrder
+    currency?: SortOrderInput | SortOrder
     media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
@@ -7499,6 +7538,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ItineraryItem"> | string
     name?: StringWithAggregatesFilter<"ItineraryItem"> | string
     description?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
+    estimatedCost?: FloatNullableWithAggregatesFilter<"ItineraryItem"> | number | null
+    currency?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
     media?: StringNullableListFilter<"ItineraryItem">
     order?: IntWithAggregatesFilter<"ItineraryItem"> | number
     itineraryId?: StringWithAggregatesFilter<"ItineraryItem"> | string
@@ -7828,6 +7869,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
@@ -7840,6 +7883,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
@@ -7852,6 +7897,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7864,6 +7911,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
@@ -7876,6 +7925,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
@@ -7887,6 +7938,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7897,6 +7950,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
@@ -8272,6 +8327,17 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -8302,6 +8368,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    estimatedCost?: SortOrder
+    currency?: SortOrder
     media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
@@ -8310,6 +8378,7 @@ export namespace Prisma {
   }
 
   export type ItineraryItemAvgOrderByAggregateInput = {
+    estimatedCost?: SortOrder
     order?: SortOrder
   }
 
@@ -8317,6 +8386,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    estimatedCost?: SortOrder
+    currency?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -8327,6 +8398,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    estimatedCost?: SortOrder
+    currency?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -8334,7 +8407,24 @@ export namespace Prisma {
   }
 
   export type ItineraryItemSumOrderByAggregateInput = {
+    estimatedCost?: SortOrder
     order?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -8351,17 +8441,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type ItineraryItemScalarRelationFilter = {
@@ -8407,22 +8486,6 @@ export namespace Prisma {
   export type LocationSumOrderByAggregateInput = {
     lat?: SortOrder
     lng?: SortOrder
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type FollowsCreateNestedManyWithoutFollowedByInput = {
@@ -8690,6 +8753,14 @@ export namespace Prisma {
     connect?: LocationWhereUniqueInput
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type ItineraryItemUpdatemediaInput = {
     set?: string[]
     push?: string | string[]
@@ -8735,14 +8806,6 @@ export namespace Prisma {
     create?: XOR<ItineraryItemCreateWithoutLocationInput, ItineraryItemUncheckedCreateWithoutLocationInput>
     connectOrCreate?: ItineraryItemCreateOrConnectWithoutLocationInput
     connect?: ItineraryItemWhereUniqueInput
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type ItineraryItemUpdateOneRequiredWithoutLocationNestedInput = {
@@ -8917,33 +8980,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -8969,6 +9005,33 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type FollowsCreateWithoutFollowedByInput = {
@@ -9291,6 +9354,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
@@ -9302,6 +9367,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
@@ -9379,6 +9446,8 @@ export namespace Prisma {
     id?: StringFilter<"ItineraryItem"> | string
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
+    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    currency?: StringNullableFilter<"ItineraryItem"> | string | null
     media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
@@ -9549,6 +9618,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
@@ -9560,6 +9631,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
@@ -9587,6 +9660,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9598,6 +9673,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
@@ -9711,6 +9788,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    estimatedCost?: number | null
+    currency?: string | null
     media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
@@ -9721,6 +9800,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9732,6 +9813,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9743,6 +9826,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

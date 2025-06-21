@@ -18,7 +18,7 @@ router.patch("/:id/follow/:type", authenticateToken, validateData(followUserSche
 router.get("/:id/:type", authenticateToken, validateData(getFollowListSchema), getFollowList);
 
 /**
- * TODO
+ * features
  *
  * get followedBy|following list: id
  * follow: id

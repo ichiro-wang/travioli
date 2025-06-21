@@ -20,7 +20,8 @@ export const checkUsername = async (
 ): Promise<void> => {
   try {
     // ensure data is validated first. check validateData middleware
-    const { username } = req.params;
+    const { username: usernameReceived } = req.params;
+    const username = usernameReceived.toLowerCase();
 
     // check if the username is same as current user's
     if (username === req.user?.username) {
@@ -31,14 +32,14 @@ export const checkUsername = async (
     // find a user with the given username
     const user = await prisma.user.findUnique({ where: { username } });
 
-    // if a user is not found
-    if (!user || user.isDeleted) {
-      res.status(200).json({ message: `The username @${username} is available` });
+    // if a user is found
+    if (user) {
+      res.status(409).json({ message: `The username @${username} is already taken` });
       return;
     }
 
-    // if a user with that username is found
-    res.status(409).json({ message: `The username @${username} is already taken` });
+    // if a user with that username is not found
+    res.status(200).json({ message: `The username @${username} is available` });
     return;
   } catch (error: unknown) {
     internalServerError(error, res, "checkUsername controller");
@@ -75,8 +76,8 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
       prisma.follows.count({ where: { followedById: userId, status: "accepted" } }),
     ]);
 
-    // default values for if user is following another. not following is functionally same as rejected
-    let followStatus: $Enums.FollowStatus = "unfollowed";
+    // default values for if user is following another. not following
+    let followStatus: $Enums.FollowStatus = "notFollowing";
 
     if (!isSelf && req.user) {
       // check if the requestING user is following the requestED user
@@ -92,7 +93,7 @@ export const getProfile = async (req: Request<CuidParams>, res: Response): Promi
         },
       });
 
-      followStatus = follow?.status ?? "unfollowed";
+      followStatus = follow?.status ?? "notFollowing";
     }
 
     // return the user profile with additional details
@@ -146,7 +147,7 @@ export const updateProfile = async (
       where: { id: userId },
       data: {
         ...(name !== undefined && { name: name }),
-        ...(username !== undefined && { username: username }),
+        ...(username !== undefined && { username: username.toLowerCase() }),
         ...(bio !== undefined && { bio: bio }),
         ...(isPrivate !== undefined && { isPrivate: isPrivate }),
       },
