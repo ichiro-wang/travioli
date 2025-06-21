@@ -16,10 +16,10 @@ datasource db {
 
 model User {
   id         String  @id @default(cuid())
-  email      String  @unique
-  username   String  @unique
-  name       String?
-  bio        String?
+  email      String  @unique @db.VarChar(255)
+  username   String  @unique @db.VarChar(30)
+  name       String? @db.VarChar(255)
+  bio        String? @db.VarChar(255)
   password   String
   profilePic String  @default("defaultProfile.jpg")
 
@@ -44,7 +44,7 @@ model Follows {
   followingId  String
   following    User   @relation("following", fields: [followingId], references: [id])
 
-  status FollowStatus @default(pending)
+  status FollowStatus @default(notFollowing)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,13 +55,12 @@ model Follows {
 enum FollowStatus {
   pending
   accepted
-  rejected
-  unfollowed
+  notFollowing
 }
 
 model Itinerary {
   id          String    @id @default(cuid())
-  title       String
+  title       String    @db.VarChar(255)
   description String?
   startDate   DateTime?
   endDate     DateTime?
@@ -76,13 +75,18 @@ model Itinerary {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
 }
 
 model ItineraryItem {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  media       String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
+  id            String  @id @default(cuid())
+  name          String  @db.VarChar(255)
+  description   String?
+  estimatedCost Float?
+  currency      String? @default("CAD")
+
+  media String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
 
   // can have 0 or 1 locations
   location Location? @relation("itineraryItemLocation")
@@ -97,6 +101,7 @@ model ItineraryItem {
   updatedAt DateTime @updatedAt
 
   @@unique([itineraryId, order])
+  @@index([itineraryId])
 }
 
 model Location {
@@ -107,8 +112,8 @@ model Location {
   itineraryItem   ItineraryItem @relation("itineraryItemLocation", fields: [itineraryItemId], references: [id])
 
   // optional fields to include in a location
-  city    String?
-  country String?
+  city    String? @db.VarChar(255)
+  country String? @db.VarChar(255)
   address String?
   lat     Float?
   lng     Float?
