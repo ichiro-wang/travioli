@@ -3,6 +3,7 @@ import request from "supertest";
 import { app } from "../../index.js";
 import prisma from "../../db/prisma.js";
 import bcrypt from "bcryptjs";
+import { takeDownTest } from "./helpers.js";
 
 describe("signup integration tests", () => {
   const SIGNUP_URL = "/api/auth/signup";
@@ -16,11 +17,11 @@ describe("signup integration tests", () => {
   };
 
   beforeEach(async () => {
-    await prisma.user.deleteMany({});
+    await prisma.user.deleteMany();
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
+    await takeDownTest();
   });
 
   it("should signup a user successfully", async () => {
@@ -76,7 +77,8 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, confirmPassword: "password456" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/passwords do not match/i);
+    expect(res.body.message).toMatch(/invalid input data/i);
+    expect(res.body.errors.join(",")).toMatch(/passwords do not match/i);
   });
 
   it("should fail if email is bad format", async () => {
@@ -85,7 +87,8 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, email: "bad email" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/invalid email format/i);
+    expect(res.body.message).toMatch(/invalid input data/i);
+    expect(res.body.errors.join(",")).toMatch(/invalid email format/i);
   });
 
   it("should fail if username is bad format", async () => {
@@ -95,7 +98,8 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, username: "bad username" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/username can only contain/i);
+    expect(res.body.message).toMatch(/invalid input data/i);
+    expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
   });
 
   it("should fail if username is too short", async () => {
@@ -105,7 +109,8 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, username: "12" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/minimum 3/i);
+    expect(res.body.message).toMatch(/invalid input data/i);
+    expect(res.body.errors.join(",")).toMatch(/minimum 3/i);
   });
 
   it("should succeed if username is long enough", async () => {
@@ -125,7 +130,7 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, username: "1234567890123456789012345678901" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/maximum 30/i);
+    expect(res.body.errors.join(",")).toMatch(/maximum 30/i);
   });
 
   it("should succeed if username is not too long", async () => {
@@ -145,7 +150,7 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, password: "1234567", confirmPassword: "1234567" });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/password must be at least 8/i);
+    expect(res.body.errors.join(",")).toMatch(/password must be at least 8/i);
   });
 });
 
@@ -173,8 +178,7 @@ describe("login integration tests", () => {
   });
 
   afterAll(async () => {
-    await prisma.user.deleteMany({});
-    await prisma.$disconnect();
+    await takeDownTest();
   });
 
   it("should login a user successfully", async () => {
@@ -229,7 +233,7 @@ describe("login integration tests", () => {
     const res = await request(app).post(LOGIN_URL).send({ email: "bad email", password });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/invalid email format/i);
+    expect(res.body.errors.join(",")).toMatch(/invalid email format/i);
   });
 });
 
@@ -251,8 +255,7 @@ describe("logout integration tests", () => {
   });
 
   afterAll(async () => {
-    await prisma.user.deleteMany({});
-    await prisma.$disconnect();
+    await takeDownTest();
   });
 
   it("should successfully logout a user and clear the JWT cookie", async () => {
@@ -299,8 +302,7 @@ describe("get-me integration tests", () => {
   });
 
   afterAll(async () => {
-    await prisma.user.deleteMany({});
-    await prisma.$disconnect();
+    await takeDownTest();
   });
 
   it("should return current user's details if logged in", async () => {
