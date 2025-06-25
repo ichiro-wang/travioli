@@ -4,11 +4,15 @@
 DOCKER_COMPOSE_FILE="docker-compose.test.yml"
 TEST_PATTERN=$(printf "%s " "$@")
 
+echo "Running tests. Composing up..."
+
 TEST_PATTERN="$TEST_PATTERN" docker compose -f "$DOCKER_COMPOSE_FILE" up \
   --abort-on-container-exit \
   --exit-code-from backend
 
 exit_code=$?
+
+echo "Finished running tests. Composing down..."
 
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
