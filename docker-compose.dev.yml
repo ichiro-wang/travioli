@@ -5,6 +5,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    image: travioli-backend-dev
     volumes:
       - ./backend:/usr/src/app
       - backend_dev_node_modules:/usr/src/app/node_modules
@@ -24,6 +25,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
+    image: travioli-frontend-dev
     volumes:
       - ./frontend:/usr/src/app
       - frontend_dev_node_modules:/usr/src/app/node_modules
@@ -34,7 +36,7 @@ services:
     container_name: travioli-frontend-dev
   db:
     # running local postgres db for development
-    image: postgres
+    image: postgis/postgis:17-3.5-alpine
     environment:
       # hardcoding only for dev purposes
       - POSTGRES_USER=user

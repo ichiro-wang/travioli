@@ -6,14 +6,10 @@ TEST_PATTERN=$(printf "%s " "$@")
 
 echo "Running tests. Composing up..."
 
-TEST_PATTERN="$TEST_PATTERN" docker compose -f "$DOCKER_COMPOSE_FILE" up \
-  --abort-on-container-exit \
-  --exit-code-from backend
+docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-exit_code=$?
+docker exec -it "travioli-backend-test" sh -c "npm run test -- $TEST_PATTERN"
 
 echo "Finished running tests. Composing down..."
 
 docker compose -f "$DOCKER_COMPOSE_FILE" down
-
-exit $exit_code
