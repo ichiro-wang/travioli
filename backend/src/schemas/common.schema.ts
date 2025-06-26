@@ -19,7 +19,7 @@ export const usernameSchema = z
     message: "Username can only contain letters, numbers, and underscores",
   });
 
-export const emailSchema = z.string().trim().email({ message: "Invalid email format" });
+export const emailSchema = z.string().trim().max(255).email({ message: "Invalid email format" });
 
 export const passwordSchema = z
   .string()

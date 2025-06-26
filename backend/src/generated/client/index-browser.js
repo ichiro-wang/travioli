@@ -170,11 +170,9 @@ exports.Prisma.ItineraryItemScalarFieldEnum = {
 exports.Prisma.LocationScalarFieldEnum = {
   id: 'id',
   itineraryItemId: 'itineraryItemId',
-  city: 'city',
   country: 'country',
-  address: 'address',
-  lat: 'lat',
-  lng: 'lng'
+  city: 'city',
+  address: 'address'
 };
 
 exports.Prisma.SortOrder = {

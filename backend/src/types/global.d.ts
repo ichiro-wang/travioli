@@ -1,10 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { User } from "../generated/client/index.js";
+import { z } from "zod";
 
 // for checking whether the token was created from a refresh token or through authenticating
 export type TokenType = "access" | "refresh";
-
-// export type FollowStatus = "accepted" | "pending" | "rejected";
 
 // defining what goes in the jwt payload
 export interface DecodedToken extends JwtPayload {
@@ -22,13 +21,6 @@ declare global {
   }
 }
 
-export interface FollowedBy {
-  followedBy: User;
-}
-export interface Following {
-  following: User;
-}
-
 export interface SanitizedUser {
   id: string;
   username: string;
@@ -38,3 +30,4 @@ export interface SanitizedUser {
   isPrivate: boolean;
   email: string | null;
 }
+

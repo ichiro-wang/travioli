@@ -5922,92 +5922,58 @@ export namespace Prisma {
 
   export type AggregateLocation = {
     _count: LocationCountAggregateOutputType | null
-    _avg: LocationAvgAggregateOutputType | null
-    _sum: LocationSumAggregateOutputType | null
     _min: LocationMinAggregateOutputType | null
     _max: LocationMaxAggregateOutputType | null
-  }
-
-  export type LocationAvgAggregateOutputType = {
-    lat: number | null
-    lng: number | null
-  }
-
-  export type LocationSumAggregateOutputType = {
-    lat: number | null
-    lng: number | null
   }
 
   export type LocationMinAggregateOutputType = {
     id: string | null
     itineraryItemId: string | null
-    city: string | null
     country: string | null
+    city: string | null
     address: string | null
-    lat: number | null
-    lng: number | null
   }
 
   export type LocationMaxAggregateOutputType = {
     id: string | null
     itineraryItemId: string | null
-    city: string | null
     country: string | null
+    city: string | null
     address: string | null
-    lat: number | null
-    lng: number | null
   }
 
   export type LocationCountAggregateOutputType = {
     id: number
     itineraryItemId: number
-    city: number
     country: number
+    city: number
     address: number
-    lat: number
-    lng: number
     _all: number
   }
 
 
-  export type LocationAvgAggregateInputType = {
-    lat?: true
-    lng?: true
-  }
-
-  export type LocationSumAggregateInputType = {
-    lat?: true
-    lng?: true
-  }
-
   export type LocationMinAggregateInputType = {
     id?: true
     itineraryItemId?: true
-    city?: true
     country?: true
+    city?: true
     address?: true
-    lat?: true
-    lng?: true
   }
 
   export type LocationMaxAggregateInputType = {
     id?: true
     itineraryItemId?: true
-    city?: true
     country?: true
+    city?: true
     address?: true
-    lat?: true
-    lng?: true
   }
 
   export type LocationCountAggregateInputType = {
     id?: true
     itineraryItemId?: true
-    city?: true
     country?: true
+    city?: true
     address?: true
-    lat?: true
-    lng?: true
     _all?: true
   }
 
@@ -6049,18 +6015,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: LocationAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: LocationSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: LocationMinAggregateInputType
@@ -6091,8 +6045,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: LocationCountAggregateInputType | true
-    _avg?: LocationAvgAggregateInputType
-    _sum?: LocationSumAggregateInputType
     _min?: LocationMinAggregateInputType
     _max?: LocationMaxAggregateInputType
   }
@@ -6100,14 +6052,10 @@ export namespace Prisma {
   export type LocationGroupByOutputType = {
     id: string
     itineraryItemId: string
-    city: string | null
     country: string | null
+    city: string | null
     address: string | null
-    lat: number | null
-    lng: number | null
     _count: LocationCountAggregateOutputType | null
-    _avg: LocationAvgAggregateOutputType | null
-    _sum: LocationSumAggregateOutputType | null
     _min: LocationMinAggregateOutputType | null
     _max: LocationMaxAggregateOutputType | null
   }
@@ -6129,47 +6077,39 @@ export namespace Prisma {
   export type LocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     itineraryItemId?: boolean
-    city?: boolean
     country?: boolean
+    city?: boolean
     address?: boolean
-    lat?: boolean
-    lng?: boolean
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
   export type LocationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     itineraryItemId?: boolean
-    city?: boolean
     country?: boolean
+    city?: boolean
     address?: boolean
-    lat?: boolean
-    lng?: boolean
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
   export type LocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     itineraryItemId?: boolean
-    city?: boolean
     country?: boolean
+    city?: boolean
     address?: boolean
-    lat?: boolean
-    lng?: boolean
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
   export type LocationSelectScalar = {
     id?: boolean
     itineraryItemId?: boolean
-    city?: boolean
     country?: boolean
+    city?: boolean
     address?: boolean
-    lat?: boolean
-    lng?: boolean
   }
 
-  export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itineraryItemId" | "city" | "country" | "address" | "lat" | "lng", ExtArgs["result"]["location"]>
+  export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itineraryItemId" | "country" | "city" | "address", ExtArgs["result"]["location"]>
   export type LocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }
@@ -6188,11 +6128,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       itineraryItemId: string
-      city: string | null
       country: string | null
+      city: string | null
       address: string | null
-      lat: number | null
-      lng: number | null
     }, ExtArgs["result"]["location"]>
     composites: {}
   }
@@ -6619,11 +6557,9 @@ export namespace Prisma {
   interface LocationFieldRefs {
     readonly id: FieldRef<"Location", 'String'>
     readonly itineraryItemId: FieldRef<"Location", 'String'>
-    readonly city: FieldRef<"Location", 'String'>
     readonly country: FieldRef<"Location", 'String'>
+    readonly city: FieldRef<"Location", 'String'>
     readonly address: FieldRef<"Location", 'String'>
-    readonly lat: FieldRef<"Location", 'Float'>
-    readonly lng: FieldRef<"Location", 'Float'>
   }
     
 
@@ -7114,11 +7050,9 @@ export namespace Prisma {
   export const LocationScalarFieldEnum: {
     id: 'id',
     itineraryItemId: 'itineraryItemId',
-    city: 'city',
     country: 'country',
-    address: 'address',
-    lat: 'lat',
-    lng: 'lng'
+    city: 'city',
+    address: 'address'
   };
 
   export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
@@ -7553,22 +7487,18 @@ export namespace Prisma {
     NOT?: LocationWhereInput | LocationWhereInput[]
     id?: StringFilter<"Location"> | string
     itineraryItemId?: StringFilter<"Location"> | string
-    city?: StringNullableFilter<"Location"> | string | null
     country?: StringNullableFilter<"Location"> | string | null
+    city?: StringNullableFilter<"Location"> | string | null
     address?: StringNullableFilter<"Location"> | string | null
-    lat?: FloatNullableFilter<"Location"> | number | null
-    lng?: FloatNullableFilter<"Location"> | number | null
     itineraryItem?: XOR<ItineraryItemScalarRelationFilter, ItineraryItemWhereInput>
   }
 
   export type LocationOrderByWithRelationInput = {
     id?: SortOrder
     itineraryItemId?: SortOrder
-    city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
-    lat?: SortOrderInput | SortOrder
-    lng?: SortOrderInput | SortOrder
     itineraryItem?: ItineraryItemOrderByWithRelationInput
   }
 
@@ -7578,27 +7508,21 @@ export namespace Prisma {
     AND?: LocationWhereInput | LocationWhereInput[]
     OR?: LocationWhereInput[]
     NOT?: LocationWhereInput | LocationWhereInput[]
-    city?: StringNullableFilter<"Location"> | string | null
     country?: StringNullableFilter<"Location"> | string | null
+    city?: StringNullableFilter<"Location"> | string | null
     address?: StringNullableFilter<"Location"> | string | null
-    lat?: FloatNullableFilter<"Location"> | number | null
-    lng?: FloatNullableFilter<"Location"> | number | null
     itineraryItem?: XOR<ItineraryItemScalarRelationFilter, ItineraryItemWhereInput>
   }, "id" | "itineraryItemId">
 
   export type LocationOrderByWithAggregationInput = {
     id?: SortOrder
     itineraryItemId?: SortOrder
-    city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
-    lat?: SortOrderInput | SortOrder
-    lng?: SortOrderInput | SortOrder
     _count?: LocationCountOrderByAggregateInput
-    _avg?: LocationAvgOrderByAggregateInput
     _max?: LocationMaxOrderByAggregateInput
     _min?: LocationMinOrderByAggregateInput
-    _sum?: LocationSumOrderByAggregateInput
   }
 
   export type LocationScalarWhereWithAggregatesInput = {
@@ -7607,11 +7531,9 @@ export namespace Prisma {
     NOT?: LocationScalarWhereWithAggregatesInput | LocationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Location"> | string
     itineraryItemId?: StringWithAggregatesFilter<"Location"> | string
-    city?: StringNullableWithAggregatesFilter<"Location"> | string | null
     country?: StringNullableWithAggregatesFilter<"Location"> | string | null
+    city?: StringNullableWithAggregatesFilter<"Location"> | string | null
     address?: StringNullableWithAggregatesFilter<"Location"> | string | null
-    lat?: FloatNullableWithAggregatesFilter<"Location"> | number | null
-    lng?: FloatNullableWithAggregatesFilter<"Location"> | number | null
   }
 
   export type UserCreateInput = {
@@ -7961,71 +7883,57 @@ export namespace Prisma {
 
   export type LocationCreateInput = {
     id?: string
-    city?: string | null
     country?: string | null
+    city?: string | null
     address?: string | null
-    lat?: number | null
-    lng?: number | null
     itineraryItem: ItineraryItemCreateNestedOneWithoutLocationInput
   }
 
   export type LocationUncheckedCreateInput = {
     id?: string
     itineraryItemId: string
-    city?: string | null
     country?: string | null
+    city?: string | null
     address?: string | null
-    lat?: number | null
-    lng?: number | null
   }
 
   export type LocationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
     itineraryItem?: ItineraryItemUpdateOneRequiredWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     itineraryItemId?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LocationCreateManyInput = {
     id?: string
     itineraryItemId: string
-    city?: string | null
     country?: string | null
+    city?: string | null
     address?: string | null
-    lat?: number | null
-    lng?: number | null
   }
 
   export type LocationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LocationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     itineraryItemId?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8451,41 +8359,25 @@ export namespace Prisma {
   export type LocationCountOrderByAggregateInput = {
     id?: SortOrder
     itineraryItemId?: SortOrder
-    city?: SortOrder
     country?: SortOrder
+    city?: SortOrder
     address?: SortOrder
-    lat?: SortOrder
-    lng?: SortOrder
-  }
-
-  export type LocationAvgOrderByAggregateInput = {
-    lat?: SortOrder
-    lng?: SortOrder
   }
 
   export type LocationMaxOrderByAggregateInput = {
     id?: SortOrder
     itineraryItemId?: SortOrder
-    city?: SortOrder
     country?: SortOrder
+    city?: SortOrder
     address?: SortOrder
-    lat?: SortOrder
-    lng?: SortOrder
   }
 
   export type LocationMinOrderByAggregateInput = {
     id?: SortOrder
     itineraryItemId?: SortOrder
-    city?: SortOrder
     country?: SortOrder
+    city?: SortOrder
     address?: SortOrder
-    lat?: SortOrder
-    lng?: SortOrder
-  }
-
-  export type LocationSumOrderByAggregateInput = {
-    lat?: SortOrder
-    lng?: SortOrder
   }
 
   export type FollowsCreateNestedManyWithoutFollowedByInput = {
@@ -9500,20 +9392,16 @@ export namespace Prisma {
 
   export type LocationCreateWithoutItineraryItemInput = {
     id?: string
-    city?: string | null
     country?: string | null
+    city?: string | null
     address?: string | null
-    lat?: number | null
-    lng?: number | null
   }
 
   export type LocationUncheckedCreateWithoutItineraryItemInput = {
     id?: string
-    city?: string | null
     country?: string | null
+    city?: string | null
     address?: string | null
-    lat?: number | null
-    lng?: number | null
   }
 
   export type LocationCreateOrConnectWithoutItineraryItemInput = {
@@ -9563,20 +9451,16 @@ export namespace Prisma {
 
   export type LocationUpdateWithoutItineraryItemInput = {
     id?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LocationUncheckedUpdateWithoutItineraryItemInput = {
     id?: StringFieldUpdateOperationsInput | string
-    city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    lat?: NullableFloatFieldUpdateOperationsInput | number | null
-    lng?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ItineraryUpsertWithoutItineraryItemsInput = {

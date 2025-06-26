@@ -13,18 +13,16 @@ export const updateProfileSchema = z.object({
   body: z
     .object({
       username: usernameSchema.optional(),
-      name: z.string().max(30).optional(),
-      bio: z.string().optional(),
+      name: z.string().max(255).optional(),
+      bio: z.string().max(255).optional(),
       isPrivate: z.boolean().optional(),
     })
     .refine(
       (data) =>
-        !(
-          data.username === undefined ||
-          data.name === undefined ||
-          data.bio === undefined ||
-          data.isPrivate === undefined
-        ),
+        data.username !== undefined ||
+        data.name !== undefined ||
+        data.bio !== undefined ||
+        data.isPrivate !== undefined,
       { message: "You must update at least one field" }
     ),
   params: cuidSchema,
