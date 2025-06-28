@@ -1,5 +1,5 @@
 import { afterAll } from "vitest";
-import prisma from "./src/db/prisma.js";
+import prisma from "../db/prisma.js";
 
 afterAll(async () => {
   console.log("Tearing down test...");

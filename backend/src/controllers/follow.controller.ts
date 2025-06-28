@@ -9,9 +9,9 @@ import {
 import { FollowStatus } from "../generated/client/index.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
-import { findUserById } from "../utils/userService.js";
 import { FollowAction, FollowActionType, FollowRelation } from "../types/types.js";
 import { SanitizedUser } from "../types/global.js";
+import { authService } from "../services/index.js";
 
 /**
  * get the followedBy or following list of a user
@@ -28,7 +28,7 @@ export const getFollowList = async (
     const currentUserId = req.user.id;
 
     // first find the requested user
-    const user = await findUserById(userId);
+    const user = await authService.findUserById(userId);
 
     if (!user) {
       res.status(404).json({ message: "User not found" });
@@ -115,7 +115,7 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
     }
 
     // find requested user
-    const user = await findUserById(userId);
+    const user = await authService.findUserById(userId);
 
     if (!user) {
       res.status(404).json({ message: "User not found" });

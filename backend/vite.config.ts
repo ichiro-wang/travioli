@@ -4,7 +4,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    setupFiles: ["./vitest.setup.ts"],
+    setupFiles: ["./src/__tests__/vitest.setup.ts"],
 
     // run single thread to avoid test db conflicts with signup, etc
     pool: "threads",

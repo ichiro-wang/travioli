@@ -19,8 +19,8 @@ export const updateProfileSchema = z.object({
   body: z
     .object({
       username: usernameSchema.optional(),
-      name: z.string().max(255).optional(),
-      bio: z.string().max(255).optional(),
+      name: z.string().trim().max(255).optional(),
+      bio: z.string().trim().max(255).optional(),
     })
     .refine(
       (data) => data.username !== undefined || data.name !== undefined || data.bio !== undefined,

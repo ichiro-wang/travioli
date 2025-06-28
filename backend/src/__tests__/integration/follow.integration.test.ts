@@ -1,8 +1,8 @@
+import request from "supertest";
+import prisma from "../../db/prisma.js";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
-import request from "supertest";
 import { app } from "../../index.js";
-import prisma from "../../db/prisma.js";
 import { FollowStatus } from "../../generated/client/index.js";
 import { FollowAction, FollowActionType, FollowRelation } from "../../types/types.js";
 

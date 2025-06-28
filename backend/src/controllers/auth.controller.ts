@@ -1,11 +1,10 @@
 import { CookieOptions, Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import prisma from "../db/prisma.js";
 import { generateToken } from "../utils/generateToken.js";
-import { internalServerError } from "../utils/internalServerError.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
+import { internalServerError } from "../utils/internalServerError.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
-import { verifyPassword } from "../utils/authService.js";
+import { authService } from "../services/index.js";
+import { invalidCredentialsResponse, userNotFoundResponse } from "../utils/responseHelpers.js";
 
 /**
  * method simply for testing backend connection
@@ -23,45 +22,22 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
   try {
     // ensure data is validated first. check validateData middleware
     // password === confirmPassword handled in zod schema
-    const { email, username: usernameReceived, password } = req.body;
-    const username = usernameReceived.toLowerCase();
+    const { email, username, password } = req.body;
 
-    // parallel check for if email and username are unique
-    const [emailExists, usernameExists] = await Promise.all([
-      prisma.user.findUnique({ where: { email } }),
-      prisma.user.findUnique({ where: { username } }),
-    ]);
-
-    if (emailExists) {
-      res.status(400).json({ message: `Account with the email ${email} already exists` });
-      return;
-    }
-    if (usernameExists) {
-      res.status(400).json({ message: `Account with the username @${username} already exists` });
-      return;
-    }
-
-    // hashing the password to store in database
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // creating new user with hashed password. throws error if fail
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        username,
-        password: hashedPassword,
-      },
-    });
+    // call AuthService to handle user creation in database
+    const newUser = await authService.createUser({ email, username, password });
 
     // generate jwt token
     generateToken(res, newUser.id, "access");
 
-    // return user with sanitized data, includeEmail=true
-    const filteredUser = sanitizeUser(newUser, true);
-    res.status(201).json({ user: filteredUser });
+    res.status(201).json({ user: newUser });
     return;
-  } catch (error: unknown) {
+  } catch (error: any) {
+    if ((error.message as string).match(/.*already exists/i)) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+
     internalServerError(error, res, "signup controller");
   }
 };
@@ -75,21 +51,8 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     // ensure data is validated first. check validateData middleware
     const { email, password } = req.body;
 
-    // look for a matching user
-    const user = await prisma.user.findUnique({ where: { email } });
-
-    // no user found
-    if (!user || user.isDeleted) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
-
-    // check if entered password is correct
-    const isPasswordCorrect = await verifyPassword(password, user.password);
-    if (!isPasswordCorrect) {
-      res.status(400).json({ message: "Invalid credentials" });
-      return;
-    }
+    // let AuthService handle database interaction with logging in
+    const user = await authService.authenticateUser({ email, password });
 
     // after validating user, generate jwt token
     generateToken(res, user.id, "access");
@@ -98,7 +61,15 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     const filteredUser = sanitizeUser(user, true);
     res.status(200).json({ user: filteredUser });
     return;
-  } catch (error: unknown) {
+  } catch (error: any) {
+    if ((error.message as string).match(/user not found/i)) {
+      userNotFoundResponse(res);
+      return;
+    } else if ((error.message as string).match(/invalid credentials/i)) {
+      invalidCredentialsResponse(res);
+      return;
+    }
+
     internalServerError(error, res, "login controller");
   }
 };

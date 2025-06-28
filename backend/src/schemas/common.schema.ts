@@ -7,10 +7,12 @@ export const cuidSchema = z.object({
 export const usernameSchema = z
   .string()
   .trim()
+  .toLowerCase()
   .min(3, { message: "Username can have minimum 3 characters" })
   .max(30, { message: "Username can have maximum 30 characters" })
-  .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username can only contain letters, numbers, and underscores",
+  .regex(/^(?!_+$)[a-z0-9_]+$/, {
+    message:
+      "Username can only contain letters, numbers, and underscores; and cannot contain only underscores",
   });
 
 export const emailSchema = z.string().trim().max(255).email({ message: "Invalid email format" });

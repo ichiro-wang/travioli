@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../db/prisma.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken } from "../types/global.js";
+import { userNotFoundResponse } from "../utils/responseHelpers.js";
 
 export const authenticateToken = async (
   req: Request,
@@ -10,7 +11,7 @@ export const authenticateToken = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.cookies.jwt;
+    const token: string = req.cookies.jwt;
 
     // check if token was given
     if (!token) {
@@ -37,13 +38,13 @@ export const authenticateToken = async (
     });
 
     if (!user || user.isDeleted) {
-      res.status(404).json({ message: "User not found" });
+      userNotFoundResponse(res);
       return;
     }
 
     // add user to Request
     req.user = user;
-    req.tokenType = decoded.tokenType;
+    // req.tokenType = decoded.tokenType; // ignore for now
 
     next();
   } catch (error: unknown) {

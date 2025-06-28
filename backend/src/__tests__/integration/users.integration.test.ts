@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import request from "supertest";
-import { app } from "../../index.js";
-import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
 import prisma from "../../db/prisma.js";
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
+import { app } from "../../index.js";
 
 describe("check username integration tests", () => {
   const CHECK_URL = (username: string) => `/api/user/check-username?username=${username}`;
@@ -22,7 +22,7 @@ describe("check username integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.message).toMatch(/username.*is available/i);
+    expect(res.body.message).toMatch(/@.*is available/i);
   });
 
   it("should return fail if username taken", async () => {
@@ -31,7 +31,7 @@ describe("check username integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/username.*already taken/i);
+    expect(res.body.message).toMatch(/@.*already taken/i);
   });
 
   it("should return fail if username is same as requesting user", async () => {
@@ -40,7 +40,7 @@ describe("check username integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/username.*already your username/i);
+    expect(res.body.message).toMatch(/@.*already your username/i);
   });
 
   it("should return fail if username taken, case-insensitive", async () => {
@@ -49,7 +49,7 @@ describe("check username integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/username.*already taken/i);
+    expect(res.body.message).toMatch(/@.*already taken/i);
   });
 
   it("should return fail if username is invalid format", async () => {
@@ -96,8 +96,9 @@ describe("get profile integration tests", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email);
     expect(res.body.user).toHaveProperty("username", testData.user.username);
-    expect(res.body.user).toHaveProperty("followingCount");
-    expect(res.body.user).not.toHaveProperty("followStatus");
+    expect(res.body).toHaveProperty("followedByCount");
+    expect(res.body).toHaveProperty("followingCount");
+    expect(res.body).not.toHaveProperty("followStatus");
   });
 
   it("should successfully retrieve another user's profile", async () => {
@@ -108,8 +109,9 @@ describe("get profile integration tests", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", null);
     expect(res.body.user).toHaveProperty("username", testData.otherUser.username);
-    expect(res.body.user).toHaveProperty("followingCount");
-    expect(res.body.user).toHaveProperty("followStatus");
+    expect(res.body).toHaveProperty("followedByCount");
+    expect(res.body).toHaveProperty("followingCount");
+    expect(res.body).toHaveProperty("followStatus");
   });
 
   it("should fail to find a user with id that is not a valid cuid", async () => {

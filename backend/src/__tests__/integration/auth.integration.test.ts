@@ -1,9 +1,9 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import request from "supertest";
-import { app } from "../../index.js";
 import prisma from "../../db/prisma.js";
 import bcrypt from "bcryptjs";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { takeDownTest } from "./helpers.js";
+import { app } from "../../index.js";
 
 describe("signup integration tests", () => {
   const SIGNUP_URL = "/api/auth/signup";
@@ -198,7 +198,7 @@ describe("login integration tests", () => {
       .post(LOGIN_URL)
       .send({ email: "random_email@gmail.com", password });
 
-    expect(res.statusCode).toBe(400);
+    expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
   });
 
@@ -225,7 +225,7 @@ describe("login integration tests", () => {
       password,
     });
 
-    expect(res.statusCode).toBe(400);
+    expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
   });
 

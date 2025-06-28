@@ -1,3 +1,5 @@
+export const ReservedUsernames = ["travioli", "admin"]
+
 export const FollowRelation = {
   following: "following",
   followedBy: "followedBy",
