@@ -1,11 +1,17 @@
 import prisma from "../db/prisma.js";
 import { Request, Response } from "express";
-import { CuidParams } from "../schemas/common.schema.js";
-import { GetFollowListSchema, UpdateFollowStatusSchema } from "../schemas/follow.schema.js";
-import { $Enums, Follows } from "../generated/client/index.js";
-import { FollowedBy, Following, SanitizedUser } from "../types/global.js";
+import {
+  FollowUserParams,
+  GetFollowListParams,
+  GetFollowListQuery,
+  UpdateFollowStatusParams,
+} from "../schemas/follow.schema.js";
+import { FollowStatus } from "../generated/client/index.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
+import { findUserById } from "../utils/userService.js";
+import { FollowAction, FollowActionType, FollowRelation } from "../types/types.js";
+import { SanitizedUser } from "../types/global.js";
 
 /**
  * get the followedBy or following list of a user
@@ -13,75 +19,91 @@ import { internalServerError } from "../utils/internalServerError.js";
  * check if the user is private first
  */
 export const getFollowList = async (
-  req: Request<GetFollowListSchema>,
+  req: Request<GetFollowListParams, {}, {}, GetFollowListQuery>,
   res: Response
 ): Promise<void> => {
   try {
     // ensure data is validated first. check validateData middleware
-    const { id: userId, type } = req.params;
+    const { id: userId, type: relationType } = req.params;
     const currentUserId = req.user.id;
 
     // first find the requested user
-    const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
+    const user = await findUserById(userId);
 
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
 
-    const isSelf = user.id === currentUserId; // is the requested user the same as the requesting user
-    let followStatus: $Enums.FollowStatus = "notFollowing"; // the following status of the requesting user to the requested user
+    const isSelf = userId === currentUserId; // is the requested user the same as the requesting user
+    let followStatus: FollowStatus = FollowStatus.accepted; // the following status of the requesting user to the requested user
 
-    if (!isSelf && req.user) {
-      // check if the requesting user is following this user
+    // if the requested user is not self and is private, then check follow status
+    if (!isSelf && user.isPrivate) {
       const follow = await prisma.follows.findUnique({
         where: {
           followedById_followingId: {
             followedById: currentUserId,
-            followingId: user.id,
+            followingId: userId,
           },
         },
       });
 
-      followStatus = follow?.status ?? "notFollowing";
+      followStatus = follow?.status ?? FollowStatus.notFollowing;
     }
 
-    // if the requested user is private and requesting user is not following them
-    if (!isSelf && user.isPrivate && followStatus !== "accepted") {
+    // if requesting user doesn't have permission to view list
+    if (followStatus !== FollowStatus.accepted) {
       res.status(403).json({ message: "This account is private" });
       return;
     }
 
-    let followList: FollowedBy[] | Following[];
+    // pagination options
+    // doing infinite scroll pagination, so loadIndex is basically page number
+    const loadIndex = Math.max(0, parseInt(req.query.page) || 0);
+    const take = 20; // how many rows to take
+    const offset = loadIndex * take; // pagination offset
+
+    // list of users to be returned depending on requested type
     let sanitizedList: SanitizedUser[];
 
-    if (type === "followedBy") {
+    if (relationType === FollowRelation.followedBy) {
       // if retrieving followedBy list
-      followList = await prisma.follows.findMany({
-        where: { followingId: user.id, status: "accepted" },
+      const followList = await prisma.follows.findMany({
+        where: { followingId: userId, status: FollowStatus.accepted },
         include: { followedBy: true },
+        orderBy: { updatedAt: "desc" },
+        skip: offset,
+        take,
       });
 
       sanitizedList = followList.map((follow) => sanitizeUser(follow.followedBy));
     } else {
       // if retrieving following list
-      followList = await prisma.follows.findMany({
-        where: { followedById: user.id, status: "accepted" },
+      const followList = await prisma.follows.findMany({
+        where: { followedById: userId, status: FollowStatus.accepted },
         include: { following: true },
+        orderBy: { updatedAt: "desc" },
+        skip: offset,
+        take,
       });
 
       sanitizedList = followList.map((follow) => sanitizeUser(follow.following));
     }
 
     // return followedBy or following list as the sanitized user list
-    res.status(200).json({ [type]: sanitizedList });
+    res.status(200).json({ [relationType]: sanitizedList });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "getFollowList controller");
   }
 };
 
-export const followUser = async (req: Request<CuidParams>, res: Response): Promise<void> => {
+/**
+ * follow a user if profile is public
+ * send a follow request if profile is private
+ */
+export const followUser = async (req: Request<FollowUserParams>, res: Response): Promise<void> => {
   try {
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
@@ -93,7 +115,7 @@ export const followUser = async (req: Request<CuidParams>, res: Response): Promi
     }
 
     // find requested user
-    const user = await prisma.user.findFirst({ where: { id: userId, isDeleted: false } });
+    const user = await findUserById(userId);
 
     if (!user) {
       res.status(404).json({ message: "User not found" });
@@ -110,18 +132,18 @@ export const followUser = async (req: Request<CuidParams>, res: Response): Promi
       },
     });
 
-    // if a follows relationship exists, update accordingly
+    // if a follows relationship exists, update status accordingly
     if (existingFollow) {
-      if (existingFollow.status === "accepted") {
+      if (existingFollow.status === FollowStatus.accepted) {
         // if already accepted, nothing to update
         res.status(400).json({ message: "You already follow this user" });
         return;
-      } else if (existingFollow.status === "pending") {
+      } else if (existingFollow.status === FollowStatus.pending) {
         // if pending, can't do anything
         res.status(400).json({ message: "You have already requested to follow this user" });
         return;
       } else {
-        // if not following, update accordingly based on user private status
+        // if notFollowing, update accordingly based on user private status
         const updatedFollow = await prisma.follows.update({
           where: {
             followedById_followingId: {
@@ -130,7 +152,7 @@ export const followUser = async (req: Request<CuidParams>, res: Response): Promi
             },
           },
           data: {
-            status: user.isPrivate ? "pending" : "accepted",
+            status: user.isPrivate ? FollowStatus.pending : FollowStatus.accepted,
           },
         });
 
@@ -145,7 +167,7 @@ export const followUser = async (req: Request<CuidParams>, res: Response): Promi
       data: {
         followedById: currentUserId,
         followingId: user.id,
-        status: user.isPrivate ? "pending" : "accepted",
+        status: user.isPrivate ? FollowStatus.pending : FollowStatus.accepted,
       },
     });
 
@@ -153,12 +175,16 @@ export const followUser = async (req: Request<CuidParams>, res: Response): Promi
     res.status(201).json({ message, follow: newFollow });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "followUser controller");
   }
 };
 
+/**
+ * - update a follow status to accepted or notFollowing
+ * - types of actions: accept, reject, remove - target (current user); cancel, unfollow - target (other user)
+ */
 export const updateFollowStatus = async (
-  req: Request<UpdateFollowStatusSchema>,
+  req: Request<UpdateFollowStatusParams>,
   res: Response
 ): Promise<void> => {
   try {
@@ -166,15 +192,12 @@ export const updateFollowStatus = async (
     const currentUserId = req.user.id;
 
     // the direction of the relationship depends on the type of action type
-    let followedById: string;
-    let followingId: string;
+    // type === "accept" or "reject" or "remove"
+    // the follow target (followingId) is the current user
+    let followedById = userId;
+    let followingId = currentUserId;
 
-    if (actionType === "accept" || actionType === "reject") {
-      // the follow target (followingId) is the current user
-      followedById = userId;
-      followingId = currentUserId;
-    } else {
-      // type === "cancel" or "unfollow"
+    if (actionType === FollowAction.cancel || actionType === FollowAction.unfollow) {
       // the follow target (followingId) is the other user (not current user)
       followedById = currentUserId;
       followingId = userId;
@@ -191,103 +214,102 @@ export const updateFollowStatus = async (
     });
 
     if (!existingFollow) {
-      res.status(404).json({ message: "No follows relationship with this user found" });
+      res
+        .status(404)
+        .json({ message: "No follows relationship with this user found, could not update status" });
       return;
     }
 
-    let updatedFollow: Follows;
-    let message: string;
+    const statusTransitionMap: Record<
+      FollowActionType,
+      { from: FollowStatus; to: FollowStatus; message: string }
+    > = {
+      [FollowAction.accept]: {
+        from: FollowStatus.pending,
+        to: FollowStatus.accepted,
+        message: "Successfully accepted follow request",
+      },
+      [FollowAction.reject]: {
+        from: FollowStatus.pending,
+        to: FollowStatus.notFollowing,
+        message: "Successfully rejected follow request",
+      },
+      [FollowAction.remove]: {
+        from: FollowStatus.accepted,
+        to: FollowStatus.notFollowing,
+        message: "Successfully removed follower",
+      },
+      [FollowAction.cancel]: {
+        from: FollowStatus.pending,
+        to: FollowStatus.notFollowing,
+        message: "Successfully cancelled follow request",
+      },
+      [FollowAction.unfollow]: {
+        from: FollowStatus.accepted,
+        to: FollowStatus.notFollowing,
+        message: "Successfully unfollowed user",
+      },
+    };
 
-    if (actionType === "accept") {
-      if (existingFollow.status !== "pending") {
-        // if status not pending, doesn't make sense to accept
-        res.status(400).json({ message: "Failed to accept follow request" });
-        return;
-      }
+    const transition = statusTransitionMap[actionType];
 
-      message = "Successfully accepted follow request";
-
-      // otherwise, update the follow status
-      updatedFollow = await prisma.follows.update({
-        where: {
-          followedById_followingId: {
-            followedById,
-            followingId,
-          },
-        },
-        data: {
-          status: "accepted",
-        },
+    if (transition.from !== existingFollow.status) {
+      res.status(400).json({
+        message: `Failed to update follow status. Expected existing status to be ${transition.from}, but got ${existingFollow.status}`,
       });
-    } else if (actionType === "cancel") {
-      if (existingFollow.status !== "pending") {
-        // if status not pending, doesn't make sense to accept
-        res.status(400).json({ message: "Failed to cancel follow request" });
-        return;
-      }
-
-      message = "Successfully cancelled follow request";
-
-      // otherwise, update the follow status
-      updatedFollow = await prisma.follows.update({
-        where: {
-          followedById_followingId: {
-            followedById,
-            followingId,
-          },
-        },
-        data: {
-          status: "notFollowing",
-        },
-      });
-    } else if (actionType === "reject") {
-      if (existingFollow.status !== "pending") {
-        // if status not pending, doesn't make sense to reject
-        res.status(400).json({ message: "Failed to reject follow request" });
-        return;
-      }
-
-      message = "Successfully rejected follow request";
-
-      // otherwise, update the follow status
-      updatedFollow = await prisma.follows.update({
-        where: {
-          followedById_followingId: {
-            followedById,
-            followingId,
-          },
-        },
-        data: {
-          status: "notFollowing",
-        },
-      });
-    } else {
-      // type === "unfollow"
-      if (existingFollow.status !== "accepted") {
-        // if status not accepted, doesn't make sense to unfollow
-        res.status(400).json({ message: "Failed to unfollow user" });
-        return;
-      }
-
-      message = "Successfully unfollowed user";
-
-      // otherwise, update the follow status
-      updatedFollow = await prisma.follows.update({
-        where: {
-          followedById_followingId: {
-            followedById,
-            followingId,
-          },
-        },
-        data: {
-          status: "notFollowing",
-        },
-      });
+      return;
     }
 
-    res.status(200).json({ message, follow: updatedFollow });
+    const updatedFollow = await prisma.follows.update({
+      where: { followedById_followingId: { followedById, followingId } },
+      data: { status: transition.to },
+    });
+
+    res.status(200).json({ message: transition.message, follow: updatedFollow });
     return;
   } catch (error: unknown) {
-    internalServerError(error, res);
+    internalServerError(error, res, "updateFollowStatus controller");
+  }
+};
+
+/**
+ * get list of pending follow requests of requesting user
+ */
+export const getPendingRequests = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const currentUserId = req.user.id;
+
+    // get list of users who have pending requests
+    const pendingRequests = await prisma.follows.findMany({
+      where: { followingId: currentUserId, status: FollowStatus.pending },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    res.status(200).json({ pendingRequests });
+    return;
+  } catch (error: unknown) {
+    internalServerError(error, res, "getPendingRequests controller");
+  }
+};
+
+/**
+ * get follow relationship status of requesting user and requested user
+ */
+export const getFollowStatus = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id: userId } = req.params;
+    const currentUserId = req.user.id;
+
+    const follow = await prisma.follows.findUnique({
+      where: { followedById_followingId: { followedById: currentUserId, followingId: userId } },
+      select: { status: true },
+    });
+
+    const followStatus: FollowStatus = follow?.status ?? FollowStatus.notFollowing;
+
+    res.status(200).json({ followStatus });
+    return;
+  } catch (error: unknown) {
+    internalServerError(error, res, "getFollowStatus controller");
   }
 };

@@ -1,21 +1,54 @@
 /**
  * follow routes
- * /api/follows/<route>
+ * /api/follow/<route>
  */
 
 import express from "express";
 import { authenticateToken } from "../middleware/authenticateToken.js";
-import { followUserSchema, getFollowListSchema } from "../schemas/follow.schema.js";
+import {
+  followUserSchema,
+  getFollowListSchema,
+  getFollowStatusSchema,
+  updateFollowStatusSchema,
+} from "../schemas/follow.schema.js";
 import { validateData } from "../middleware/validateData.js";
-import { followUser, getFollowList } from "../controllers/follow.controller.js";
+import {
+  followUser,
+  getFollowList,
+  getFollowStatus,
+  getPendingRequests,
+  updateFollowStatus,
+} from "../controllers/follow.controller.js";
 
 const router = express.Router();
 
-router.post("/:id/follow", authenticateToken, validateData(followUserSchema), followUser);
-// type: accept|reject|cancel|unfollow
-router.patch("/:id/follow/:type", authenticateToken, validateData(followUserSchema), followUser);
+router.post("/:id/follow-user", authenticateToken, validateData(followUserSchema), followUser);
+
+router.get(
+  "/:id/follow-status",
+  authenticateToken,
+  validateData(getFollowStatusSchema),
+  getFollowStatus
+);
+
+// type: accept|reject|remove|cancel|unfollow
+router.patch(
+  "/:id/update-status/:type",
+  authenticateToken,
+  validateData(updateFollowStatusSchema),
+  updateFollowStatus
+);
+
 // type: followedBy|following
-router.get("/:id/:type", authenticateToken, validateData(getFollowListSchema), getFollowList);
+router.get(
+  "/:id/follow-list/:type",
+  authenticateToken,
+  validateData(getFollowListSchema),
+  getFollowList
+);
+
+// no data to validate here
+router.get("/pending-requests", authenticateToken, getPendingRequests);
 
 /**
  * features

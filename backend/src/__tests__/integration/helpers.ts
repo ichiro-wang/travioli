@@ -16,6 +16,11 @@ const testUsers = {
     username: "bronnyjames",
     password: "password",
   },
+  privateUser: {
+    email: "brycejames@gmail.com",
+    username: "brycejames",
+    password: "password",
+  },
   deletedUser: {
     email: "deleted@gmail.com",
     username: "deleted",
@@ -24,36 +29,42 @@ const testUsers = {
 };
 
 export const setUpTestData = async () => {
-  await prisma.user.deleteMany({});
+  const [_, hashedPassword] = await Promise.all([
+    await prisma.user.deleteMany({}),
+    (async () => {
+      const salt = await bcrypt.genSalt(10);
+      return bcrypt.hash(testUsers.user.password, salt);
+    })(),
+  ]);
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(testUsers.user.password, salt);
-
-  const user = await prisma.user.create({
-    data: {
-      ...testUsers.user,
-      password: hashedPassword,
-    },
-  });
-
-  const otherUser = await prisma.user.create({
-    data: {
-      ...testUsers.otherUser,
-      password: hashedPassword,
-    },
-  });
-
-  const toBeDeletedUser = await prisma.user.create({
-    data: {
-      ...testUsers.deletedUser,
-      password: hashedPassword,
-    },
-  });
-
-  const deletedUser = await prisma.user.update({
-    where: { id: toBeDeletedUser.id },
-    data: { isDeleted: true },
-  });
+  const [user, otherUser, privateUser, deletedUser] = await Promise.all([
+    prisma.user.create({
+      data: {
+        ...testUsers.user,
+        password: hashedPassword,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        ...testUsers.otherUser,
+        password: hashedPassword,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        ...testUsers.privateUser,
+        password: hashedPassword,
+        isPrivate: true,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        ...testUsers.deletedUser,
+        password: hashedPassword,
+        isDeleted: true,
+      },
+    }),
+  ]);
 
   // login so we can get the JWT cookie to include in all our requests
   const loginRes = await request(app)
@@ -63,6 +74,7 @@ export const setUpTestData = async () => {
   return {
     user: { ...testUsers.user, id: user.id },
     otherUser: { ...testUsers.otherUser, id: otherUser.id },
+    privateUser: { ...testUsers.privateUser, id: privateUser.id },
     deletedUser: { ...testUsers.deletedUser, id: deletedUser.id },
     jwtCookie: loginRes.headers["set-cookie"],
   };
@@ -72,4 +84,5 @@ export type TestData = Awaited<ReturnType<typeof setUpTestData>>;
 
 export const takeDownTest = async () => {
   await prisma.user.deleteMany();
+  await prisma.follows.deleteMany();
 };

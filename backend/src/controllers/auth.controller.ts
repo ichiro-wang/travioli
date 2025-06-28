@@ -5,6 +5,7 @@ import { generateToken } from "../utils/generateToken.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
+import { verifyPassword } from "../utils/authService.js";
 
 /**
  * method simply for testing backend connection
@@ -79,12 +80,12 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
 
     // no user found
     if (!user || user.isDeleted) {
-      res.status(400).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
       return;
     }
 
-    // make sure password is correct
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    // check if entered password is correct
+    const isPasswordCorrect = await verifyPassword(password, user.password);
     if (!isPasswordCorrect) {
       res.status(400).json({ message: "Invalid credentials" });
       return;

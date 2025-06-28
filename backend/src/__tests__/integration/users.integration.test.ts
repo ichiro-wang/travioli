@@ -5,7 +5,7 @@ import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
 import prisma from "../../db/prisma.js";
 
 describe("check username integration tests", () => {
-  const CHECK_URL = "/api/users/check-username"; // username goes in after
+  const CHECK_URL = (username: string) => `/api/user/check-username?username=${username}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -18,7 +18,7 @@ describe("check username integration tests", () => {
 
   it("should return success if username available", async () => {
     const res = await request(app)
-      .get(`${CHECK_URL}/random_username`)
+      .get(CHECK_URL("random_username"))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(200);
@@ -27,7 +27,7 @@ describe("check username integration tests", () => {
 
   it("should return fail if username taken", async () => {
     const res = await request(app)
-      .get(`${CHECK_URL}/bronnyjames`)
+      .get(CHECK_URL(testData.otherUser.username))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
@@ -36,7 +36,7 @@ describe("check username integration tests", () => {
 
   it("should return fail if username is same as requesting user", async () => {
     const res = await request(app)
-      .get(`${CHECK_URL}/lebronjames`)
+      .get(CHECK_URL(testData.user.username))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
@@ -45,7 +45,7 @@ describe("check username integration tests", () => {
 
   it("should return fail if username taken, case-insensitive", async () => {
     const res = await request(app)
-      .get(`${CHECK_URL}/BronnyJames`)
+      .get(CHECK_URL(testData.otherUser.username.toUpperCase()))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
@@ -53,16 +53,14 @@ describe("check username integration tests", () => {
   });
 
   it("should return fail if username is invalid format", async () => {
-    const res = await request(app)
-      .get(`${CHECK_URL}/bad username`)
-      .set("Cookie", testData.jwtCookie);
+    const res = await request(app).get(CHECK_URL("bad username")).set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
   });
 
   it("should return fail if username is too short", async () => {
-    const res = await request(app).get(`${CHECK_URL}/12`).set("Cookie", testData.jwtCookie);
+    const res = await request(app).get(CHECK_URL("12")).set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/minimum 3/i);
@@ -70,7 +68,7 @@ describe("check username integration tests", () => {
 
   it("should return fail if username is too long", async () => {
     const res = await request(app)
-      .get(`${CHECK_URL}/1234567890123456789012345678901`)
+      .get(CHECK_URL("1234567890123456789012345678901"))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
@@ -79,7 +77,7 @@ describe("check username integration tests", () => {
 });
 
 describe("get profile integration tests", () => {
-  const GET_PROFILE_URL = "/api/users"; // add user id to the end
+  const GET_PROFILE_URL = (id: string) => `/api/user/${id}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -92,19 +90,19 @@ describe("get profile integration tests", () => {
 
   it("should successfully retrieve own profile", async () => {
     const res = await request(app)
-      .get(`${GET_PROFILE_URL}/${testData.user.id}`)
+      .get(GET_PROFILE_URL(testData.user.id))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email);
     expect(res.body.user).toHaveProperty("username", testData.user.username);
     expect(res.body.user).toHaveProperty("followingCount");
-    expect(res.body.user).toHaveProperty("followStatus");
+    expect(res.body.user).not.toHaveProperty("followStatus");
   });
 
   it("should successfully retrieve another user's profile", async () => {
     const res = await request(app)
-      .get(`${GET_PROFILE_URL}/${testData.otherUser.id}`)
+      .get(GET_PROFILE_URL(testData.otherUser.id))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(200);
@@ -116,7 +114,7 @@ describe("get profile integration tests", () => {
 
   it("should fail to find a user with id that is not a valid cuid", async () => {
     const res = await request(app)
-      .get(`${GET_PROFILE_URL}/not_a_valid_cuid`)
+      .get(GET_PROFILE_URL("not_a_valid_cuid"))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
@@ -125,7 +123,7 @@ describe("get profile integration tests", () => {
 
   it("should fail to find a user with non-existent id", async () => {
     const res = await request(app)
-      .get(`${GET_PROFILE_URL}/csomerandomusercuid777777`)
+      .get(GET_PROFILE_URL("csomerandomusercuid777777"))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(404);
@@ -134,7 +132,7 @@ describe("get profile integration tests", () => {
 
   it("should fail to find a user marked as deleted", async () => {
     const res = await request(app)
-      .get(`${GET_PROFILE_URL}/${testData.deletedUser.id}`)
+      .get(GET_PROFILE_URL(testData.deletedUser.id))
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(404);
@@ -143,7 +141,7 @@ describe("get profile integration tests", () => {
 });
 
 describe("update profile integration tests", () => {
-  const UPDATE_URL = "/api/users"; // add user id to the end
+  const UPDATE_URL = "/api/user/me";
   let testData: TestData;
 
   beforeAll(async () => {
@@ -158,32 +156,30 @@ describe("update profile integration tests", () => {
     // reset anything that was updated
     await prisma.user.update({
       where: { id: testData.user.id },
-      data: { name: null, username: testData.user.username, bio: null, isPrivate: false },
+      data: { name: null, username: testData.user.username, bio: null },
     });
   });
 
-  it("should successfully update name, username, bio, isPrivate", async () => {
+  it("should successfully update name, username, bio", async () => {
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.user.id}`)
+      .patch(UPDATE_URL)
       .send({
-        name: "Bryce James",
-        username: "brycejames",
+        name: "Michael Jordan",
+        username: "michaeljordan",
         bio: "I love to travel",
-        isPrivate: true,
       })
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email); // email unchanged
-    expect(res.body.user).toHaveProperty("name", "Bryce James");
-    expect(res.body.user).toHaveProperty("username", "brycejames");
+    expect(res.body.user).toHaveProperty("name", "Michael Jordan");
+    expect(res.body.user).toHaveProperty("username", "michaeljordan");
     expect(res.body.user).toHaveProperty("bio", "I love to travel");
-    expect(res.body.user).toHaveProperty("isPrivate", true);
   });
 
   it("should successfully update some fields", async () => {
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.user.id}`)
+      .patch(UPDATE_URL)
       .send({ name: "LeBron James", bio: "Los Angeles" })
       .set("Cookie", testData.jwtCookie);
 
@@ -191,12 +187,32 @@ describe("update profile integration tests", () => {
     expect(res.body.user).toHaveProperty("name", "LeBron James");
     expect(res.body.user).toHaveProperty("username", "lebronjames");
     expect(res.body.user).toHaveProperty("bio", "Los Angeles");
-    expect(res.body.user).toHaveProperty("isPrivate", false);
+  });
+
+  it("should accept empty string fields", async () => {
+    const res = await request(app)
+      .patch(UPDATE_URL)
+      .send({ name: "", bio: "" })
+      .set("Cookie", testData.jwtCookie);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user).toHaveProperty("name", "");
+    expect(res.body.user).toHaveProperty("bio", "");
+  });
+
+  it("should not update username if it's the same as current (case insensitive)", async () => {
+    const res = await request(app)
+      .patch(UPDATE_URL)
+      .send({ username: testData.user.username.toUpperCase() })
+      .set("Cookie", testData.jwtCookie);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user).toHaveProperty("username", testData.user.username);
   });
 
   it("should fail if new username is already taken", async () => {
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.user.id}`)
+      .patch(UPDATE_URL)
       .send({ username: testData.otherUser.username })
       .set("Cookie", testData.jwtCookie);
 
@@ -204,43 +220,51 @@ describe("update profile integration tests", () => {
     expect(res.body.message).toMatch(/username already taken/i);
   });
 
-  it("should fail if no fields are submitted for updating", async () => {
+  it("should fail if new username is already taken (case insensitive", async () => {
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.user.id}`)
-      .send({})
+      .patch(UPDATE_URL)
+      .send({ username: testData.otherUser.username.toUpperCase() })
       .set("Cookie", testData.jwtCookie);
+
+    expect(res.statusCode).toBe(409);
+    expect(res.body.message).toMatch(/username already taken/i);
+  });
+
+  it("should fail if no fields are submitted for updating", async () => {
+    const res = await request(app).patch(UPDATE_URL).send({}).set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid input data/i);
     expect(res.body.errors.join(",")).toMatch(/update at least one field/i);
   });
 
-  it("should fail trying to update another user's profile", async () => {
+  it("should fail if username contains invalid characters", async () => {
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.otherUser.id}`)
-      .send({ name: "Other User" })
+      .patch(UPDATE_URL)
+      .send({ username: "😂😂😂😂" })
       .set("Cookie", testData.jwtCookie);
 
-    expect(res.statusCode).toBe(403);
-    expect(res.body.message).toMatch(/cannot update.*another user/i);
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/invalid input data/i);
+    expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
   });
 
-  it("should fail to update a user marked as deleted", async () => {
-    // updating profile only works if the given id is equal to the requesting user
-    // so any id other than own will return 403
+  it("should fail to update if user's account is marked as deleted", async () => {
+    // mark account as deleted first
+    await prisma.user.update({ where: { id: testData.user.id }, data: { isDeleted: true } });
 
     const res = await request(app)
-      .patch(`${UPDATE_URL}/${testData.deletedUser.id}`)
+      .patch(UPDATE_URL)
       .send({ name: "Random Name" })
       .set("Cookie", testData.jwtCookie);
 
-    expect(res.statusCode).toBe(403);
-    expect(res.body.message).toMatch(/cannot update.*another user/i);
+    expect(res.statusCode).toBe(404);
+    expect(res.body.message).toMatch(/user not found/i);
   });
 });
 
 describe("delete account integration tests", () => {
-  const DELETE_URL = "/api/users"; // add user id to the end
+  const DELETE_URL = "/api/user/me";
   let testData: TestData;
 
   beforeAll(async () => {
@@ -257,7 +281,7 @@ describe("delete account integration tests", () => {
 
   it("should successfully mark requesting user's account as deleted", async () => {
     const res = await request(app)
-      .delete(`${DELETE_URL}/${testData.user.id}`)
+      .delete(DELETE_URL)
       .send({ password: testData.user.password })
       .set("Cookie", testData.jwtCookie);
 
@@ -271,31 +295,21 @@ describe("delete account integration tests", () => {
     await prisma.user.update({ where: { id: testData.user.id }, data: { isDeleted: true } });
 
     const res = await request(app)
-      .delete(`${DELETE_URL}/${testData.user.id}`)
+      .delete(DELETE_URL)
       .send({ password: testData.user.password })
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(404);
-    expect(res.body.message).toMatch(/user.*not found/i);
+    expect(res.body.message).toMatch(/user not found/i);
   });
 
   it("should fail to delete account if password incorrect", async () => {
     const res = await request(app)
-      .delete(`${DELETE_URL}/${testData.user.id}`)
+      .delete(DELETE_URL)
       .send({ password: "wrong password" })
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/invalid cred/i);
-  });
-
-  it("should fail to delete another user's account", async () => {
-    const res = await request(app)
-      .delete(`${DELETE_URL}/${testData.otherUser.id}`)
-      .send({ password: testData.otherUser.password })
-      .set("Cookie", testData.jwtCookie);
-
-    expect(res.statusCode).toBe(403);
-    expect(res.body.message).toMatch(/cannot delete.*another user/i);
+    expect(res.body.message).toMatch(/invalid credentials/i);
   });
 });
