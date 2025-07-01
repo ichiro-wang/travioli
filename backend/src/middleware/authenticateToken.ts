@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../db/prisma.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken } from "../types/global.js";
 import { userNotFoundResponse } from "../utils/responseHelpers.js";
+import { authService } from "../services/index.js";
 
 export const authenticateToken = async (
   req: Request,
@@ -13,38 +13,35 @@ export const authenticateToken = async (
   try {
     const token: string = req.cookies.jwt;
 
-    // check if token was given
     if (!token) {
       res.status(401).json({ message: "Unauthorized - No token provided" });
       return;
     }
 
-    // check if token is valid
     const secretKey = process.env.ACCESS_TOKEN_SECRET;
 
     if (!secretKey) {
       throw new Error("No secret key provided for JWT");
     }
 
-    const decoded = jwt.verify(token, secretKey) as DecodedToken;
-    if (!decoded) {
+    const decodedToken = jwt.verify(token, secretKey) as DecodedToken;
+
+    if (!decodedToken) {
       res.status(401).json({ message: "Unauthorized - Invalid token" });
       return;
     }
 
-    // find user and select useful fields
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
+    const user = await authService.findUserById(decodedToken.userId);
 
-    if (!user || user.isDeleted) {
+    if (!user) {
       userNotFoundResponse(res);
       return;
     }
 
-    // add user to Request
+    // add user to Request, this way we can access the logged in user from the controllers with req.user
+    // req.user only exists within the scope of the current request
     req.user = user;
-    // req.tokenType = decoded.tokenType; // ignore for now
+    req.tokenType = decodedToken.tokenType; // ignore for now
 
     next();
   } catch (error: unknown) {

@@ -7,7 +7,7 @@ export const getFollowListSchema = z.object({
     type: z.enum(FollowRelationList),
   }),
   query: z.object({
-    page: z.string(),
+    loadIndex: z.string(),
   }),
 });
 

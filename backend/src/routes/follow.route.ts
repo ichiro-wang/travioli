@@ -22,42 +22,22 @@ import {
 
 const router = express.Router();
 
-router.post("/:id/follow-user", authenticateToken, validateData(followUserSchema), followUser);
+router.use(authenticateToken);
 
-router.get(
-  "/:id/follow-status",
-  authenticateToken,
-  validateData(getFollowStatusSchema),
-  getFollowStatus
-);
+// follow a user
+router.post("/:id", validateData(followUserSchema), followUser);
 
+// follow status between current and target user
+router.get("/:id/status", validateData(getFollowStatusSchema), getFollowStatus);
+
+// update follow status
 // type: accept|reject|remove|cancel|unfollow
-router.patch(
-  "/:id/update-status/:type",
-  authenticateToken,
-  validateData(updateFollowStatusSchema),
-  updateFollowStatus
-);
+router.patch("/:id/status/:type", validateData(updateFollowStatusSchema), updateFollowStatus);
 
-// type: followedBy|following
-router.get(
-  "/:id/follow-list/:type",
-  authenticateToken,
-  validateData(getFollowListSchema),
-  getFollowList
-);
-
-// no data to validate here
+// pending follow requests
 router.get("/pending-requests", authenticateToken, getPendingRequests);
 
-/**
- * features
- *
- * get followedBy|following list: id
- * follow: id
- * accept|reject|cancel|unfollow a follow
- * get pending follow requests
- * get follow status
- */
+// type: followedBy|following
+router.get("/:id/follow-list/:type", validateData(getFollowListSchema), getFollowList);
 
 export default router;

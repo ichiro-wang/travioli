@@ -1,29 +1,38 @@
 import prisma from "../db/prisma.js";
 import bcrypt from "bcryptjs";
 import { User } from "../generated/client/index.js";
+import {
+  EmailAlreadyExistsError,
+  InvalidCredentialsError,
+  UsernameAlreadyExistsError,
+  UserNotFoundError,
+} from "../errors/auth.errors.js";
 
 export class AuthService {
+  /**
+   * creating user for when a user signs up
+   */
   async createUser(userData: { email: string; username: string; password: string }): Promise<User> {
     const { email, username, password } = userData;
+
+    // normalizing username to lowercase to ensure uniqueness checks are case insensitive
     const normalizedUsername = username.toLowerCase();
 
-    // parallel check for if email and username are unique
+    // check for existing users in parallel to reduce response latency => more efficiency
     const [emailExists, usernameExists] = await Promise.all([
       prisma.user.findUnique({ where: { email } }),
       prisma.user.findUnique({ where: { username: normalizedUsername } }),
     ]);
 
     if (emailExists) {
-      throw new Error(`Account with the email ${email} already exists`);
+      throw new EmailAlreadyExistsError(email);
     }
     if (usernameExists) {
-      throw new Error(`Account with the username @${username} already exists`);
+      throw new UsernameAlreadyExistsError(username);
     }
 
-    // hashing the password to store in database
     const hashedPassword = await this.hashPassword(password);
 
-    // creating new user with hashed password
     const newUser = await prisma.user.create({
       data: { email, username: normalizedUsername, password: hashedPassword },
     });
@@ -31,18 +40,26 @@ export class AuthService {
     return newUser;
   }
 
-  async authenticateUser(userData: { email: string; password: string }): Promise<User> {
-    const { email, password } = userData;
+  /**
+   * logs in a user
+   */
+  async authenticateUser(authData: { email: string; password: string }): Promise<User> {
+    const { email, password } = authData;
 
-    const user = await this.findUserByEmail(email);
+    let user = await this.findUserByEmail(email);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
     const isPasswordCorrect = await this.verifyPassword(password, user.password);
     if (!isPasswordCorrect) {
-      throw new Error("Invalid credentials");
+      throw new InvalidCredentialsError();
+    }
+
+    // if a (soft) deleted user logs back in, then automatically reactivate their account
+    if (user.isDeleted) {
+      user = await prisma.user.update({ where: { id: user.id }, data: { isDeleted: false } });
     }
 
     return user;
@@ -58,15 +75,24 @@ export class AuthService {
     return user && !user.isDeleted ? user : null;
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
+  private async findUserByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { email } });
-    return user && !user.isDeleted ? user : null;
+    return user;
   }
 
+  /**
+   * @param inputPassword user-entered password
+   * @param hashedPassword hashed password stored in database
+   * @returns boolean of whether the passwords match
+   */
   async verifyPassword(inputPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(inputPassword, hashedPassword);
   }
 
+  /**
+   * @param inputPassword user-entered password
+   * @returns the hashed password
+   */
   private async hashPassword(inputPassword: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(inputPassword, salt);

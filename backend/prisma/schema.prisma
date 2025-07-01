@@ -54,6 +54,9 @@ model Follows {
   updatedAt DateTime @updatedAt
 
   @@id([followedById, followingId])
+  // indexes for improving query performance
+  @@index([followedById, status])
+  @@index([followingId, status])
 }
 
 enum FollowStatus {

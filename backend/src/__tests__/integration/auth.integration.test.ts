@@ -209,7 +209,7 @@ describe("login integration tests", () => {
     expect(res.body.message).toMatch(/invalid credentials/i);
   });
 
-  it("should fail if the account is marked as deleted", async () => {
+  it("should successfully reactivate account and log in if the account is marked as deleted", async () => {
     // create a user and mark their account as deleted
     await prisma.user.create({
       data: {
@@ -225,8 +225,13 @@ describe("login integration tests", () => {
       password,
     });
 
-    expect(res.statusCode).toBe(404);
-    expect(res.body.message).toMatch(/user not found/i);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user.id).toBeDefined();
+    expect(res.body.user).toHaveProperty("email", "deleted@gmail.com");
+
+    const setCookieHeader = res.headers["set-cookie"];
+    expect(setCookieHeader).toBeDefined();
+    expect(setCookieHeader[0]).toMatch(/jwt=/i);
   });
 
   it("should fail if email bad format", async () => {

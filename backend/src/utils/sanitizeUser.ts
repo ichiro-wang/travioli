@@ -2,7 +2,7 @@ import { User } from "../generated/client/index.js";
 import { SanitizedUser } from "../types/global.js";
 
 /**
- * remove data from User object such as password, createdAt, etc
+ * remove sensitive data from User object such as password, etc
  * @param user the User object
  * @param includeEmail boolean whether to include email in sanitized User object or not
  * @returns the sanitized User object: id, username, name, bio, profilePic, email (if includeEmail is true)

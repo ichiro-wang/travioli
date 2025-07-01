@@ -21,18 +21,11 @@ import {
 
 const router = express.Router();
 
-router.get("/check-username", authenticateToken, validateData(checkUsernameSchema), checkUsername);
-router.get("/:id", authenticateToken, validateData(getProfileSchema), getUserProfile);
-router.patch("/me", authenticateToken, validateData(updateProfileSchema), updateProfile);
-router.delete("/me", authenticateToken, validateData(deleteAccountSchema), softDeleteAccount);
+router.use(authenticateToken);
 
-/**
- * features
- *
- * view profile: id
- * update profile: id
- * check if username available (for updating profile): username
- * delete account: id
- */
+router.get("/check-username", validateData(checkUsernameSchema), checkUsername);
+router.get("/:id", validateData(getProfileSchema), getUserProfile);
+router.patch("/me", validateData(updateProfileSchema), updateProfile);
+router.delete("/me", validateData(deleteAccountSchema), softDeleteAccount);
 
 export default router;

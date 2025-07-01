@@ -219,7 +219,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://user:password@db:5432/testdb"
+        "value": "postgresql://user:password@db:5432/devdb"
       }
     }
   },

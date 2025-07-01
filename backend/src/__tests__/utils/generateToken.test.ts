@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Response } from "express";
 import jwt from "jsonwebtoken";
 import { generateToken } from "../../utils/generateToken.js";
 
 vi.mock("jsonwebtoken");
 
-describe("generateToken middleware", () => {
+describe("generateToken unit tests", () => {
   const mockSign = vi.mocked(
     jwt.sign as unknown as typeof jwt.sign & { mockReturnValue: (v: string) => void }
   );

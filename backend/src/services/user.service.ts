@@ -1,21 +1,34 @@
 import prisma from "../db/prisma.js";
+import {
+  InvalidCredentialsError,
+  UsernameAlreadyExistsError,
+  UserNotFoundError,
+} from "../errors/auth.errors.js";
 import { FollowStatus, User } from "../generated/client/index.js";
 import { SanitizedUser } from "../types/global.js";
-import { invalidCredentialsResponse } from "../utils/responseHelpers.js";
+import { FollowRelation } from "../types/types.js";
 import { sanitizeUser } from "../utils/sanitizeUser.js";
 import { AuthService } from "./auth.service.js";
+import { FollowService } from "./follow.service.js";
 
 export class UserService {
+  // dependency injection
   private authService: AuthService;
+  private followService: FollowService;
 
-  constructor(authService: AuthService) {
+  constructor(authService: AuthService, followService: FollowService) {
     this.authService = authService;
+    this.followService = followService;
   }
 
+  /**
+   * check if a username is available in the database
+   */
   async checkUsernameAvailability(
     username: string,
     currentUserUsername: string
   ): Promise<{ available: boolean; reason: "current" | "taken" | null }> {
+    // normalize to lowercase to ensure uniqueness checks are case insensitive
     const normalizedUsername = username.toLowerCase();
 
     if (normalizedUsername === currentUserUsername) {
@@ -37,10 +50,8 @@ export class UserService {
     followingCount: number;
     followStatus?: FollowStatus;
   }> {
-    // check if requesting own profile
     const isSelf = targetUserId === currentUser.id;
 
-    // fetch target user from database
     let targetUser: User | null;
     if (isSelf) {
       targetUser = currentUser;
@@ -48,16 +59,15 @@ export class UserService {
       targetUser = await this.authService.findUserById(targetUserId);
     }
 
-    // if user not found
     if (!targetUser) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
-    // fetch these promises in parallel. check private helper methods for implementation
+    // fetch these promises in parallel for efficiency
     const [followedByCount, followingCount, followStatus] = await Promise.all([
-      this.getFollowedByCount(targetUserId),
-      this.getFollowingCount(targetUserId),
-      this.getFollowStatus(currentUser.id, targetUserId),
+      this.followService.getFollowCount(targetUserId, FollowRelation.followedBy),
+      this.followService.getFollowCount(targetUserId, FollowRelation.following),
+      this.followService.getFollowStatus(currentUser.id, targetUserId),
     ]);
 
     return {
@@ -74,9 +84,11 @@ export class UserService {
     updatedFields: { name?: string; username?: string; bio?: string }
   ): Promise<SanitizedUser> {
     const { name, username, bio } = updatedFields;
+
+    // normalize to lowercase to ensure uniqueness checks are case insensitive
     const normalizedUsername = username?.toLowerCase();
 
-    // keep track of fields that are submitted for updating. ignore empty fields
+    // we only need to track which fields get updated, as the request doesn't need to include all fields
     const filteredUpdates: typeof updatedFields = {};
 
     if (name !== undefined && name !== currentUser.name) {
@@ -91,67 +103,45 @@ export class UserService {
       filteredUpdates.bio = bio;
     }
 
-    // check if there is anything in the filtered updates
+    // we should avoid sending an update request if no fields were included, thus the user remains the same
     if (Object.keys(filteredUpdates).length === 0) {
       return sanitizeUser(currentUser, true);
     }
 
-    // only update if we have changes
-    const updatedUser = await prisma.user.update({
-      where: { id: currentUser.id },
-      data: filteredUpdates,
-    });
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id: currentUser.id },
+        data: filteredUpdates,
+      });
 
-    return sanitizeUser(updatedUser, true);
+      return sanitizeUser(updatedUser, true);
+    } catch (error: any) {
+      if (error.code === "P2002") {
+        // P2002 is a prisma error code: "Unique constraint failed on the {constraint}". see prisma documentation for more
+        throw new UsernameAlreadyExistsError(normalizedUsername as string);
+      }
+
+      throw error;
+    }
   }
 
+  /**
+   * we want to prevent the user object from being completely deleted from the databse, so just mark as deleted without actually deleting
+   */
   async softDeleteUser(currentUserId: string, inputPassword: string, currentUserPassword: string) {
-    // verify password before allowing soft delete
     const isPasswordCorrect = await this.authService.verifyPassword(
       inputPassword,
       currentUserPassword
     );
     if (!isPasswordCorrect) {
-      throw new Error("Invalid credentials");
+      throw new InvalidCredentialsError();
     }
 
-    // mark account as deleted
     const deletedUser = await prisma.user.update({
       where: { id: currentUserId },
       data: { isDeleted: true },
     });
 
     return sanitizeUser(deletedUser, true);
-  }
-
-  private async getFollowedByCount(userId: string): Promise<number> {
-    return await prisma.follows.count({
-      where: { followedById: userId, status: FollowStatus.accepted },
-    });
-  }
-
-  private async getFollowingCount(userId: string): Promise<number> {
-    return await prisma.follows.count({
-      where: { followingId: userId, status: FollowStatus.accepted },
-    });
-  }
-
-  private async getFollowStatus(
-    currentUserId: string,
-    targetUserId: string
-  ): Promise<FollowStatus | null> {
-    // if checking self, then there should not be a follow relationship
-    if (currentUserId === targetUserId) {
-      return null;
-    }
-
-    const follow = await prisma.follows.findUnique({
-      where: {
-        followedById_followingId: { followedById: currentUserId, followingId: targetUserId },
-      },
-      select: { status: true },
-    });
-
-    return follow ? follow.status : FollowStatus.notFollowing;
   }
 }

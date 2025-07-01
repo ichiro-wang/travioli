@@ -8,8 +8,8 @@ export const updatePrivacy = async (
 ): Promise<void> => {
   try {
     const { toggleOption } = req.body;
-    
-    
+
+    // TODO
   } catch (error: unknown) {
     internalServerError(error, res, "updatePrivacy controller");
   }
