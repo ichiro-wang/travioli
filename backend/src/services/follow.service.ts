@@ -7,14 +7,14 @@ import {
   NoFollowRelationshipError,
 } from "../errors/follow.errors.js";
 import { Follows, FollowStatus } from "../generated/client/index.js";
-import { SanitizedUser } from "../types/global.js";
+import { FilteredUser } from "../types/global.js";
 import {
   FollowAction,
   FollowActionType,
   FollowRelation,
   FollowRelationType,
 } from "../types/types.js";
-import { sanitizeUser } from "../utils/sanitizeUser.js";
+import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 
 const statusTransitionMap: Record<
@@ -49,7 +49,7 @@ const statusTransitionMap: Record<
 };
 
 interface FollowListResult {
-  users: SanitizedUser[];
+  users: FilteredUser[];
   hasMore: boolean;
 }
 
@@ -71,7 +71,7 @@ export class FollowService {
    * @param targetUserId the user we want to check
    * @param relationType followedBy | following
    * @param loadIndex same as page, but planning on using infinite scroll pagination on frontend so thought this would be a better name
-   * @returns followedBy | following list as a list of sanitized users
+   * @returns followedBy | following list as a list of filtered users
    */
   async getFollowList(
     targetUserId: string,
@@ -92,7 +92,7 @@ export class FollowService {
       take: FollowService.PAGINATION_TAKE_SIZE + 1, // we take an extra result to check if there are any more results
     });
 
-    const users = followList.map((follow) => sanitizeUser(follow[relationType]));
+    const users = followList.map((follow) => filterUser(follow[relationType]));
     // inform the user if there are still more results that can be fetched so they know if they can continue fetching or not
     const hasMore = followList.length > FollowService.PAGINATION_TAKE_SIZE;
 

@@ -1,6 +1,6 @@
 import { CookieOptions, Request, Response } from "express";
 import { generateToken } from "../utils/generateToken.js";
-import { sanitizeUser } from "../utils/sanitizeUser.js";
+import { filterUser } from "../utils/filterUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
 import { authService } from "../services/index.js";
@@ -55,7 +55,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
 
     generateToken(res, user.id, "access");
 
-    const filteredUser = sanitizeUser(user, true);
+    const filteredUser = filterUser(user, true);
     res.status(200).json({ user: filteredUser });
     return;
   } catch (error: unknown) {
@@ -102,7 +102,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const filteredUser = sanitizeUser(loggedInUser, true);
+    const filteredUser = filterUser(loggedInUser, true);
     res.status(200).json({ user: filteredUser });
     return;
   } catch (error: unknown) {

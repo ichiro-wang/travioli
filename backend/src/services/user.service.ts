@@ -5,9 +5,9 @@ import {
   UserNotFoundError,
 } from "../errors/auth.errors.js";
 import { FollowStatus, User } from "../generated/client/index.js";
-import { SanitizedUser } from "../types/global.js";
+import { FilteredUser } from "../types/global.js";
 import { FollowRelation } from "../types/types.js";
-import { sanitizeUser } from "../utils/sanitizeUser.js";
+import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 import { FollowService } from "./follow.service.js";
 
@@ -44,7 +44,7 @@ export class UserService {
     targetUserId: string,
     currentUser: User
   ): Promise<{
-    user: SanitizedUser;
+    user: FilteredUser;
     isSelf: boolean;
     followedByCount: number;
     followingCount: number;
@@ -71,7 +71,7 @@ export class UserService {
     ]);
 
     return {
-      user: sanitizeUser(targetUser, isSelf),
+      user: filterUser(targetUser, isSelf),
       isSelf,
       followedByCount,
       followingCount,
@@ -82,7 +82,7 @@ export class UserService {
   async updateUserProfile(
     currentUser: User,
     updatedFields: { name?: string; username?: string; bio?: string }
-  ): Promise<SanitizedUser> {
+  ): Promise<FilteredUser> {
     const { name, username, bio } = updatedFields;
 
     // normalize to lowercase to ensure uniqueness checks are case insensitive
@@ -105,7 +105,7 @@ export class UserService {
 
     // we should avoid sending an update request if no fields were included, thus the user remains the same
     if (Object.keys(filteredUpdates).length === 0) {
-      return sanitizeUser(currentUser, true);
+      return filterUser(currentUser, true);
     }
 
     try {
@@ -114,7 +114,7 @@ export class UserService {
         data: filteredUpdates,
       });
 
-      return sanitizeUser(updatedUser, true);
+      return filterUser(updatedUser, true);
     } catch (error: any) {
       if (error.code === "P2002") {
         // P2002 is a prisma error code: "Unique constraint failed on the {constraint}". see prisma documentation for more
@@ -142,6 +142,6 @@ export class UserService {
       data: { isDeleted: true },
     });
 
-    return sanitizeUser(deletedUser, true);
+    return filterUser(deletedUser, true);
   }
 }

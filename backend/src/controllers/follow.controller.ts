@@ -46,7 +46,7 @@ export const getFollowList = async (
 
     const result = await followService.getFollowList(targetUserId, relationType, loadIndex);
 
-    // return followedBy or following list as the sanitized user list
+    // return followedBy or following list as the filtered user list
     res
       .status(200)
       .json({ [relationType]: result.users, pagination: { loadIndex, hasMore: result.hasMore } });

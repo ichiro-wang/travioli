@@ -21,7 +21,7 @@ declare global {
   }
 }
 
-export interface SanitizedUser {
+export interface FilteredUser {
   id: string;
   username: string;
   name: string | null;
