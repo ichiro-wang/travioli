@@ -70,14 +70,16 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
 
-    const newFollow = await followService.followUser(currentUserId, userId);
+    const result = await followService.followUser(currentUserId, userId);
+
+    const statusCode = result.isNewRelationship ? 201 : 200;
 
     const message =
-      newFollow.status === FollowStatus.pending
+      result.follow.status === FollowStatus.pending
         ? "Follow request sent"
         : "Successfully followed user";
 
-    res.status(201).json({ message, follow: newFollow });
+    res.status(statusCode).json({ message, follow: result.follow });
     return;
   } catch (error: unknown) {
     if (error instanceof FollowSelfError || error instanceof FollowUserError) {

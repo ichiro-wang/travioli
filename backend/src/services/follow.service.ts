@@ -53,6 +53,11 @@ interface FollowListResult {
   hasMore: boolean;
 }
 
+interface FollowUserResult {
+  follow: Follows;
+  isNewRelationship: boolean;
+}
+
 interface UpdateFollowResult {
   follow: Follows;
   message: string;
@@ -71,7 +76,7 @@ export class FollowService {
    * @param targetUserId the user we want to check
    * @param relationType followedBy | following
    * @param loadIndex same as page, but planning on using infinite scroll pagination on frontend so thought this would be a better name
-   * @returns followedBy | following list as a list of filtered users
+   * @returns followedBy | following list as a list of sanitized users
    */
   async getFollowList(
     targetUserId: string,
@@ -99,7 +104,7 @@ export class FollowService {
     return { users, hasMore };
   }
 
-  async followUser(currentUserId: string, targetUserId: string): Promise<Follows> {
+  async followUser(currentUserId: string, targetUserId: string): Promise<FollowUserResult> {
     const isSelf = currentUserId === targetUserId;
     if (isSelf) {
       throw new FollowSelfError();
@@ -136,7 +141,7 @@ export class FollowService {
         },
       });
 
-      return updatedFollow;
+      return { follow: updatedFollow, isNewRelationship: false };
     }
 
     // create new follow relationship only if none exists
@@ -148,7 +153,7 @@ export class FollowService {
       },
     });
 
-    return newFollow;
+    return { follow: newFollow, isNewRelationship: true };
   }
 
   async updateFollowStatus(

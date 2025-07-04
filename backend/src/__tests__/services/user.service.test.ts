@@ -3,6 +3,8 @@ import { UserService } from "../../services/user.service.js";
 import { AuthService } from "../../services/auth.service.js";
 import { FollowStatus, User } from "../../generated/client/index.js";
 import prisma from "../../db/prisma.js";
+import { FollowService } from "../../services/follow.service.js";
+import { FollowRelation } from "../../types/types.js";
 
 vi.mock("../../db/prisma.js", () => ({
   default: {
@@ -16,8 +18,8 @@ vi.mock("../../db/prisma.js", () => ({
   },
 }));
 
-vi.mock("../../utils/sanitizeUser.js", () => ({
-  sanitizeUser: vi.fn((user, isSelf) => ({
+vi.mock("../../utils/filterUser.js", () => ({
+  filterUser: vi.fn((user, isSelf) => ({
     id: user.id,
     username: user.username,
     name: user.name,
@@ -27,15 +29,17 @@ vi.mock("../../utils/sanitizeUser.js", () => ({
 }));
 
 const mockPrismaUserUpdate = prisma.user.update as Mock;
-const mockPrismaFollowsCount = prisma.follows.count as Mock;
-const mockPrismaFollowsFindUnique = prisma.follows.findUnique as Mock;
 const mockAuthServiceFindUserByUsername = vi.fn() as Mock;
 const mockAuthServiceFindUserById = vi.fn() as Mock;
 const mockAuthServiceVerifyPassword = vi.fn() as Mock;
+const mockFollowServiceGetFollowCount = vi.fn() as Mock;
+const mockFollowServiceGetFollowStatus = vi.fn() as Mock;
+const mockFollowServiceGetFollowRelationship = vi.fn() as Mock;
 
 describe("UserService unit tests", () => {
   let userService: UserService;
   let mockAuthService: AuthService;
+  let mockFollowService: FollowService;
 
   const mockUser = {
     id: "1",
@@ -68,7 +72,13 @@ describe("UserService unit tests", () => {
       verifyPassword: mockAuthServiceVerifyPassword,
     } as any;
 
-    userService = new UserService(mockAuthService);
+    mockFollowService = {
+      getFollowCount: mockFollowServiceGetFollowCount,
+      getFollowStatus: mockFollowServiceGetFollowStatus,
+      getFollowRelationship: mockFollowServiceGetFollowRelationship,
+    } as any;
+
+    userService = new UserService(mockAuthService, mockFollowService);
     vi.clearAllMocks();
   });
 
@@ -124,13 +134,13 @@ describe("UserService unit tests", () => {
 
   describe("getUserProfileData", () => {
     beforeEach(() => {
-      mockPrismaFollowsCount.mockResolvedValue(5);
-      mockPrismaFollowsFindUnique.mockResolvedValue({
-        status: FollowStatus.accepted,
-      });
+      mockFollowServiceGetFollowCount.mockResolvedValue(5);
+      mockFollowServiceGetFollowStatus.mockResolvedValue(FollowStatus.accepted);
     });
 
     it("should return profile data for current user (self)", async () => {
+      mockFollowServiceGetFollowStatus.mockResolvedValue(null);
+
       const result = await userService.getUserProfileData(mockUser.id, mockUser);
 
       expect(result.user.id).toBe(mockUser.id);
@@ -140,10 +150,12 @@ describe("UserService unit tests", () => {
       expect(result.followingCount).toBe(5);
       expect(result).not.toHaveProperty("followStatus");
       expect(mockAuthServiceFindUserById).not.toHaveBeenCalled();
+      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(mockUser.id, mockUser.id);
     });
 
     it("should return profile data for another user", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
+      mockFollowServiceGetFollowStatus.mockResolvedValue(FollowStatus.accepted);
 
       const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
 
@@ -154,6 +166,7 @@ describe("UserService unit tests", () => {
       expect(result.followingCount).toBe(5);
       expect(result.followStatus).toBe(FollowStatus.accepted); // check beforeEach to see that we set this to accepted
       expect(mockAuthServiceFindUserById).toHaveBeenCalledWith(mockTargetUser.id);
+      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(mockUser.id, mockTargetUser.id);
     });
 
     it("should throw error when target user is not found", async () => {
@@ -166,36 +179,29 @@ describe("UserService unit tests", () => {
 
     it("should return notFollowing status when no follow relationship exists", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
-      mockPrismaFollowsFindUnique.mockResolvedValue(null);
+      mockFollowServiceGetFollowStatus.mockResolvedValue(FollowStatus.notFollowing);
 
       const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
 
       expect(result.followStatus).toBe(FollowStatus.notFollowing);
-      expect(mockPrismaFollowsFindUnique).toHaveBeenCalledWith({
-        where: {
-          followedById_followingId: {
-            followedById: mockUser.id,
-            followingId: mockTargetUser.id,
-          },
-        },
-        select: { status: true },
-      });
     });
 
     it("should count followers and following correctly", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
-      mockPrismaFollowsCount.mockResolvedValueOnce(10).mockResolvedValueOnce(15);
+      mockFollowServiceGetFollowCount.mockResolvedValueOnce(10).mockResolvedValueOnce(15);
 
       const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
 
       expect(result.followedByCount).toBe(10);
       expect(result.followingCount).toBe(15);
-      expect(mockPrismaFollowsCount).toHaveBeenCalledWith({
-        where: { followedById: mockTargetUser.id, status: FollowStatus.accepted },
-      });
-      expect(mockPrismaFollowsCount).toHaveBeenCalledWith({
-        where: { followingId: mockTargetUser.id, status: FollowStatus.accepted },
-      });
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
+        mockTargetUser.id,
+        FollowRelation.followedBy
+      );
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
+        mockTargetUser.id,
+        FollowRelation.following
+      );
     });
 
     //
