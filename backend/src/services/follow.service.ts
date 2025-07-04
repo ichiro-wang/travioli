@@ -58,6 +58,11 @@ interface UpdateFollowResult {
   message: string;
 }
 
+interface FollowUserResult {
+  follow: Follows;
+  isNewRelationship: boolean;
+}
+
 export class FollowService {
   private authService: AuthService;
   private static readonly PAGINATION_TAKE_SIZE = 20; // how many results to take from DB query for pagination
@@ -99,7 +104,7 @@ export class FollowService {
     return { users, hasMore };
   }
 
-  async followUser(currentUserId: string, targetUserId: string): Promise<Follows> {
+  async followUser(currentUserId: string, targetUserId: string): Promise<FollowUserResult> {
     const isSelf = currentUserId === targetUserId;
     if (isSelf) {
       throw new FollowSelfError();
@@ -136,7 +141,7 @@ export class FollowService {
         },
       });
 
-      return updatedFollow;
+      return { follow: updatedFollow, isNewRelationship: false };
     }
 
     // create new follow relationship only if none exists
@@ -148,7 +153,7 @@ export class FollowService {
       },
     });
 
-    return newFollow;
+    return { follow: newFollow, isNewRelationship: true };
   }
 
   async updateFollowStatus(

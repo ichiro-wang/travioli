@@ -16,7 +16,7 @@ export const internalServerError = (error: unknown, res: Response, location?: st
     console.error("Unknown error object:", error);
   }
 
-  const errorLocation = location ? location.toLowerCase() : "controller";
+  const errorLocation = location || "controller";
   console.error(`Error in ${errorLocation}:`, errorMessage);
 
   res.status(500).json({

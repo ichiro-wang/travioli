@@ -4,7 +4,7 @@
  */
 
 import express from "express";
-import { authenticateToken } from "../middleware/authenticateToken.js";
+import { authenticateAccessToken } from "../middleware/authenticateToken.js";
 import {
   followUserSchema,
   getFollowListSchema,
@@ -22,7 +22,7 @@ import {
 
 const router = express.Router();
 
-router.use(authenticateToken);
+router.use(authenticateAccessToken);
 
 // follow a user
 router.post("/:id", validateData(followUserSchema), followUser);
@@ -35,7 +35,7 @@ router.get("/:id/status", validateData(getFollowStatusSchema), getFollowStatus);
 router.patch("/:id/status/:type", validateData(updateFollowStatusSchema), updateFollowStatus);
 
 // pending follow requests
-router.get("/pending-requests", authenticateToken, getPendingRequests);
+router.get("/pending-requests", getPendingRequests);
 
 // type: followedBy|following
 router.get("/:id/follow-list/:type", validateData(getFollowListSchema), getFollowList);

@@ -13,10 +13,9 @@ import followRoutes from "./routes/follow.route.js";
 const app = express();
 
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined")); // for logging requests
-app.use(cookieParser()); // for parsing cookies
+app.use(cookieParser()); 
 app.use(express.json()); // for parsing json data
 
-// allow REQUEST_ORIGIN to access backend
 app.use(
   cors({
     origin: process.env.REQUEST_ORIGIN,
@@ -24,7 +23,6 @@ app.use(
   })
 );
 
-// register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/follow", followRoutes);
