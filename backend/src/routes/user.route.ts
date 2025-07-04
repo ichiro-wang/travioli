@@ -10,7 +10,7 @@ import {
   softDeleteAccount,
   updateProfile,
 } from "../controllers/user.controller.js";
-import { authenticateToken } from "../middleware/authenticateToken.js";
+import { authenticateAccessToken } from "../middleware/authenticateToken.js";
 import { validateData } from "../middleware/validateData.js";
 import {
   checkUsernameSchema,
@@ -21,7 +21,7 @@ import {
 
 const router = express.Router();
 
-router.use(authenticateToken);
+router.use(authenticateAccessToken);
 
 router.get("/check-username", validateData(checkUsernameSchema), checkUsername);
 router.get("/:id", validateData(getProfileSchema), getUserProfile);

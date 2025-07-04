@@ -1,5 +1,10 @@
 import { CookieOptions, Request, Response } from "express";
-import { generateToken } from "../utils/generateToken.js";
+import {
+  AccessTokenOptions,
+  generateAccessToken,
+  generateToken,
+  generateTokens,
+} from "../utils/generateToken.js";
 import { filterUser } from "../utils/filterUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
@@ -11,6 +16,7 @@ import {
   UsernameAlreadyExistsError,
   UserNotFoundError,
 } from "../errors/auth.errors.js";
+import { NoSecretKeyError } from "../errors/jwt.errors.js";
 
 /**
  * method simply for testing backend connection
@@ -30,12 +36,17 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
 
     const newUser = await authService.createUser({ email, username, password });
 
-    generateToken(res, newUser.id, "access");
+    // generateToken(res, newUser.id, "access");
+    generateTokens(res, newUser.id);
 
     res.status(201).json({ user: newUser });
     return;
   } catch (error: unknown) {
-    if (error instanceof EmailAlreadyExistsError || error instanceof UsernameAlreadyExistsError) {
+    if (
+      error instanceof EmailAlreadyExistsError ||
+      error instanceof UsernameAlreadyExistsError ||
+      error instanceof NoSecretKeyError
+    ) {
       res.status(400).json({ message: error.message });
       return;
     }
@@ -53,7 +64,8 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
 
     const user = await authService.authenticateUser({ email, password });
 
-    generateToken(res, user.id, "access");
+    // generateToken(res, user.id, "access");
+    generateTokens(res, user.id);
 
     const filteredUser = filterUser(user, true);
     res.status(200).json({ user: filteredUser });
@@ -63,8 +75,14 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
       userNotFoundResponse(res);
       return;
     }
+
     if (error instanceof InvalidCredentialsError) {
       invalidCredentialsResponse(res);
+      return;
+    }
+
+    if (error instanceof NoSecretKeyError) {
+      res.status(400).json({ message: error.message });
       return;
     }
 
@@ -80,7 +98,9 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
       sameSite: "strict", // prevent cross-site requests
       secure: process.env.NODE_ENV !== "development", // https when not in development
     };
-    res.cookie("jwt", "", options);
+
+    res.cookie("accessToken", "", options);
+    res.cookie("refreshToken", "", options);
 
     res.status(200).json({ message: "Logged out successfully" });
     return;
@@ -107,5 +127,24 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     return;
   } catch (error: unknown) {
     internalServerError(error, res, "getMe controller");
+  }
+};
+
+export const refresh = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      userNotFoundResponse(res);
+      return;
+    }
+
+    const accessToken = generateAccessToken(user.id, "refresh");
+
+    res.cookie("accessToken", accessToken, AccessTokenOptions);
+
+    res.status(200).json({ message: "Token refreshed successfully" });
+  } catch (error: unknown) {
+    internalServerError(error, res, "refresh controller");
   }
 };

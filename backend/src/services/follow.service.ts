@@ -63,6 +63,11 @@ interface UpdateFollowResult {
   message: string;
 }
 
+interface FollowUserResult {
+  follow: Follows;
+  isNewRelationship: boolean;
+}
+
 export class FollowService {
   private authService: AuthService;
   private static readonly PAGINATION_TAKE_SIZE = 20; // how many results to take from DB query for pagination

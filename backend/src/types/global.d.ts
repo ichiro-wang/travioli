@@ -2,13 +2,19 @@ import { Prisma } from "@prisma/client";
 import { User } from "../generated/client/index.js";
 import { z } from "zod";
 
-// for checking whether the token was created from a refresh token or through authenticating
 export type TokenType = "access" | "refresh";
+
+/**
+ * check whether a token was generated via refresh, or via login/signup
+ * this allows us to flag sensitive operations such as: delete-account, change-password, etc
+ */
+export type TokenSource = "credentials" | "refresh";
 
 // defining what goes in the jwt payload
 export interface DecodedToken extends JwtPayload {
   userId: string;
-  tokenType: TokenType;
+  type: TokenType;
+  source: TokenSource;
 }
 
 // allow user and JWT cookie in requests
@@ -16,7 +22,7 @@ declare global {
   namespace Express {
     interface Request {
       user: User;
-      tokenType: TokenType;
+      tokenSource: TokenSource;
     }
   }
 }
@@ -30,4 +36,3 @@ export interface FilteredUser {
   isPrivate: boolean;
   email: string | null;
 }
-
