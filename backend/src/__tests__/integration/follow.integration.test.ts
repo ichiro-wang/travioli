@@ -4,10 +4,10 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
 import { app } from "../../index.js";
 import { FollowStatus } from "../../generated/client/index.js";
-import { FollowAction, FollowActionType, FollowRelation } from "../../types/types.js";
+import { FollowAction, FollowActionType } from "../../types/types.js";
 
 describe("follow user integration tests", () => {
-  const FOLLOW_URL = (id: string) => `/api/follow/${id}/follow-user`;
+  const FOLLOW_URL = (id: string) => `/api/follow/${id}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -155,7 +155,7 @@ describe("follow user integration tests", () => {
 
 describe("update follow status integration tests", () => {
   const UPDATE_URL = (id: string, type: FollowActionType): string =>
-    `/api/follow/${id}/update-status/${type}`;
+    `/api/follow/${id}/status/${type}`;
   let testData: TestData;
 
   beforeAll(async () => {

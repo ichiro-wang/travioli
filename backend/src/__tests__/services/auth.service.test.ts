@@ -177,8 +177,6 @@ describe("AuthService unit tests", () => {
 
       const result = await authService.authenticateUser(authData);
 
-      console.log(result);
-
       expect(result).toEqual({ ...mockUser, isDeleted: false });
       expect(mockPrismaUserUpdate).toHaveBeenCalledWith({
         where: { id: "1" },

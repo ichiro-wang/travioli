@@ -53,6 +53,11 @@ interface FollowListResult {
   hasMore: boolean;
 }
 
+interface FollowUserResult {
+  follow: Follows;
+  isNewRelationship: boolean;
+}
+
 interface UpdateFollowResult {
   follow: Follows;
   message: string;
@@ -76,7 +81,7 @@ export class FollowService {
    * @param targetUserId the user we want to check
    * @param relationType followedBy | following
    * @param loadIndex same as page, but planning on using infinite scroll pagination on frontend so thought this would be a better name
-   * @returns followedBy | following list as a list of filtered users
+   * @returns followedBy | following list as a list of sanitized users
    */
   async getFollowList(
     targetUserId: string,

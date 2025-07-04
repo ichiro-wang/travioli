@@ -70,6 +70,7 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
 
+
     const { follow, isNewRelationship } = await followService.followUser(currentUserId, userId);
 
     const message =

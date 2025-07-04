@@ -219,7 +219,7 @@ describe("update profile integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/username already taken/i);
+    expect(res.body.message).toMatch(/@.*already exists/i);
   });
 
   it("should fail if new username is already taken (case insensitive", async () => {
@@ -229,7 +229,7 @@ describe("update profile integration tests", () => {
       .set("Cookie", testData.jwtCookie);
 
     expect(res.statusCode).toBe(409);
-    expect(res.body.message).toMatch(/username already taken/i);
+    expect(res.body.message).toMatch(/@.*already exists/i);
   });
 
   it("should fail if no fields are submitted for updating", async () => {
