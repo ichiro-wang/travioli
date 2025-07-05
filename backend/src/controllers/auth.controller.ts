@@ -1,6 +1,6 @@
 import { CookieOptions, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { AccessTokenOptions, generateAccessToken, generateTokens } from "../utils/generateToken.js";
+import { generateAccessToken, generateTokens, getTokenOptions } from "../utils/generateToken.js";
 import { filterUser } from "../utils/filterUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
@@ -181,7 +181,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
 
     const accessToken = generateAccessToken(user.id, "refresh");
 
-    res.cookie("accessToken", accessToken, AccessTokenOptions);
+    res.cookie("accessToken", accessToken, getTokenOptions("access"));
 
     res.status(200).json({ message: "Token refreshed successfully" });
   } catch (error: unknown) {

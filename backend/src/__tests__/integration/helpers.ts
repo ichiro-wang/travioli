@@ -76,7 +76,8 @@ export const setUpTestData = async () => {
     otherUser: { ...testUsers.otherUser, id: otherUser.id },
     privateUser: { ...testUsers.privateUser, id: privateUser.id },
     deletedUser: { ...testUsers.deletedUser, id: deletedUser.id },
-    jwtCookie: loginRes.headers["set-cookie"],
+    accessTokenCookie: loginRes.headers["set-cookie"][0],
+    refreshTokenCookie: loginRes.headers["set-cookie"][1],
   };
 };
 

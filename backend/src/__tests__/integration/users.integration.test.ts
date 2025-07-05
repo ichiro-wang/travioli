@@ -19,7 +19,7 @@ describe("check username integration tests", () => {
   it("should return success if username available", async () => {
     const res = await request(app)
       .get(CHECK_URL("random_username"))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/@.*is available/i);
@@ -28,7 +28,7 @@ describe("check username integration tests", () => {
   it("should return fail if username taken", async () => {
     const res = await request(app)
       .get(CHECK_URL(testData.otherUser.username))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already taken/i);
@@ -37,7 +37,7 @@ describe("check username integration tests", () => {
   it("should return fail if username is same as requesting user", async () => {
     const res = await request(app)
       .get(CHECK_URL(testData.user.username))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already your username/i);
@@ -46,21 +46,23 @@ describe("check username integration tests", () => {
   it("should return fail if username taken, case-insensitive", async () => {
     const res = await request(app)
       .get(CHECK_URL(testData.otherUser.username.toUpperCase()))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already taken/i);
   });
 
   it("should return fail if username is invalid format", async () => {
-    const res = await request(app).get(CHECK_URL("bad username")).set("Cookie", testData.jwtCookie);
+    const res = await request(app)
+      .get(CHECK_URL("bad username"))
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
   });
 
   it("should return fail if username is too short", async () => {
-    const res = await request(app).get(CHECK_URL("12")).set("Cookie", testData.jwtCookie);
+    const res = await request(app).get(CHECK_URL("12")).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/minimum 3/i);
@@ -69,7 +71,7 @@ describe("check username integration tests", () => {
   it("should return fail if username is too long", async () => {
     const res = await request(app)
       .get(CHECK_URL("1234567890123456789012345678901"))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/maximum 30/i);
@@ -91,7 +93,7 @@ describe("get profile integration tests", () => {
   it("should successfully retrieve own profile", async () => {
     const res = await request(app)
       .get(GET_PROFILE_URL(testData.user.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email);
@@ -104,7 +106,7 @@ describe("get profile integration tests", () => {
   it("should successfully retrieve another user's profile", async () => {
     const res = await request(app)
       .get(GET_PROFILE_URL(testData.otherUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", null);
@@ -117,7 +119,7 @@ describe("get profile integration tests", () => {
   it("should fail to find a user with id that is not a valid cuid", async () => {
     const res = await request(app)
       .get(GET_PROFILE_URL("not_a_valid_cuid"))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/invalid cuid/i);
@@ -126,7 +128,7 @@ describe("get profile integration tests", () => {
   it("should fail to find a user with non-existent id", async () => {
     const res = await request(app)
       .get(GET_PROFILE_URL("csomerandomusercuid777777"))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user.*not found/i);
@@ -135,7 +137,7 @@ describe("get profile integration tests", () => {
   it("should fail to find a user marked as deleted", async () => {
     const res = await request(app)
       .get(GET_PROFILE_URL(testData.deletedUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user.*not found/i);
@@ -170,7 +172,7 @@ describe("update profile integration tests", () => {
         username: "michaeljordan",
         bio: "I love to travel",
       })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email); // email unchanged
@@ -183,7 +185,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ name: "LeBron James", bio: "Los Angeles" })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("name", "LeBron James");
@@ -195,7 +197,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ name: "", bio: "" })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("name", "");
@@ -206,7 +208,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ username: testData.user.username.toUpperCase() })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("username", testData.user.username);
@@ -216,7 +218,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ username: testData.otherUser.username })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already exists/i);
@@ -226,14 +228,17 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ username: testData.otherUser.username.toUpperCase() })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already exists/i);
   });
 
   it("should fail if no fields are submitted for updating", async () => {
-    const res = await request(app).patch(UPDATE_URL).send({}).set("Cookie", testData.jwtCookie);
+    const res = await request(app)
+      .patch(UPDATE_URL)
+      .send({})
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid input data/i);
@@ -244,7 +249,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ username: "😂😂😂😂" })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid input data/i);
@@ -258,7 +263,7 @@ describe("update profile integration tests", () => {
     const res = await request(app)
       .patch(UPDATE_URL)
       .send({ name: "Random Name" })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
@@ -285,7 +290,7 @@ describe("delete account integration tests", () => {
     const res = await request(app)
       .delete(DELETE_URL)
       .send({ password: testData.user.password })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email);
@@ -299,7 +304,7 @@ describe("delete account integration tests", () => {
     const res = await request(app)
       .delete(DELETE_URL)
       .send({ password: testData.user.password })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
@@ -309,7 +314,7 @@ describe("delete account integration tests", () => {
     const res = await request(app)
       .delete(DELETE_URL)
       .send({ password: "wrong password" })
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid credentials/i);

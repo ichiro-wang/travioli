@@ -33,8 +33,10 @@ describe("signup integration tests", () => {
     expect(res.body.user).toHaveProperty("email", "lebronjames@gmail.com");
 
     const setCookieHeader = res.headers["set-cookie"];
+
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/jwt=/i);
+    expect(setCookieHeader[0]).toMatch(/accessToken=/);
+    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
   });
 
   it("should fail if email already exists", async () => {
@@ -190,7 +192,8 @@ describe("login integration tests", () => {
 
     const setCookieHeader = res.headers["set-cookie"];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/jwt=/i);
+    expect(setCookieHeader[0]).toMatch(/accessToken=/);
+    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
   });
 
   it("should fail if email not found", async () => {
@@ -231,7 +234,8 @@ describe("login integration tests", () => {
 
     const setCookieHeader = res.headers["set-cookie"];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/jwt=/i);
+    expect(setCookieHeader[0]).toMatch(/accessToken=/);
+    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
   });
 
   it("should fail if email bad format", async () => {
@@ -272,18 +276,21 @@ describe("logout integration tests", () => {
 
     let setCookieHeader = loginRes.headers["set-cookie"];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/jwt=/i);
+    expect(setCookieHeader[0]).toMatch(/accessToken=/);
+    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
 
     // logout the user
-    const res = await request(app).post(LOGOUT_URL);
+    const res = await request(app).post(LOGOUT_URL).set("Cookie", setCookieHeader[1]);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/logged out successfully/i);
 
     setCookieHeader = res.headers["set-cookie"];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/jwt=/i);
+    expect(setCookieHeader[0]).toMatch(/accessToken=/);
     expect(setCookieHeader[0]).toMatch(/max-age=0/i);
+    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
+    expect(setCookieHeader[1]).toMatch(/max-age=0/i);
   });
 });
 
@@ -327,6 +334,6 @@ describe("get-me integration tests", () => {
     const res = await request(app).get(ME_URL);
 
     expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/no token provided/i);
+    expect(res.body.message).toMatch(/no access token provided/i);
   });
 });

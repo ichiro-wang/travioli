@@ -27,7 +27,7 @@ describe("follow user integration tests", () => {
     creates a follows relationship with status: accepted`, async () => {
     const res = await request(app)
       .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toMatch(/successfully followed user/i);
@@ -40,7 +40,7 @@ describe("follow user integration tests", () => {
     creates a follows relationship with status: pending`, async () => {
     const res = await request(app)
       .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toMatch(/follow request sent/i);
@@ -52,7 +52,7 @@ describe("follow user integration tests", () => {
   it(`should fail when a user tries to follow self`, async () => {
     const res = await request(app)
       .post(FOLLOW_URL(testData.user.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/cannot follow self/i);
@@ -61,7 +61,7 @@ describe("follow user integration tests", () => {
   it(`should fail when trying to follow non-existent user`, async () => {
     const res = await request(app)
       .post(FOLLOW_URL("csomerandomusercuid777777"))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
@@ -70,7 +70,7 @@ describe("follow user integration tests", () => {
   it(`should fail when trying to follow deleted user`, async () => {
     const res = await request(app)
       .post(FOLLOW_URL(testData.deletedUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
@@ -88,7 +88,7 @@ describe("follow user integration tests", () => {
 
     const res = await request(app)
       .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/you already follow/i);
@@ -106,7 +106,7 @@ describe("follow user integration tests", () => {
 
     const res = await request(app)
       .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/you have already requested/i);
@@ -125,7 +125,7 @@ describe("follow user integration tests", () => {
 
     const res = await request(app)
       .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/successfully followed user/i);
@@ -145,7 +145,7 @@ describe("follow user integration tests", () => {
 
     const res = await request(app)
       .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/follow request sent/i);
@@ -183,7 +183,7 @@ describe("update follow status integration tests", () => {
   it("should successfully accept a follow request", async () => {
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.accept))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.follow).toHaveProperty("status", FollowStatus.accepted);
@@ -193,7 +193,7 @@ describe("update follow status integration tests", () => {
   it("should successfully reject a follow request", async () => {
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.reject))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.follow).toHaveProperty("status", FollowStatus.notFollowing);
@@ -203,7 +203,7 @@ describe("update follow status integration tests", () => {
   it("should successfully remove a follower", async () => {
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.remove))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
   });
 
   it("should successfully cancel a follow request", async () => {
@@ -218,7 +218,7 @@ describe("update follow status integration tests", () => {
 
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.cancel))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.follow).toHaveProperty("status", FollowStatus.notFollowing);
@@ -237,7 +237,7 @@ describe("update follow status integration tests", () => {
 
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.unfollow))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.follow).toHaveProperty("status", FollowStatus.notFollowing);
@@ -247,7 +247,7 @@ describe("update follow status integration tests", () => {
   it("should fail to update when no follows relationship exists between 2 users", async () => {
     const res = await request(app)
       .patch(UPDATE_URL(testData.otherUser.id, FollowAction.unfollow))
-      .set("Cookie", testData.jwtCookie);
+      .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/no.*relationship.*could not update/i);

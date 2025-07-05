@@ -14,10 +14,17 @@ services:
       - PORT=5000
       - NODE_ENV=test
       - DATABASE_URL=postgresql://user:password@db:5432/testdb
+      - REDIS_URL=redis://redis:6379
     command: sh -c "tail -f /dev/null"
     depends_on:
       - db
+      - redis
     container_name: travioli-backend-test
+  redis:
+    image: redis:8.0-alpine
+    ports:
+      - 6379:6379
+    container_name: travioli-redis-test
   db:
     # running local postgres db for testing
     image: postgis/postgis:17-3.5-alpine
