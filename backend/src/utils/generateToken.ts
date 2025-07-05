@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { CookieOptions, Response } from "express";
 import { DecodedToken, TokenSource, TokenType } from "../types/global.js";
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
+import { randomUUID } from "crypto";
 
 export const generateAccessToken = (userId: string, source: TokenSource = "credentials") => {
   const secretKey = process.env.ACCESS_TOKEN_SECRET;
@@ -9,7 +10,7 @@ export const generateAccessToken = (userId: string, source: TokenSource = "crede
     throw new NoSecretKeyError("access");
   }
 
-  const payload: DecodedToken = { userId, type: "access", source };
+  const payload: DecodedToken = { userId, type: "access", source, jti: randomUUID() };
 
   return jwt.sign(payload, secretKey, { expiresIn: "15m" });
 };
@@ -20,7 +21,7 @@ export const generateRefreshToken = (userId: string, source: TokenSource = "cred
     throw new NoSecretKeyError("refresh");
   }
 
-  const payload: DecodedToken = { userId, type: "refresh", source };
+  const payload: DecodedToken = { userId, type: "refresh", source, jti: randomUUID() };
 
   return jwt.sign(payload, secretKey, { expiresIn: "7d" });
 };
@@ -66,7 +67,12 @@ export const generateToken = (
   const DAYS = 7;
 
   // the JWT payload consists of the user ID and type: access|refresh
-  const payload: DecodedToken = { userId, type: tokenType, source: "credentials" };
+  const payload: DecodedToken = {
+    userId,
+    type: tokenType,
+    source: "credentials",
+    jti: randomUUID(),
+  };
 
   const secretKey = process.env.ACCESS_TOKEN_SECRET;
 

@@ -4,7 +4,11 @@ import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken, TokenType } from "../types/global.js";
 import { userNotFoundResponse } from "../utils/responseHelpers.js";
 import { authService } from "../services/index.js";
-import { NoSecretKeyError, NoTokenProvidedError } from "../errors/jwt.errors.js";
+import {
+  InvalidTokenTypeError,
+  NoSecretKeyError,
+  NoTokenProvidedError,
+} from "../errors/jwt.errors.js";
 import { UserNotFoundError } from "../errors/auth.errors.js";
 
 export const authenticateToken = async (
@@ -31,11 +35,35 @@ export const authenticateToken = async (
 
     const decodedToken = jwt.verify(token, secretKey) as DecodedToken;
 
+    if (decodedToken.type !== tokenType) {
+      throw new InvalidTokenTypeError();
+    }
+
+    req.tokenSource = decodedToken.source;
+
+    const userCacheKey = `user:${decodedToken.userId}`;
+
+    // we check the cache only for access tokens because access tokens are stateless in our app
+    // refresh tokens are stateful and verified using redis, allowing us to revoke them
+    // we don't want to allow an invalid/revoked refresh token to be able to fetch a cached user
+    // if (isAccessToken) {
+    //   const cachedUser = await redisService.get(userCacheKey);
+
+    //   if (cachedUser) {
+    //     req.user = JSON.parse(cachedUser);
+    //     return next();
+    //   }
+    // }
+
     const user = await authService.findUserById(decodedToken.userId);
 
     if (!user) {
       throw new UserNotFoundError();
     }
+
+    // const { password, ...userNoPassword } = user;
+
+    // if (isAccessToken) {}
 
     // add user to Request, this way we can access the logged in user from the controllers with req.user
     // req.user only exists within the scope of the current request
@@ -45,16 +73,16 @@ export const authenticateToken = async (
     next();
   } catch (error: unknown) {
     if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ message: "Access token expired" });
+      res.status(401).json({ message: "Token expired" });
       return;
     }
 
     if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ message: "Invalid access token" });
+      res.status(401).json({ message: "Invalid token" });
       return;
     }
 
-    if (error instanceof NoTokenProvidedError) {
+    if (error instanceof NoTokenProvidedError || error instanceof InvalidTokenTypeError) {
       res.status(401).json({ message: error.message });
       return;
     }
@@ -88,50 +116,3 @@ export const authenticateRefreshToken = async (
 ): Promise<void> => {
   return authenticateToken(req, res, next, "refresh");
 };
-
-// below function deprecated
-/*
-export const authenticateToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const token: string = req.cookies.jwt;
-
-    if (!token) {
-      res.status(401).json({ message: "Unauthorized - No token provided" });
-      return;
-    }
-
-    const secretKey = process.env.ACCESS_TOKEN_SECRET;
-
-    if (!secretKey) {
-      throw new Error("No secret key provided for JWT");
-    }
-
-    const decodedToken = jwt.verify(token, secretKey) as DecodedToken;
-
-    if (!decodedToken) {
-      res.status(401).json({ message: "Unauthorized - Invalid token" });
-      return;
-    }
-
-    const user = await authService.findUserById(decodedToken.userId);
-
-    if (!user) {
-      userNotFoundResponse(res);
-      return;
-    }
-
-    // add user to Request, this way we can access the logged in user from the controllers with req.user
-    // req.user only exists within the scope of the current request
-    req.user = user;
-    req.tokenSource = decodedToken.source;
-
-    next();
-  } catch (error: unknown) {
-    internalServerError(error, res, "authenticateToken middleware");
-  }
-};
-*/

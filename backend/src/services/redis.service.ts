@@ -11,29 +11,38 @@ export class RedisService {
     this.client.on("error", (error) => console.log("Redis Client Error", error));
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     if (this.client.isOpen) return;
 
     await this.client.connect();
     console.log("Redis connected successfully");
   }
 
-  async disconnect() {
+  async disconnect(): Promise<void> {
     if (!this.client.isOpen) return;
 
     await this.client.destroy();
     console.log("Redis disconnected successfully");
   }
 
-  async get(key: string) {
-    return this.client.get(key);
+  async get(key: string): Promise<string | null> {
+    return await this.client.get(key);
   }
 
-  async set(key: string, ttl: number = this.DEFAULT_EXPIRATION, value: any): Promise<void> {
-    this.client.setEx(key, ttl, value);
+  async set(key: string, value: any, ttl: number = this.DEFAULT_EXPIRATION): Promise<void> {
+    await this.client.setEx(key, ttl, value);
   }
 
-  async del(key: string) {
-    this.client.del(key);
+  async del(key: string): Promise<void> {
+    await this.client.del(key);
+  }
+
+  async blackListToken(jti: string, ttl: number): Promise<void> {
+    await this.client.setEx(jti, ttl, "");
+  }
+
+  async checkIfTokenBlacklisted(jti: string): Promise<boolean> {
+    const blacklisted = await this.client.get(jti);
+    return blacklisted !== null ? true : false;
   }
 }
