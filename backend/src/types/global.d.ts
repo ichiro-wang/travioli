@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { User } from "../generated/client/index.js";
 import { z } from "zod";
+import { JwtPayload } from "jsonwebtoken";
 
 export type TokenType = "access" | "refresh";
 
@@ -15,6 +16,7 @@ export interface DecodedToken extends JwtPayload {
   userId: string;
   type: TokenType;
   source: TokenSource;
+  jti: string;
 }
 
 // allow user and JWT cookie in requests

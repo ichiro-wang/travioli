@@ -15,11 +15,13 @@ services:
       - NODE_ENV=development
       - REQUEST_ORIGIN=http://frontend:5173
       - DATABASE_URL=postgresql://user:password@db:5432/devdb
+      - REDIS_URL=redis://redis:6379
     ports:
       - 5000:5000
     command: npm run dev
     depends_on:
       - db
+      - redis
     container_name: travioli-backend-dev
   frontend:
     build:
@@ -34,6 +36,13 @@ services:
       - VITE_BACKEND_URL=http://backend:5000
     command: npm run dev
     container_name: travioli-frontend-dev
+  redis:
+    image: redis:8.0-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    container_name: travioli-redis-dev
   db:
     # running local postgres db for development
     image: postgis/postgis:17-3.5-alpine
@@ -56,9 +65,11 @@ services:
       - frontend
       - backend
       - db
+      - redis
     container_name: travioli-nginx-dev
 
 volumes:
   frontend_dev_node_modules:
   backend_dev_node_modules:
   dev_database:
+  redis_data:

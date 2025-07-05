@@ -1,22 +1,25 @@
 import { CookieOptions, Request, Response } from "express";
-import {
-  AccessTokenOptions,
-  generateAccessToken,
-  generateToken,
-  generateTokens,
-} from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
+import { AccessTokenOptions, generateAccessToken, generateTokens } from "../utils/generateToken.js";
 import { filterUser } from "../utils/filterUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { LoginBody, SignupBody } from "../schemas/auth.schemas.js";
-import { authService } from "../services/index.js";
+import { authService, redisService } from "../services/index.js";
 import { invalidCredentialsResponse, userNotFoundResponse } from "../utils/responseHelpers.js";
 import {
   EmailAlreadyExistsError,
   InvalidCredentialsError,
   UsernameAlreadyExistsError,
+  UserNotAuthorizedError,
   UserNotFoundError,
 } from "../errors/auth.errors.js";
-import { NoSecretKeyError } from "../errors/jwt.errors.js";
+import {
+  InvalidRefreshTokenError,
+  InvalidTokenTypeError,
+  NoSecretKeyError,
+} from "../errors/jwt.errors.js";
+import { DecodedToken } from "../types/global.js";
+import { getJwtTtl } from "../utils/getJwtTtl.js";
 
 /**
  * method simply for testing backend connection
@@ -92,6 +95,25 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
+    const refreshToken: string = req.cookies.refreshToken;
+    const secretKey = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!secretKey) {
+      throw new NoSecretKeyError("refresh");
+    }
+
+    const decodedToken = jwt.verify(refreshToken, secretKey) as DecodedToken;
+
+    if (decodedToken.type !== "refresh") {
+      throw new InvalidTokenTypeError();
+    }
+
+    const tokenTtl = getJwtTtl(decodedToken);
+
+    if (tokenTtl !== null && tokenTtl > 0) {
+      await redisService.blackListToken(decodedToken.jti, tokenTtl);
+    }
+
     const options: CookieOptions = {
       maxAge: 0, // set to expire immediately
       httpOnly: true, // not accessible via javascript
@@ -118,14 +140,18 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
     // this should be caught by authenticateToken.ts middleware, but using this as another line of defense
     if (!loggedInUser) {
-      res.status(401).json({ message: "User not authorized. Please log in" });
-      return;
+      throw new UserNotAuthorizedError();
     }
 
     const filteredUser = filterUser(loggedInUser, true);
     res.status(200).json({ user: filteredUser });
     return;
   } catch (error: unknown) {
+    if (error instanceof UserNotAuthorizedError) {
+      res.status(401).json({ message: error.message });
+      return;
+    }
+
     internalServerError(error, res, "getMe controller");
   }
 };
@@ -135,8 +161,22 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     const user = req.user;
 
     if (!user) {
-      userNotFoundResponse(res);
-      return;
+      throw new UserNotFoundError();
+    }
+
+    const refreshToken: string = req.cookies.refreshToken;
+    const secretKey = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!secretKey) {
+      throw new NoSecretKeyError("refresh");
+    }
+
+    const decodedToken = jwt.verify(refreshToken, secretKey) as DecodedToken;
+
+    const isBlacklisted = await redisService.checkIfTokenBlacklisted(decodedToken.jti);
+
+    if (isBlacklisted) {
+      throw new InvalidRefreshTokenError();
     }
 
     const accessToken = generateAccessToken(user.id, "refresh");
@@ -145,6 +185,21 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({ message: "Token refreshed successfully" });
   } catch (error: unknown) {
+    if (error instanceof UserNotFoundError) {
+      userNotFoundResponse(res);
+      return;
+    }
+
+    if (error instanceof NoSecretKeyError) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+
+    if (error instanceof InvalidRefreshTokenError) {
+      res.status(401).json({ message: error.message });
+      return;
+    }
+
     internalServerError(error, res, "refresh controller");
   }
 };

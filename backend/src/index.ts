@@ -13,7 +13,7 @@ import followRoutes from "./routes/follow.route.js";
 const app = express();
 
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined")); // for logging requests
-app.use(cookieParser()); 
+app.use(cookieParser());
 app.use(express.json()); // for parsing json data
 
 app.use(

@@ -10,6 +10,12 @@ export class InvalidCredentialsError extends Error {
   }
 }
 
+export class UserNotAuthorizedError extends Error {
+  constructor() {
+    super("User not authorized. Please log in");
+  }
+}
+
 export class EmailAlreadyExistsError extends Error {
   constructor(email: string) {
     super(`Account with the email ${email} already exists`);
