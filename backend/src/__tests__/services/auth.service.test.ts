@@ -121,7 +121,7 @@ describe("AuthService unit tests", () => {
 
     it("should throw an error if username already exists", async () => {
       // create user with existing username
-      const existingUser = { username: "lebronjames@gmail.com" };
+      const existingUser = { username: "lebronjames" };
 
       mockPrismaUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(existingUser);
 
@@ -129,8 +129,8 @@ describe("AuthService unit tests", () => {
         /@lebronjames already exists/i
       );
 
-      expect(mockBcryptGenSalt).not.toHaveBeenCalledOnce();
-      expect(mockPrismaUserCreate).not.toHaveBeenCalledOnce();
+      expect(mockBcryptGenSalt).not.toHaveBeenCalled();
+      expect(mockPrismaUserCreate).not.toHaveBeenCalled();
     });
 
     //
@@ -242,6 +242,42 @@ describe("AuthService unit tests", () => {
       const result = await authService.findUserByUsername("lebronjames");
 
       expect(result).toBeNull();
+    });
+
+    //
+  });
+
+  describe("findUserByEmail", () => {
+    it("should return a user when found and not deleted", async () => {
+      mockPrismaUserFindUnique.mockResolvedValue(mockUser);
+
+      // since findUserByEmail is a private method, we need to access it by casting it to 'any' type
+      // this works since compiled JS has no private members, it is just a TS thing
+      // private technically doesn't actually exist
+      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+
+      expect(result).toEqual(mockUser);
+      expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
+        where: { email: "lebronjames@gmail.com" },
+      });
+    });
+
+    it("should return null if user is not found", async () => {
+      mockPrismaUserFindUnique.mockResolvedValue(null);
+
+      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null if user is deleted", async () => {
+      mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
+
+      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+
+      // findUserByEmail doesn't return null even if the user is deleted
+      // this is so deleted users who log back in can be automatically reactivated
+      expect(result).toEqual(mockUser);
     });
 
     //
