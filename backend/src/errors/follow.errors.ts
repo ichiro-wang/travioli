@@ -20,8 +20,6 @@ export class NoFollowRelationshipError extends Error {
 
 export class InvalidUpdateStatusActionError extends Error {
   constructor(from: FollowStatus, status: FollowStatus) {
-    super(
-      `Failed to update follow status. Expected existing status to be ${from}, but got ${status}`
-    );
+    super(`Failed to update follow status. Expected existing status to be ${from}, but got ${status}`);
   }
 }

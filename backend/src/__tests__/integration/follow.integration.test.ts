@@ -25,9 +25,7 @@ describe("follow user integration tests", () => {
 
   it(`should successfully follow a non-private user. 
     creates a follows relationship with status: accepted`, async () => {
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.otherUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toMatch(/successfully followed user/i);
@@ -38,9 +36,7 @@ describe("follow user integration tests", () => {
 
   it(`should send a follow request to a private user.
     creates a follows relationship with status: pending`, async () => {
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.privateUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toMatch(/follow request sent/i);
@@ -50,9 +46,7 @@ describe("follow user integration tests", () => {
   });
 
   it(`should fail when a user tries to follow self`, async () => {
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.user.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.user.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/cannot follow self/i);
@@ -68,9 +62,7 @@ describe("follow user integration tests", () => {
   });
 
   it(`should fail when trying to follow deleted user`, async () => {
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.deletedUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.deletedUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);
@@ -86,9 +78,7 @@ describe("follow user integration tests", () => {
       },
     });
 
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.otherUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/you already follow/i);
@@ -104,9 +94,7 @@ describe("follow user integration tests", () => {
       },
     });
 
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.privateUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/you have already requested/i);
@@ -123,9 +111,7 @@ describe("follow user integration tests", () => {
       },
     });
 
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.otherUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.otherUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/successfully followed user/i);
@@ -143,9 +129,7 @@ describe("follow user integration tests", () => {
       },
     });
 
-    const res = await request(app)
-      .post(FOLLOW_URL(testData.privateUser.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).post(FOLLOW_URL(testData.privateUser.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/follow request sent/i);
@@ -154,8 +138,7 @@ describe("follow user integration tests", () => {
 });
 
 describe("update follow status integration tests", () => {
-  const UPDATE_URL = (id: string, type: FollowActionType): string =>
-    `/api/follow/${id}/status/${type}`;
+  const UPDATE_URL = (id: string, type: FollowActionType): string => `/api/follow/${id}/status/${type}`;
   let testData: TestData;
 
   beforeAll(async () => {

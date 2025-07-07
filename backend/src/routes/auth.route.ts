@@ -5,10 +5,7 @@
 
 import express from "express";
 import { getMe, login, logout, pingPong, refresh, signup } from "../controllers/auth.controller.js";
-import {
-  authenticateAccessToken,
-  authenticateRefreshToken,
-} from "../middleware/authenticateToken.js";
+import { authenticateAccessToken, authenticateRefreshToken } from "../middleware/authenticateToken.js";
 import { validateData } from "../middleware/validateData.js";
 import { loginSchema, signupSchema } from "../schemas/auth.schemas.js";
 

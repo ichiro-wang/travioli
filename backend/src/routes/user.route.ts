@@ -4,12 +4,7 @@
  */
 
 import express from "express";
-import {
-  checkUsername,
-  getUserProfile,
-  softDeleteAccount,
-  updateProfile,
-} from "../controllers/user.controller.js";
+import { checkUsername, getUserProfile, softDeleteAccount, updateProfile } from "../controllers/user.controller.js";
 import { authenticateAccessToken } from "../middleware/authenticateToken.js";
 import { validateData } from "../middleware/validateData.js";
 import {

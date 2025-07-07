@@ -22,10 +22,9 @@ export const updateProfileSchema = z.object({
       name: z.string().trim().max(255).optional(),
       bio: z.string().trim().max(255).optional(),
     })
-    .refine(
-      (data) => data.username !== undefined || data.name !== undefined || data.bio !== undefined,
-      { message: "You must update at least one field" }
-    ),
+    .refine((data) => data.username !== undefined || data.name !== undefined || data.bio !== undefined, {
+      message: "You must update at least one field",
+    }),
 });
 
 export type UpdateProfileBody = z.infer<typeof updateProfileSchema>["body"];

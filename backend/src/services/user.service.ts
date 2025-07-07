@@ -1,9 +1,5 @@
 import prisma from "../db/prisma.js";
-import {
-  InvalidCredentialsError,
-  UsernameAlreadyExistsError,
-  UserNotFoundError,
-} from "../errors/auth.errors.js";
+import { InvalidCredentialsError, UsernameAlreadyExistsError, UserNotFoundError } from "../errors/auth.errors.js";
 import { FollowStatus, User } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
 import { FollowRelation } from "../types/types.js";
@@ -129,10 +125,7 @@ export class UserService {
    * we want to prevent the user object from being completely deleted from the databse, so just mark as deleted without actually deleting
    */
   async softDeleteUser(currentUserId: string, inputPassword: string, currentUserPassword: string) {
-    const isPasswordCorrect = await this.authService.verifyPassword(
-      inputPassword,
-      currentUserPassword
-    );
+    const isPasswordCorrect = await this.authService.verifyPassword(inputPassword, currentUserPassword);
     if (!isPasswordCorrect) {
       throw new InvalidCredentialsError();
     }

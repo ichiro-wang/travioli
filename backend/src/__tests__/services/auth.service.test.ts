@@ -111,9 +111,7 @@ describe("AuthService unit tests", () => {
 
       mockPrismaUserFindUnique.mockResolvedValueOnce(existingUser).mockResolvedValueOnce(null);
 
-      await expect(authService.createUser(userData)).rejects.toThrow(
-        /lebronjames@gmail.com already exists/i
-      );
+      await expect(authService.createUser(userData)).rejects.toThrow(/lebronjames@gmail.com already exists/i);
 
       expect(mockBcryptGenSalt).not.toHaveBeenCalled();
       expect(mockPrismaUserCreate).not.toHaveBeenCalled();
@@ -125,9 +123,7 @@ describe("AuthService unit tests", () => {
 
       mockPrismaUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(existingUser);
 
-      await expect(authService.createUser(userData)).rejects.toThrow(
-        /@lebronjames already exists/i
-      );
+      await expect(authService.createUser(userData)).rejects.toThrow(/@lebronjames already exists/i);
 
       expect(mockBcryptGenSalt).not.toHaveBeenCalled();
       expect(mockPrismaUserCreate).not.toHaveBeenCalled();

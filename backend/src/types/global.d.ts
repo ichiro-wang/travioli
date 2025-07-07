@@ -1,13 +1,11 @@
-import { Prisma } from "@prisma/client";
 import { User } from "../generated/client/index.js";
-import { z } from "zod";
 import { JwtPayload } from "jsonwebtoken";
 
 export type TokenType = "access" | "refresh";
 
 /**
- * check whether a token was generated via refresh, or via login/signup
- * this allows us to flag sensitive operations such as: delete-account, change-password, etc
+ * check whether a token was generated via refresh or via login/signup
+ * this allows us to flag sensitive operations such as delete-account, change-password, etc.
  */
 export type TokenSource = "credentials" | "refresh";
 

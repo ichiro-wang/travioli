@@ -172,9 +172,7 @@ describe("UserService unit tests", () => {
     it("should throw error when target user is not found", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(null);
 
-      await expect(userService.getUserProfileData("nonexistent", mockUser)).rejects.toThrow(
-        /user not found/i
-      );
+      await expect(userService.getUserProfileData("nonexistent", mockUser)).rejects.toThrow(/user not found/i);
     });
 
     it("should return notFollowing status when no follow relationship exists", async () => {
@@ -194,14 +192,8 @@ describe("UserService unit tests", () => {
 
       expect(result.followedByCount).toBe(10);
       expect(result.followingCount).toBe(15);
-      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
-        mockTargetUser.id,
-        FollowRelation.followedBy
-      );
-      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
-        mockTargetUser.id,
-        FollowRelation.following
-      );
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(mockTargetUser.id, FollowRelation.followedBy);
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(mockTargetUser.id, FollowRelation.following);
     });
 
     //
@@ -340,9 +332,9 @@ describe("UserService unit tests", () => {
     it("should throw error with incorrect password", async () => {
       mockAuthServiceVerifyPassword.mockResolvedValue(false);
 
-      await expect(
-        userService.softDeleteUser(mockUser.id, "wrongpassword", hashedPassword)
-      ).rejects.toThrow(/invalid credentials/i);
+      await expect(userService.softDeleteUser(mockUser.id, "wrongpassword", hashedPassword)).rejects.toThrow(
+        /invalid credentials/i
+      );
 
       expect(mockPrismaUserUpdate).not.toHaveBeenCalled();
     });
@@ -354,25 +346,19 @@ describe("UserService unit tests", () => {
     it("should handle database errors in getUserProfileData", async () => {
       mockAuthServiceFindUserById.mockRejectedValue(new Error("Database error"));
 
-      await expect(userService.getUserProfileData("userid", mockUser)).rejects.toThrow(
-        /database error/i
-      );
+      await expect(userService.getUserProfileData("userid", mockUser)).rejects.toThrow(/database error/i);
     });
 
     it("should handle database errors in updateUserProfile", async () => {
       mockPrismaUserUpdate.mockRejectedValue(new Error("Database error"));
 
-      await expect(userService.updateUserProfile(mockUser, { name: "New Name" })).rejects.toThrow(
-        /database error/i
-      );
+      await expect(userService.updateUserProfile(mockUser, { name: "New Name" })).rejects.toThrow(/database error/i);
     });
 
     it("should handle auth service errors in checkUsernameAvailability", async () => {
       mockAuthServiceFindUserByUsername.mockRejectedValue(new Error("Auth error"));
 
-      await expect(userService.checkUsernameAvailability("username", "current")).rejects.toThrow(
-        /auth error/i
-      );
+      await expect(userService.checkUsernameAvailability("username", "current")).rejects.toThrow(/auth error/i);
     });
 
     //

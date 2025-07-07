@@ -20,6 +20,6 @@ export class InvalidTokenTypeError extends Error {
 
 export class InvalidRefreshTokenError extends Error {
   constructor() {
-    super("Invalid refresh token provided")
+    super("Invalid refresh token provided");
   }
 }

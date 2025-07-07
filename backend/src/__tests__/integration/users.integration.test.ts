@@ -17,9 +17,7 @@ describe("check username integration tests", () => {
   });
 
   it("should return success if username available", async () => {
-    const res = await request(app)
-      .get(CHECK_URL("random_username"))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).get(CHECK_URL("random_username")).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/@.*is available/i);
@@ -35,9 +33,7 @@ describe("check username integration tests", () => {
   });
 
   it("should return fail if username is same as requesting user", async () => {
-    const res = await request(app)
-      .get(CHECK_URL(testData.user.username))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).get(CHECK_URL(testData.user.username)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toMatch(/@.*already your username/i);
@@ -53,9 +49,7 @@ describe("check username integration tests", () => {
   });
 
   it("should return fail if username is invalid format", async () => {
-    const res = await request(app)
-      .get(CHECK_URL("bad username"))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).get(CHECK_URL("bad username")).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
@@ -91,9 +85,7 @@ describe("get profile integration tests", () => {
   });
 
   it("should successfully retrieve own profile", async () => {
-    const res = await request(app)
-      .get(GET_PROFILE_URL(testData.user.id))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).get(GET_PROFILE_URL(testData.user.id)).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user).toHaveProperty("email", testData.user.email);
@@ -117,9 +109,7 @@ describe("get profile integration tests", () => {
   });
 
   it("should fail to find a user with id that is not a valid cuid", async () => {
-    const res = await request(app)
-      .get(GET_PROFILE_URL("not_a_valid_cuid"))
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).get(GET_PROFILE_URL("not_a_valid_cuid")).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/invalid cuid/i);
@@ -235,10 +225,7 @@ describe("update profile integration tests", () => {
   });
 
   it("should fail if no fields are submitted for updating", async () => {
-    const res = await request(app)
-      .patch(UPDATE_URL)
-      .send({})
-      .set("Cookie", testData.accessTokenCookie);
+    const res = await request(app).patch(UPDATE_URL).send({}).set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid input data/i);

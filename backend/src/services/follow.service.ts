@@ -8,19 +8,11 @@ import {
 } from "../errors/follow.errors.js";
 import { Follows, FollowStatus } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
-import {
-  FollowAction,
-  FollowActionType,
-  FollowRelation,
-  FollowRelationType,
-} from "../types/types.js";
+import { FollowAction, FollowActionType, FollowRelation, FollowRelationType } from "../types/types.js";
 import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 
-const statusTransitionMap: Record<
-  FollowActionType,
-  { from: FollowStatus; to: FollowStatus; message: string }
-> = {
+const statusTransitionMap: Record<FollowActionType, { from: FollowStatus; to: FollowStatus; message: string }> = {
   [FollowAction.accept]: {
     from: FollowStatus.pending,
     to: FollowStatus.accepted,
@@ -227,10 +219,7 @@ export class FollowService {
    * check database if there exists a Follows relationship between the 2 users
    * @returns the relationship if found
    */
-  private async getFollowRelationship(
-    followedById: string,
-    followingId: string
-  ): Promise<Follows | null> {
+  private async getFollowRelationship(followedById: string, followingId: string): Promise<Follows | null> {
     // there should not be a follow relationship between self
     if (followedById === followingId) {
       return null;

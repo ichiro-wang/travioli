@@ -31,10 +31,7 @@ export const getFollowList = async (
     const { id: targetUserId, type: relationType } = req.params;
     const currentUserId = req.user.id;
 
-    const permissionCheck = await permissionService.checkUserViewingPermission(
-      currentUserId,
-      targetUserId
-    );
+    const permissionCheck = await permissionService.checkUserViewingPermission(currentUserId, targetUserId);
 
     if (!permissionCheck.hasPermission) {
       res.status(403).json({ message: "This account is private" });
@@ -47,9 +44,7 @@ export const getFollowList = async (
     const result = await followService.getFollowList(targetUserId, relationType, loadIndex);
 
     // return followedBy or following list as the filtered user list
-    res
-      .status(200)
-      .json({ [relationType]: result.users, pagination: { loadIndex, hasMore: result.hasMore } });
+    res.status(200).json({ [relationType]: result.users, pagination: { loadIndex, hasMore: result.hasMore } });
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
@@ -70,11 +65,9 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
 
-
     const { follow, isNewRelationship } = await followService.followUser(currentUserId, userId);
 
-    const message =
-      follow.status === FollowStatus.pending ? "Follow request sent" : "Successfully followed user";
+    const message = follow.status === FollowStatus.pending ? "Follow request sent" : "Successfully followed user";
 
     const statusCode = isNewRelationship ? 201 : 200;
 
@@ -99,10 +92,7 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
  * - update a follow status to accepted or notFollowing
  * - types of actions: accept, reject, remove - target (current user); cancel, unfollow - target (other user)
  */
-export const updateFollowStatus = async (
-  req: Request<UpdateFollowStatusParams>,
-  res: Response
-): Promise<void> => {
+export const updateFollowStatus = async (req: Request<UpdateFollowStatusParams>, res: Response): Promise<void> => {
   try {
     const { id: userId, type: actionType } = req.params;
     const currentUserId = req.user.id;

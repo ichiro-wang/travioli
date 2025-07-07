@@ -4,10 +4,7 @@ import { DecodedToken, TokenSource, TokenType } from "../types/global.js";
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
 import { randomUUID } from "crypto";
 
-export const generateAccessToken = (
-  userId: string,
-  source: TokenSource = "credentials"
-): string => {
+export const generateAccessToken = (userId: string, source: TokenSource = "credentials"): string => {
   const secretKey = process.env.ACCESS_TOKEN_SECRET;
   if (!secretKey) {
     throw new NoSecretKeyError("access");
@@ -18,10 +15,7 @@ export const generateAccessToken = (
   return jwt.sign(payload, secretKey, { expiresIn: "15m" });
 };
 
-export const generateRefreshToken = (
-  userId: string,
-  source: TokenSource = "credentials"
-): string => {
+export const generateRefreshToken = (userId: string, source: TokenSource = "credentials"): string => {
   const secretKey = process.env.REFRESH_TOKEN_SECRET;
   if (!secretKey) {
     throw new NoSecretKeyError("refresh");

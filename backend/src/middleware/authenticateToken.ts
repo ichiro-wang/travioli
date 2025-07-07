@@ -4,12 +4,6 @@ import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken, TokenType } from "../types/global.js";
 import { userNotFoundResponse } from "../utils/responseHelpers.js";
 import { authService } from "../services/index.js";
-import {
-  InvalidTokenTypeError,
-  NoSecretKeyError,
-  NoTokenProvidedError,
-} from "../errors/jwt.errors.js";
-import { UserNotFoundError } from "../errors/auth.errors.js";
 
 export const authenticateToken = async (
   req: Request,
@@ -23,20 +17,23 @@ export const authenticateToken = async (
     const token: string = req.cookies[tokenName];
 
     if (!token) {
-      throw new NoTokenProvidedError(tokenType);
+      res.status(401).json({ message: `Unauthorized - No ${tokenType} token provided` });
+      return;
     }
 
     const secretKeyType = isAccessToken ? "ACCESS_TOKEN_SECRET" : "REFRESH_TOKEN_SECRET";
     const secretKey = process.env[secretKeyType];
 
     if (!secretKey) {
-      throw new NoSecretKeyError(tokenType);
+      res.status(400).json({ message: `No ${tokenType} token secret key provided` });
+      return;
     }
 
     const decodedToken = jwt.verify(token, secretKey) as DecodedToken;
 
     if (decodedToken.type !== tokenType) {
-      throw new InvalidTokenTypeError();
+      res.status(401).json({ message: `Invalid token type` });
+      return;
     }
 
     req.tokenSource = decodedToken.source;
@@ -58,7 +55,8 @@ export const authenticateToken = async (
     const user = await authService.findUserById(decodedToken.userId);
 
     if (!user) {
-      throw new UserNotFoundError();
+      userNotFoundResponse(res);
+      return;
     }
 
     // const { password, ...userNoPassword } = user;
@@ -82,37 +80,14 @@ export const authenticateToken = async (
       return;
     }
 
-    if (error instanceof NoTokenProvidedError || error instanceof InvalidTokenTypeError) {
-      res.status(401).json({ message: error.message });
-      return;
-    }
-
-    if (error instanceof NoSecretKeyError) {
-      res.status(400).json({ message: error.message });
-      return;
-    }
-
-    if (error instanceof UserNotFoundError) {
-      userNotFoundResponse(res);
-      return;
-    }
-
     internalServerError(error, res);
   }
 };
 
-export const authenticateAccessToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const authenticateAccessToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   return authenticateToken(req, res, next, "access");
 };
 
-export const authenticateRefreshToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const authenticateRefreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   return authenticateToken(req, res, next, "refresh");
 };

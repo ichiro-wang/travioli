@@ -197,9 +197,7 @@ describe("login integration tests", () => {
   });
 
   it("should fail if email not found", async () => {
-    const res = await request(app)
-      .post(LOGIN_URL)
-      .send({ email: "random_email@gmail.com", password });
+    const res = await request(app).post(LOGIN_URL).send({ email: "random_email@gmail.com", password });
 
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toMatch(/user not found/i);

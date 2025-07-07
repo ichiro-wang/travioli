@@ -29,20 +29,60 @@ export class RedisService {
     return await this.client.get(key);
   }
 
-  async set(key: string, value: any, ttl: number = this.DEFAULT_EXPIRATION): Promise<void> {
-    await this.client.setEx(key, ttl, value);
+  async set(key: string, value: any, ttl: number = this.DEFAULT_EXPIRATION): Promise<"OK" | null> {
+    try {
+      return await this.client.setEx(key, ttl, value);
+    } catch (error) {
+      return null;
+    }
   }
 
-  async del(key: string): Promise<void> {
-    await this.client.del(key);
+  async del(key: string): Promise<number> {
+    try {
+      return await this.client.del(key);
+    } catch (error) {
+      return 0;
+    }
   }
 
-  async blackListToken(jti: string, ttl: number): Promise<void> {
-    await this.client.setEx(jti, ttl, "");
+  async blacklistToken(jti: string, exp: number | undefined): Promise<{ blacklistStatus: "success" | "fail" }> {
+    const ttl = this.getTokenTtl(exp);
+
+    if (!ttl) {
+      return { blacklistStatus: "fail" };
+    }
+
+    try {
+      await this.client.setEx(jti, ttl, "blacklisted");
+      return { blacklistStatus: "success" };
+    } catch (error) {
+      return { blacklistStatus: "fail" };
+    }
   }
 
   async checkIfTokenBlacklisted(jti: string): Promise<boolean> {
     const blacklisted = await this.client.get(jti);
-    return blacklisted !== null ? true : false;
+    return blacklisted !== null;
+  }
+
+  /**
+   * check the time-to-live of a given jwt token in seconds.
+   * returns null if invalid or no expiry
+   */
+  private getTokenTtl(expiryTime: number | undefined): number | null {
+    try {
+      // if expiry is undefined, no valid ttl
+      if (expiryTime === undefined) {
+        return null;
+      }
+
+      const now = Math.floor(Date.now() / 1000);
+      const ttl = expiryTime - now;
+
+      // if *now* has passed the expiryTime, then there is no ttl
+      return ttl > 0 ? ttl : null;
+    } catch (error: unknown) {
+      return null;
+    }
   }
 }
