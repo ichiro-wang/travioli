@@ -27,6 +27,7 @@ declare global {
   }
 }
 
+// what to expose to the frontend
 export interface FilteredUser {
   id: string;
   username: string;

@@ -3,6 +3,7 @@ import prisma from "../../db/prisma.js";
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
 import { app } from "../../index.js";
+import { redisService } from "../../services/index.js";
 
 describe("check username integration tests", () => {
   const CHECK_URL = (username: string) => `/api/user/check-username?username=${username}`;
@@ -246,6 +247,7 @@ describe("update profile integration tests", () => {
   it("should fail to update if user's account is marked as deleted", async () => {
     // mark account as deleted first
     await prisma.user.update({ where: { id: testData.user.id }, data: { isDeleted: true } });
+    await redisService.del(`user:${testData.user.id}`);
 
     const res = await request(app)
       .patch(UPDATE_URL)
@@ -287,6 +289,7 @@ describe("delete account integration tests", () => {
   it("should fail to delete account if already marked as deleted", async () => {
     // mark as deleted first
     await prisma.user.update({ where: { id: testData.user.id }, data: { isDeleted: true } });
+    await redisService.del(`user:${testData.user.id}`);
 
     const res = await request(app)
       .delete(DELETE_URL)

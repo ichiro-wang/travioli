@@ -12,4 +12,4 @@ await redisService.connect();
 
 export const permissionService = new PermissionService(authService);
 export const followService = new FollowService(authService);
-export const userService = new UserService(authService, followService);
+export const userService = new UserService(authService, followService, redisService);

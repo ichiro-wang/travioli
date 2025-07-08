@@ -40,3 +40,5 @@ export const UpdatePrivacyOptionsList = [
   UpdatePrivacyOptions.togglePrivate,
   UpdatePrivacyOptions.togglePublic,
 ] as const;
+
+export const USER_CACHE_EXPIRATION = 60 * 60; // store user x seconds

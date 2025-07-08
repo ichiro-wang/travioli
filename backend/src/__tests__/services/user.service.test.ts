@@ -5,6 +5,7 @@ import { FollowStatus, User } from "../../generated/client/index.js";
 import prisma from "../../db/prisma.js";
 import { FollowService } from "../../services/follow.service.js";
 import { FollowRelation } from "../../types/types.js";
+import { RedisService } from "../../services/redis.service.js";
 
 vi.mock("../../db/prisma.js", () => ({
   default: {
@@ -29,17 +30,24 @@ vi.mock("../../utils/filterUser.js", () => ({
 }));
 
 const mockPrismaUserUpdate = prisma.user.update as Mock;
+
 const mockAuthServiceFindUserByUsername = vi.fn() as Mock;
 const mockAuthServiceFindUserById = vi.fn() as Mock;
 const mockAuthServiceVerifyPassword = vi.fn() as Mock;
+
 const mockFollowServiceGetFollowCount = vi.fn() as Mock;
 const mockFollowServiceGetFollowStatus = vi.fn() as Mock;
 const mockFollowServiceGetFollowRelationship = vi.fn() as Mock;
+
+const mockRedisServiceGet = vi.fn() as Mock;
+const mockRedisServiceSetEx = vi.fn() as Mock;
+const mockRedisServiceDel = vi.fn() as Mock;
 
 describe("UserService unit tests", () => {
   let userService: UserService;
   let mockAuthService: AuthService;
   let mockFollowService: FollowService;
+  let mockRedisService: RedisService;
 
   const mockUser = {
     id: "1",
@@ -78,7 +86,13 @@ describe("UserService unit tests", () => {
       getFollowRelationship: mockFollowServiceGetFollowRelationship,
     } as any;
 
-    userService = new UserService(mockAuthService, mockFollowService);
+    mockRedisService = {
+      get: mockRedisServiceGet,
+      setEx: mockRedisServiceSetEx,
+      del: mockRedisServiceDel,
+    } as any;
+
+    userService = new UserService(mockAuthService, mockFollowService, mockRedisService);
     vi.clearAllMocks();
   });
 

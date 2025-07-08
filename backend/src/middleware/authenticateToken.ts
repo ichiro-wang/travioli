@@ -3,8 +3,13 @@ import jwt from "jsonwebtoken";
 import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken, TokenType } from "../types/global.js";
 import { userNotFoundResponse } from "../utils/responseHelpers.js";
-import { authService } from "../services/index.js";
+import { authService, redisService } from "../services/index.js";
+import { User } from "../generated/client/index.js";
+import { USER_CACHE_EXPIRATION } from "../types/types.js";
 
+/**
+ * verify the request and add the user object to the request object
+ */
 export const authenticateToken = async (
   req: Request,
   res: Response,
@@ -36,22 +41,30 @@ export const authenticateToken = async (
       return;
     }
 
-    req.tokenSource = decodedToken.source;
-
     const userCacheKey = `user:${decodedToken.userId}`;
 
     // we check the cache only for access tokens because access tokens are stateless in our app
     // refresh tokens are stateful and verified using redis, allowing us to revoke them
-    // we don't want to allow an invalid/revoked refresh token to be able to fetch a cached user
-    // if (isAccessToken) {
-    //   const cachedUser = await redisService.get(userCacheKey);
+    // we don't want to allow an invalid/revoked refresh token to make requests
+    if (!isAccessToken) {
+      const isBlacklisted = await redisService.checkIfTokenBlacklisted(decodedToken.jti);
 
-    //   if (cachedUser) {
-    //     req.user = JSON.parse(cachedUser);
-    //     return next();
-    //   }
-    // }
+      if (isBlacklisted) {
+        res.status(401).json({ message: "Invalid refresh token provided" });
+        return;
+      }
+    }
 
+    const cachedUser = await redisService.get<User>(userCacheKey);
+
+    if (cachedUser) {
+      req.user = cachedUser;
+      // each time a user makes a request, we slide back their cache expiry
+      await redisService.expire(userCacheKey, USER_CACHE_EXPIRATION);
+      return next();
+    }
+
+    // only hit db if user not found in cache
     const user = await authService.findUserById(decodedToken.userId);
 
     if (!user) {
@@ -59,14 +72,11 @@ export const authenticateToken = async (
       return;
     }
 
-    // const { password, ...userNoPassword } = user;
-
-    // if (isAccessToken) {}
+    await redisService.setEx<User>(userCacheKey, user, USER_CACHE_EXPIRATION);
 
     // add user to Request, this way we can access the logged in user from the controllers with req.user
     // req.user only exists within the scope of the current request
     req.user = user;
-    req.tokenSource = decodedToken.source;
 
     next();
   } catch (error: unknown) {

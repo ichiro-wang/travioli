@@ -13,7 +13,8 @@ import {
   UserNotFoundError,
 } from "../errors/auth.errors.js";
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
-import { DecodedToken } from "../types/global.js";
+import { DecodedToken, } from "../types/global.js";
+import { USER_CACHE_EXPIRATION } from "../types/types.js";
 
 /**
  * method simply for testing backend connection
@@ -34,6 +35,9 @@ export const signup = async (req: Request<{}, {}, SignupBody>, res: Response): P
     const newUser = await authService.createUser({ email, username, password });
 
     generateTokens(res, newUser.id);
+
+    const userCacheKey = `user:${newUser.id}`;
+    await redisService.setEx(userCacheKey, newUser, USER_CACHE_EXPIRATION);
 
     res.status(201).json({ user: newUser });
     return;
@@ -61,6 +65,9 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     const user = await authService.authenticateUser({ email, password });
 
     generateTokens(res, user.id);
+
+    const userCacheKey = `user:${user.id}`;
+    await redisService.setEx(userCacheKey, user, USER_CACHE_EXPIRATION);
 
     const filteredUser = filterUser(user, true);
     res.status(200).json({ user: filteredUser });
@@ -136,6 +143,10 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+/**
+ * refresh the access token.
+ * make sure the refresh token is verified before calling this
+ */
 export const refresh = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user;
@@ -145,20 +156,10 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const refreshToken: string = req.cookies.refreshToken;
     const secretKey = process.env.REFRESH_TOKEN_SECRET;
 
     if (!secretKey) {
       res.status(400).json({ message: `No refresh token secret key provided` });
-      return;
-    }
-
-    const decodedToken = jwt.verify(refreshToken, secretKey) as DecodedToken;
-
-    const isBlacklisted = await redisService.checkIfTokenBlacklisted(decodedToken.jti);
-
-    if (isBlacklisted) {
-      res.status(401).json({ message: "Invalid refresh token provided" });
       return;
     }
 

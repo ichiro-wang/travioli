@@ -1,20 +1,36 @@
 import prisma from "../db/prisma.js";
 import { InvalidCredentialsError, UsernameAlreadyExistsError, UserNotFoundError } from "../errors/auth.errors.js";
 import { FollowStatus, User } from "../generated/client/index.js";
-import { FilteredUser } from "../types/global.js";
-import { FollowRelation } from "../types/types.js";
+import { FilteredUser,  } from "../types/global.js";
+import { FollowRelation, USER_CACHE_EXPIRATION } from "../types/types.js";
 import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 import { FollowService } from "./follow.service.js";
+import { RedisService } from "./redis.service.js";
+
+interface CheckUsernameAvailabilityResult {
+  available: boolean;
+  reason: "current" | "taken" | null;
+}
+
+interface GetUserProfileDataResult {
+  user: FilteredUser;
+  isSelf: boolean;
+  followedByCount: number;
+  followingCount: number;
+  followStatus?: FollowStatus;
+}
 
 export class UserService {
   // dependency injection
   private authService: AuthService;
   private followService: FollowService;
+  private redisService: RedisService;
 
-  constructor(authService: AuthService, followService: FollowService) {
+  constructor(authService: AuthService, followService: FollowService, redisService: RedisService) {
     this.authService = authService;
     this.followService = followService;
+    this.redisService = redisService;
   }
 
   /**
@@ -23,7 +39,7 @@ export class UserService {
   async checkUsernameAvailability(
     username: string,
     currentUserUsername: string
-  ): Promise<{ available: boolean; reason: "current" | "taken" | null }> {
+  ): Promise<CheckUsernameAvailabilityResult> {
     // normalize to lowercase to ensure uniqueness checks are case insensitive
     const normalizedUsername = username.toLowerCase();
 
@@ -36,23 +52,26 @@ export class UserService {
     return { available: !user, reason: user ? "taken" : null };
   }
 
-  async getUserProfileData(
-    targetUserId: string,
-    currentUser: User
-  ): Promise<{
-    user: FilteredUser;
-    isSelf: boolean;
-    followedByCount: number;
-    followingCount: number;
-    followStatus?: FollowStatus;
-  }> {
+  async getUserProfileData(targetUserId: string, currentUser: User): Promise<GetUserProfileDataResult> {
     const isSelf = targetUserId === currentUser.id;
 
     let targetUser: User | null;
     if (isSelf) {
       targetUser = currentUser;
     } else {
-      targetUser = await this.authService.findUserById(targetUserId);
+      const userCacheKey = `user:${targetUserId}`;
+      targetUser = await this.redisService.get<User>(userCacheKey);
+
+      if (!targetUser) {
+        // hit db
+        targetUser = await this.authService.findUserById(targetUserId);
+
+        if (targetUser) {
+          // we only need to set cache here since if (isSelf) is true,
+          // authenticateToken middleware should already handle the cache storage
+          await this.redisService.setEx(userCacheKey, targetUser, USER_CACHE_EXPIRATION);
+        }
+      }
     }
 
     if (!targetUser) {
@@ -110,6 +129,8 @@ export class UserService {
         data: filteredUpdates,
       });
 
+      await this.redisService.setEx(`user:${updatedUser.id}`, updatedUser, USER_CACHE_EXPIRATION);
+
       return filterUser(updatedUser, true);
     } catch (error: any) {
       if (error.code === "P2002") {
@@ -124,7 +145,11 @@ export class UserService {
   /**
    * we want to prevent the user object from being completely deleted from the databse, so just mark as deleted without actually deleting
    */
-  async softDeleteUser(currentUserId: string, inputPassword: string, currentUserPassword: string) {
+  async softDeleteUser(
+    currentUserId: string,
+    inputPassword: string,
+    currentUserPassword: string
+  ): Promise<FilteredUser> {
     const isPasswordCorrect = await this.authService.verifyPassword(inputPassword, currentUserPassword);
     if (!isPasswordCorrect) {
       throw new InvalidCredentialsError();
@@ -134,6 +159,8 @@ export class UserService {
       where: { id: currentUserId },
       data: { isDeleted: true },
     });
+
+    await this.redisService.del(`user:${deletedUser.id}`);
 
     return filterUser(deletedUser, true);
   }

@@ -21,6 +21,7 @@ export const internalServerError = (error: unknown, res: Response, location?: st
 
   res.status(500).json({
     message: "Internal Server Error",
-    ...(process.env.NODE_ENV === "development" && { error: errorMessage }),
+    ...(process.env.NODE_ENV !== "production" && { error: errorMessage }),
+    ...(process.env.NODE_ENV !== "production" && { errorLocation }),
   });
 };

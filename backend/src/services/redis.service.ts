@@ -2,7 +2,7 @@ import { createClient, RedisClientType } from "redis";
 
 export class RedisService {
   private client: RedisClientType;
-  private DEFAULT_EXPIRATION = 300;
+  private DEFAULT_CACHE_EXPIRATION = 300;
 
   constructor() {
     const redisUrl = process.env.REDIS_URL || "redis://redis:6379";
@@ -21,42 +21,60 @@ export class RedisService {
   async disconnect(): Promise<void> {
     if (!this.client.isOpen) return;
 
-    await this.client.destroy();
+    this.client.destroy();
     console.log("Redis disconnected successfully");
   }
 
-  async get(key: string): Promise<string | null> {
-    return await this.client.get(key);
+  /**
+   * returns parsed value from redis cache. 
+   * specify type, otherwise you receive the value as an unknown type. 
+   */
+  async get<T>(key: string): Promise<T | null> {
+    const value = await this.client.get(key);
+    return value ? JSON.parse(value) : null;
   }
 
-  async set(key: string, value: any, ttl: number = this.DEFAULT_EXPIRATION): Promise<"OK" | null> {
+  /**
+   * pass in value without stringifying. 
+   * centralizing stringify logic inside redis service class. 
+   */
+  async setEx<T>(key: string, value: T, ttl: number = this.DEFAULT_CACHE_EXPIRATION): Promise<boolean> {
     try {
-      return await this.client.setEx(key, ttl, value);
+      const stringifiedValue = JSON.stringify(value);
+      return (await this.client.setEx(key, ttl, stringifiedValue)) === "OK";
     } catch (error) {
-      return null;
+      return false;
     }
   }
 
-  async del(key: string): Promise<number> {
+  async del(key: string): Promise<boolean> {
     try {
-      return await this.client.del(key);
+      return (await this.client.del(key)) === 1;
     } catch (error) {
-      return 0;
+      return false;
     }
   }
 
-  async blacklistToken(jti: string, exp: number | undefined): Promise<{ blacklistStatus: "success" | "fail" }> {
+  async expire(key: string, ttl: number = this.DEFAULT_CACHE_EXPIRATION): Promise<boolean> {
+    try {
+      return (await this.client.expire(key, ttl)) === 1;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async blacklistToken(jti: string, exp: number | undefined): Promise<boolean> {
     const ttl = this.getTokenTtl(exp);
 
     if (!ttl) {
-      return { blacklistStatus: "fail" };
+      return false;
     }
 
     try {
       await this.client.setEx(jti, ttl, "blacklisted");
-      return { blacklistStatus: "success" };
+      return true;
     } catch (error) {
-      return { blacklistStatus: "fail" };
+      return false;
     }
   }
 

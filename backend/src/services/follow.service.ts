@@ -12,7 +12,13 @@ import { FollowAction, FollowActionType, FollowRelation, FollowRelationType } fr
 import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 
-const statusTransitionMap: Record<FollowActionType, { from: FollowStatus; to: FollowStatus; message: string }> = {
+/**
+ * from: current/existing status.
+ * to: the status we want to change to.
+ * if the action doesn't logically match the status update, then we don't allow the action.
+ * eg - to accept a follow, the existing status must be pending.
+ */
+const STATUS_TRANSITION_MAP: Record<FollowActionType, { from: FollowStatus; to: FollowStatus; message: string }> = {
   [FollowAction.accept]: {
     from: FollowStatus.pending,
     to: FollowStatus.accepted,
@@ -40,6 +46,20 @@ const statusTransitionMap: Record<FollowActionType, { from: FollowStatus; to: Fo
   },
 };
 
+const FOLLOW_RELATIONSHIP_MAP: Record<
+  FollowRelationType,
+  { whereKey: "followingId" | "followedById"; includeKey: "followedBy" | "following" }
+> = {
+  [FollowRelation.followedBy]: {
+    whereKey: "followingId",
+    includeKey: "followedBy",
+  },
+  [FollowRelation.following]: {
+    whereKey: "followedById",
+    includeKey: "following",
+  },
+};
+
 interface FollowListResult {
   users: FilteredUser[];
   hasMore: boolean;
@@ -53,11 +73,6 @@ interface FollowUserResult {
 interface UpdateFollowResult {
   follow: Follows;
   message: string;
-}
-
-interface FollowUserResult {
-  follow: Follows;
-  isNewRelationship: boolean;
 }
 
 export class FollowService {
@@ -82,27 +97,31 @@ export class FollowService {
   ): Promise<FollowListResult> {
     // pagination options
     const offset = loadIndex * FollowService.PAGINATION_TAKE_SIZE; // pagination offset
+    const take = FollowService.PAGINATION_TAKE_SIZE + 1; // we take an extra result to check if there are any more results
 
-    const whereKey = relationType === FollowRelation.followedBy ? "followingId" : "followedById";
-    const includeKey = relationType === FollowRelation.followedBy ? "followedBy" : "following";
+    const { whereKey, includeKey } = FOLLOW_RELATIONSHIP_MAP[relationType];
 
     const followList = await prisma.follows.findMany({
       where: { [whereKey]: targetUserId, status: FollowStatus.accepted },
       include: { [includeKey]: true },
       orderBy: { updatedAt: "desc" },
       skip: offset,
-      take: FollowService.PAGINATION_TAKE_SIZE + 1, // we take an extra result to check if there are any more results
+      take,
     });
 
-    const users = followList.map((follow) => filterUser(follow[relationType]));
-    // inform the user if there are still more results that can be fetched so they know if they can continue fetching or not
+    // inform the client if there are still more results that can be fetched so they know if they can continue fetching or not
     const hasMore = followList.length > FollowService.PAGINATION_TAKE_SIZE;
+
+    // we only take the extra user at the end to see if there are more results to fetch
+    // we dont want to actually return that user
+    const users = followList.slice(0, take - 1).map((follow) => filterUser(follow[relationType]));
 
     return { users, hasMore };
   }
 
   async followUser(currentUserId: string, targetUserId: string): Promise<FollowUserResult> {
     const isSelf = currentUserId === targetUserId;
+
     if (isSelf) {
       throw new FollowSelfError();
     }
@@ -176,7 +195,7 @@ export class FollowService {
       throw new NoFollowRelationshipError();
     }
 
-    const transition = statusTransitionMap[actionType];
+    const transition = STATUS_TRANSITION_MAP[actionType];
 
     if (transition.from !== existingFollow.status) {
       throw new InvalidUpdateStatusActionError(transition.from, existingFollow.status);

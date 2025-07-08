@@ -49,7 +49,7 @@ export const getUserProfile = async (req: Request<GetProfileParams>, res: Respon
       return;
     }
 
-    internalServerError(error, res, "getProfile controller");
+    internalServerError(error, res, "getUserProfile controller");
   }
 };
 

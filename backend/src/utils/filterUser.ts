@@ -3,7 +3,7 @@ import { FilteredUser } from "../types/global.js";
 
 /**
  * remove sensitive/unnecessary data from User object
- * @returns the filtered User object
+ * @returns the User object filtered to include what should be shown in profile
  */
 export const filterUser = (user: User, includeEmail = false): FilteredUser => {
   return {
@@ -13,6 +13,6 @@ export const filterUser = (user: User, includeEmail = false): FilteredUser => {
     bio: user.bio,
     profilePic: user.profilePic,
     isPrivate: user.isPrivate,
-    ...(includeEmail ? { email: user.email } : { email: null }),
+    email: includeEmail ? user.email : null,
   };
 };

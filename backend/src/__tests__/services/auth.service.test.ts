@@ -266,14 +266,14 @@ describe("AuthService unit tests", () => {
       expect(result).toBeNull();
     });
 
-    it("should return null if user is deleted", async () => {
+    it("should return a user even if user is deleted", async () => {
       mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
 
       const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
 
       // findUserByEmail doesn't return null even if the user is deleted
       // this is so deleted users who log back in can be automatically reactivated
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual({ ...mockUser, isDeleted: true });
     });
 
     //

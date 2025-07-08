@@ -17,10 +17,11 @@ export class AuthService {
 
     // normalizing username to lowercase to ensure uniqueness checks are case insensitive
     const normalizedUsername = username.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
 
     // check for existing users in parallel to reduce response latency => more efficiency
     const [emailExists, usernameExists] = await Promise.all([
-      prisma.user.findUnique({ where: { email } }),
+      prisma.user.findUnique({ where: { email: normalizedEmail } }),
       prisma.user.findUnique({ where: { username: normalizedUsername } }),
     ]);
 
@@ -46,7 +47,9 @@ export class AuthService {
   async authenticateUser(authData: { email: string; password: string }): Promise<User> {
     const { email, password } = authData;
 
-    let user = await this.findUserByEmail(email);
+    const normalizedEmail = email.toLowerCase();
+
+    let user = await this.findUserByEmail(normalizedEmail);
 
     if (!user) {
       throw new UserNotFoundError();
@@ -75,6 +78,11 @@ export class AuthService {
     return user && !user.isDeleted ? user : null;
   }
 
+  /**
+   * don't check isDeleted because we use this to log users in via email.
+   * an account marked as deleted will reactivate if they log back in.
+   * so if we don't return the deleted user then we can't reactivate their account on log in
+   */
   private async findUserByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { email } });
     return user;
