@@ -9,7 +9,6 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - backend_test_node_modules:/usr/src/app/node_modules
-    # DNS resolves request origin and database
     environment:
       - PORT=5000
       - NODE_ENV=test
