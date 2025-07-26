@@ -3,8 +3,9 @@ import {
   FollowUserParams,
   GetFollowListParams,
   GetFollowListQuery,
+  UpdateFollowStatusBody,
   UpdateFollowStatusParams,
-} from "../schemas/follow.schema.js";
+} from "../schemas/follows.schema.js";
 import { FollowStatus } from "../generated/client/index.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import { followService, permissionService } from "../services/index.js";
@@ -31,7 +32,10 @@ export const getFollowList = async (
     const { id: targetUserId, type: relationType } = req.params;
     const currentUserId = req.user.id;
 
-    const permissionCheck = await permissionService.checkUserViewingPermission(currentUserId, targetUserId);
+    const permissionCheck = await permissionService.checkUserViewingPermission(
+      currentUserId,
+      targetUserId
+    );
 
     if (!permissionCheck.hasPermission) {
       res.status(403).json({ message: "This account is private" });
@@ -41,10 +45,19 @@ export const getFollowList = async (
     // basically page number for pagination, but frontend uses infinite scroll pagination
     const loadIndex = Math.max(0, parseInt(req.query.loadIndex) || 0);
 
-    const result = await followService.getFollowList(targetUserId, relationType, loadIndex);
+    const result = await followService.getFollowList(
+      targetUserId,
+      relationType,
+      loadIndex
+    );
 
     // return followedBy or following list as the filtered user list
-    res.status(200).json({ [relationType]: result.users, pagination: { loadIndex, hasMore: result.hasMore } });
+    res
+      .status(200)
+      .json({
+        [relationType]: result.users,
+        pagination: { loadIndex, hasMore: result.hasMore },
+      });
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
@@ -60,14 +73,23 @@ export const getFollowList = async (
  * follow a user if profile is public
  * send a follow request if profile is private
  */
-export const followUser = async (req: Request<FollowUserParams>, res: Response): Promise<void> => {
+export const followUser = async (
+  req: Request<FollowUserParams>,
+  res: Response
+): Promise<void> => {
   try {
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
 
-    const { follow, isNewRelationship } = await followService.followUser(currentUserId, userId);
+    const { follow, isNewRelationship } = await followService.followUser(
+      currentUserId,
+      userId
+    );
 
-    const message = follow.status === FollowStatus.pending ? "Follow request sent" : "Successfully followed user";
+    const message =
+      follow.status === FollowStatus.pending
+        ? "Follow request sent"
+        : "Successfully followed user";
 
     const statusCode = isNewRelationship ? 201 : 200;
 
@@ -92,12 +114,20 @@ export const followUser = async (req: Request<FollowUserParams>, res: Response):
  * - update a follow status to accepted or notFollowing
  * - types of actions: accept, reject, remove - target (current user); cancel, unfollow - target (other user)
  */
-export const updateFollowStatus = async (req: Request<UpdateFollowStatusParams>, res: Response): Promise<void> => {
+export const updateFollowStatus = async (
+  req: Request<UpdateFollowStatusParams, {}, UpdateFollowStatusBody>,
+  res: Response
+): Promise<void> => {
   try {
-    const { id: userId, type: actionType } = req.params;
+    const { id: userId } = req.params;
+    const { type: actionType } = req.body;
     const currentUserId = req.user.id;
 
-    const updateResult = await followService.updateFollowStatus(currentUserId, userId, actionType);
+    const updateResult = await followService.updateFollowStatus(
+      currentUserId,
+      userId,
+      actionType
+    );
 
     res.status(200).json(updateResult);
     return;
@@ -119,11 +149,16 @@ export const updateFollowStatus = async (req: Request<UpdateFollowStatusParams>,
 /**
  * get list of pending follow requests of requesting user
  */
-export const getPendingRequests = async (req: Request, res: Response): Promise<void> => {
+export const getPendingRequests = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const currentUserId = req.user.id;
 
-    const pendingRequests = await followService.getPendingFollowRequests(currentUserId);
+    const pendingRequests = await followService.getPendingFollowRequests(
+      currentUserId
+    );
 
     res.status(200).json({ pendingRequests });
     return;
@@ -135,15 +170,25 @@ export const getPendingRequests = async (req: Request, res: Response): Promise<v
 /**
  * get follow relationship status of requesting user and requested user
  */
-export const getFollowStatus = async (req: Request, res: Response): Promise<void> => {
+export const getFollowStatus = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { id: userId } = req.params;
     const currentUserId = req.user.id;
 
-    const followStatus = await followService.getFollowStatus(currentUserId, userId);
+    const followStatus = await followService.getFollowStatus(
+      currentUserId,
+      userId
+    );
 
     if (!followStatus) {
-      res.status(400).json({ message: "You do not have a follow relationship with yourself" });
+      res
+        .status(400)
+        .json({
+          message: "You do not have a follow relationship with yourself",
+        });
     }
 
     res.status(200).json({ followStatus });

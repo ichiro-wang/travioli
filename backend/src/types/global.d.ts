@@ -1,4 +1,4 @@
-import { User } from "../generated/client/index.js";
+import { Prisma, User } from "../generated/client/index.js";
 import { JwtPayload } from "jsonwebtoken";
 
 export type TokenType = "access" | "refresh";
@@ -37,3 +37,5 @@ export interface FilteredUser {
   isPrivate: boolean;
   email: string | null;
 }
+
+export type PrismaTransactionalClient = Prisma.TransactionClient

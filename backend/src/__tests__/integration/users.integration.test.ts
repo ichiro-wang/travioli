@@ -6,7 +6,7 @@ import { app } from "../../index.js";
 import { redisService } from "../../services/index.js";
 
 describe("check username integration tests", () => {
-  const CHECK_URL = (username: string) => `/api/user/check-username?username=${username}`;
+  const CHECK_URL = (username: string) => `/api/users/check-username?username=${username}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -74,7 +74,7 @@ describe("check username integration tests", () => {
 });
 
 describe("get profile integration tests", () => {
-  const GET_PROFILE_URL = (id: string) => `/api/user/${id}`;
+  const GET_PROFILE_URL = (id: string) => `/api/users/${id}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -136,7 +136,7 @@ describe("get profile integration tests", () => {
 });
 
 describe("update profile integration tests", () => {
-  const UPDATE_URL = "/api/user/me";
+  const UPDATE_URL = "/api/users/me";
   let testData: TestData;
 
   beforeAll(async () => {
@@ -260,7 +260,7 @@ describe("update profile integration tests", () => {
 });
 
 describe("delete account integration tests", () => {
-  const DELETE_URL = "/api/user/me";
+  const DELETE_URL = "/api/users/me";
   let testData: TestData;
 
   beforeAll(async () => {

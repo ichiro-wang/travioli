@@ -71,7 +71,10 @@ model Itinerary {
   description String?
   startDate   DateTime?
   endDate     DateTime?
-  media       String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
+
+  media Media[] @relation("itineraryMedia")
+
+  isArchived Boolean @default(false)
 
   // each itinerary has a list of itinerary items
   itineraryItems ItineraryItem[] @relation("itineraryItem")
@@ -87,15 +90,14 @@ model Itinerary {
 }
 
 model ItineraryItem {
-  id            String  @id @default(cuid())
-  name          String  @db.VarChar(255)
-  description   String?
-  estimatedCost Float?
-  currency      String? @default("CAD")
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(255)
+  description String?
+  cost        Float?
+  currency    String? @default("CAD")
 
-  media String[] // images and videos. enforce max length logic in backend logic. set to max 10 for now
+  media Media[] @relation("itineraryItemMedia")
 
-  // can have 0 or 1 locations
   location Location? @relation("itineraryItemLocation")
 
   order Int // for ordering list of items in Itinerary
@@ -118,9 +120,26 @@ model Location {
   itineraryItemId String        @unique
   itineraryItem   ItineraryItem @relation("itineraryItemLocation", fields: [itineraryItemId], references: [id], onDelete: Cascade)
 
+  coordinates Unsupported("geometry(Point, 4326)")
+
   // optional fields to include in a location
-  coordinates Unsupported("geometry(Point, 4326)")?
-  country     String?                               @db.VarChar(255)
-  city        String?                               @db.VarChar(255)
-  address     String?
+  country String? @db.VarChar(255)
+  city    String? @db.VarChar(255)
+  address String?
+
+  // GiST index
+  @@index([coordinates], name: "location_idx", type: Gist)
+  @@index([itineraryItemId])
+}
+
+model Media {
+  id String @id @default(cuid())
+
+  thumbnail String
+  feed      String
+
+  itinerary       Itinerary?     @relation("itineraryMedia", fields: [itineraryId], references: [id], onDelete: Cascade)
+  itineraryId     String?
+  itineraryItem   ItineraryItem? @relation("itineraryItemMedia", fields: [itineraryItemId], references: [id], onDelete: Cascade)
+  itineraryItemId String?
 }

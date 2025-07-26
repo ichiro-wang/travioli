@@ -90,7 +90,7 @@ export const authenticateToken = async (
       return;
     }
 
-    internalServerError(error, res);
+    internalServerError(error, res, "authenticateToken middleware");
   }
 };
 

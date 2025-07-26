@@ -4,31 +4,58 @@ import { DecodedToken, TokenSource, TokenType } from "../types/global.js";
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
 import { randomUUID } from "crypto";
 
-export const generateAccessToken = (userId: string, source: TokenSource = "credentials"): string => {
+const ACCESS_TIME_MINUTES = 15;
+const REFRESH_TIME_DAYS = 7;
+
+interface GenerateTokensReturn {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export const generateAccessToken = (
+  userId: string,
+  source: TokenSource = "credentials"
+): string => {
   const secretKey = process.env.ACCESS_TOKEN_SECRET;
   if (!secretKey) {
     throw new NoSecretKeyError("access");
   }
 
-  const payload: DecodedToken = { userId, type: "access", source, jti: randomUUID() };
+  const payload: DecodedToken = {
+    userId,
+    type: "access",
+    source,
+    jti: randomUUID(),
+  };
 
-  return jwt.sign(payload, secretKey, { expiresIn: "15m" });
+  return jwt.sign(payload, secretKey, { expiresIn: `${ACCESS_TIME_MINUTES}m` });
 };
 
-export const generateRefreshToken = (userId: string, source: TokenSource = "credentials"): string => {
+export const generateRefreshToken = (
+  userId: string,
+  source: TokenSource = "credentials"
+): string => {
   const secretKey = process.env.REFRESH_TOKEN_SECRET;
   if (!secretKey) {
     throw new NoSecretKeyError("refresh");
   }
 
-  const payload: DecodedToken = { userId, type: "refresh", source, jti: randomUUID() };
+  const payload: DecodedToken = {
+    userId,
+    type: "refresh",
+    source,
+    jti: randomUUID(),
+  };
 
-  return jwt.sign(payload, secretKey, { expiresIn: "7d" });
+  return jwt.sign(payload, secretKey, { expiresIn: `${REFRESH_TIME_DAYS}d` });
 };
 
 export const getTokenOptions = (tokenType: TokenType): CookieOptions => {
   // 15 min for access tokens. 7 days for refresh tokens.
-  const maxAge = tokenType === "access" ? 15 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+  const maxAge =
+    tokenType === "access"
+      ? ACCESS_TIME_MINUTES * 60 * 1000
+      : REFRESH_TIME_DAYS * 24 * 60 * 60 * 1000;
   return {
     maxAge,
     httpOnly: true, // not accessible via JS
@@ -37,15 +64,13 @@ export const getTokenOptions = (tokenType: TokenType): CookieOptions => {
   };
 };
 
-interface GenerateTokensReturn {
-  accessToken: string;
-  refreshToken: string;
-}
-
 /**
  * generate both refresh and access tokens
  */
-export const generateTokens = (res: Response, userId: string): GenerateTokensReturn => {
+export const generateTokens = (
+  res: Response,
+  userId: string
+): GenerateTokensReturn => {
   const accessToken = generateAccessToken(userId);
   const refreshToken = generateRefreshToken(userId);
 

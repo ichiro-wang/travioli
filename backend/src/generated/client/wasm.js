@@ -148,7 +148,7 @@ exports.Prisma.ItineraryScalarFieldEnum = {
   description: 'description',
   startDate: 'startDate',
   endDate: 'endDate',
-  media: 'media',
+  isArchived: 'isArchived',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -158,9 +158,8 @@ exports.Prisma.ItineraryItemScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
-  estimatedCost: 'estimatedCost',
+  cost: 'cost',
   currency: 'currency',
-  media: 'media',
   order: 'order',
   itineraryId: 'itineraryId',
   createdAt: 'createdAt',
@@ -173,6 +172,14 @@ exports.Prisma.LocationScalarFieldEnum = {
   country: 'country',
   city: 'city',
   address: 'address'
+};
+
+exports.Prisma.MediaScalarFieldEnum = {
+  id: 'id',
+  thumbnail: 'thumbnail',
+  feed: 'feed',
+  itineraryId: 'itineraryId',
+  itineraryItemId: 'itineraryItemId'
 };
 
 exports.Prisma.SortOrder = {
@@ -200,7 +207,8 @@ exports.Prisma.ModelName = {
   Follows: 'Follows',
   Itinerary: 'Itinerary',
   ItineraryItem: 'ItineraryItem',
-  Location: 'Location'
+  Location: 'Location',
+  Media: 'Media'
 };
 
 /**

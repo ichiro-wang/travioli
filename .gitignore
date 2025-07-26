@@ -12,9 +12,13 @@ dist
 dist-ssr
 *.local
 
+# notes for personal use
 **notes.md
 notes
+
 .env
+.env.*
+
 database
 
 # Editor directories and files

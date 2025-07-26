@@ -38,6 +38,11 @@ export type ItineraryItem = $Result.DefaultSelection<Prisma.$ItineraryItemPayloa
  * 
  */
 export type Location = $Result.DefaultSelection<Prisma.$LocationPayload>
+/**
+ * Model Media
+ * 
+ */
+export type Media = $Result.DefaultSelection<Prisma.$MediaPayload>
 
 /**
  * Enums
@@ -231,6 +236,16 @@ export class PrismaClient<
     * ```
     */
   get location(): Prisma.LocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.media`: Exposes CRUD operations for the **Media** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Media
+    * const media = await prisma.media.findMany()
+    * ```
+    */
+  get media(): Prisma.MediaDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -675,7 +690,8 @@ export namespace Prisma {
     Follows: 'Follows',
     Itinerary: 'Itinerary',
     ItineraryItem: 'ItineraryItem',
-    Location: 'Location'
+    Location: 'Location',
+    Media: 'Media'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -694,7 +710,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "follows" | "itinerary" | "itineraryItem" | "location"
+      modelProps: "user" | "follows" | "itinerary" | "itineraryItem" | "location" | "media"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1018,18 +1034,6 @@ export namespace Prisma {
             args: Prisma.LocationFindManyArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$LocationPayload>[]
           }
-          create: {
-            args: Prisma.LocationCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
-          }
-          createMany: {
-            args: Prisma.LocationCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.LocationCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LocationPayload>[]
-          }
           delete: {
             args: Prisma.LocationDeleteArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$LocationPayload>
@@ -1050,10 +1054,6 @@ export namespace Prisma {
             args: Prisma.LocationUpdateManyAndReturnArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$LocationPayload>[]
           }
-          upsert: {
-            args: Prisma.LocationUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
-          }
           aggregate: {
             args: Prisma.LocationAggregateArgs<ExtArgs>
             result: $Utils.Optional<AggregateLocation>
@@ -1065,6 +1065,80 @@ export namespace Prisma {
           count: {
             args: Prisma.LocationCountArgs<ExtArgs>
             result: $Utils.Optional<LocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Media: {
+        payload: Prisma.$MediaPayload<ExtArgs>
+        fields: Prisma.MediaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MediaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MediaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          findFirst: {
+            args: Prisma.MediaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MediaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          findMany: {
+            args: Prisma.MediaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>[]
+          }
+          create: {
+            args: Prisma.MediaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          createMany: {
+            args: Prisma.MediaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MediaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>[]
+          }
+          delete: {
+            args: Prisma.MediaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          update: {
+            args: Prisma.MediaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          deleteMany: {
+            args: Prisma.MediaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MediaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MediaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>[]
+          }
+          upsert: {
+            args: Prisma.MediaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MediaPayload>
+          }
+          aggregate: {
+            args: Prisma.MediaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMedia>
+          }
+          groupBy: {
+            args: Prisma.MediaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MediaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MediaCountArgs<ExtArgs>
+            result: $Utils.Optional<MediaCountAggregateOutputType> | number
           }
         }
       }
@@ -1157,6 +1231,7 @@ export namespace Prisma {
     itinerary?: ItineraryOmit
     itineraryItem?: ItineraryItemOmit
     location?: LocationOmit
+    media?: MediaOmit
   }
 
   /* Types for Logging */
@@ -1300,10 +1375,12 @@ export namespace Prisma {
    */
 
   export type ItineraryCountOutputType = {
+    media: number
     itineraryItems: number
   }
 
   export type ItineraryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    media?: boolean | ItineraryCountOutputTypeCountMediaArgs
     itineraryItems?: boolean | ItineraryCountOutputTypeCountItineraryItemsArgs
   }
 
@@ -1321,8 +1398,46 @@ export namespace Prisma {
   /**
    * ItineraryCountOutputType without action
    */
+  export type ItineraryCountOutputTypeCountMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MediaWhereInput
+  }
+
+  /**
+   * ItineraryCountOutputType without action
+   */
   export type ItineraryCountOutputTypeCountItineraryItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ItineraryItemWhereInput
+  }
+
+
+  /**
+   * Count Type ItineraryItemCountOutputType
+   */
+
+  export type ItineraryItemCountOutputType = {
+    media: number
+  }
+
+  export type ItineraryItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    media?: boolean | ItineraryItemCountOutputTypeCountMediaArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ItineraryItemCountOutputType without action
+   */
+  export type ItineraryItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItineraryItemCountOutputType
+     */
+    select?: ItineraryItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ItineraryItemCountOutputType without action
+   */
+  export type ItineraryItemCountOutputTypeCountMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MediaWhereInput
   }
 
 
@@ -3616,6 +3731,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
+    isArchived: boolean | null
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3627,6 +3743,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
+    isArchived: boolean | null
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3638,7 +3755,7 @@ export namespace Prisma {
     description: number
     startDate: number
     endDate: number
-    media: number
+    isArchived: number
     ownerId: number
     createdAt: number
     updatedAt: number
@@ -3652,6 +3769,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
+    isArchived?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -3663,6 +3781,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
+    isArchived?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -3674,7 +3793,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
-    media?: true
+    isArchived?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -3759,7 +3878,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
-    media: string[]
+    isArchived: boolean
     ownerId: string
     createdAt: Date
     updatedAt: Date
@@ -3788,10 +3907,11 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
-    media?: boolean
+    isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    media?: boolean | Itinerary$mediaArgs<ExtArgs>
     itineraryItems?: boolean | Itinerary$itineraryItemsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ItineraryCountOutputTypeDefaultArgs<ExtArgs>
@@ -3803,7 +3923,7 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
-    media?: boolean
+    isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3816,7 +3936,7 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
-    media?: boolean
+    isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3829,14 +3949,15 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
-    media?: boolean
+    isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "media" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["itinerary"]>
+  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "isArchived" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["itinerary"]>
   export type ItineraryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    media?: boolean | Itinerary$mediaArgs<ExtArgs>
     itineraryItems?: boolean | Itinerary$itineraryItemsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ItineraryCountOutputTypeDefaultArgs<ExtArgs>
@@ -3851,6 +3972,7 @@ export namespace Prisma {
   export type $ItineraryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Itinerary"
     objects: {
+      media: Prisma.$MediaPayload<ExtArgs>[]
       itineraryItems: Prisma.$ItineraryItemPayload<ExtArgs>[]
       owner: Prisma.$UserPayload<ExtArgs>
     }
@@ -3860,7 +3982,7 @@ export namespace Prisma {
       description: string | null
       startDate: Date | null
       endDate: Date | null
-      media: string[]
+      isArchived: boolean
       ownerId: string
       createdAt: Date
       updatedAt: Date
@@ -4258,6 +4380,7 @@ export namespace Prisma {
    */
   export interface Prisma__ItineraryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    media<T extends Itinerary$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Itinerary$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     itineraryItems<T extends Itinerary$itineraryItemsArgs<ExtArgs> = {}>(args?: Subset<T, Itinerary$itineraryItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItineraryItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -4294,7 +4417,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Itinerary", 'String'>
     readonly startDate: FieldRef<"Itinerary", 'DateTime'>
     readonly endDate: FieldRef<"Itinerary", 'DateTime'>
-    readonly media: FieldRef<"Itinerary", 'String[]'>
+    readonly isArchived: FieldRef<"Itinerary", 'Boolean'>
     readonly ownerId: FieldRef<"Itinerary", 'String'>
     readonly createdAt: FieldRef<"Itinerary", 'DateTime'>
     readonly updatedAt: FieldRef<"Itinerary", 'DateTime'>
@@ -4694,6 +4817,30 @@ export namespace Prisma {
   }
 
   /**
+   * Itinerary.media
+   */
+  export type Itinerary$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    where?: MediaWhereInput
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    cursor?: MediaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MediaScalarFieldEnum | MediaScalarFieldEnum[]
+  }
+
+  /**
    * Itinerary.itineraryItems
    */
   export type Itinerary$itineraryItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4749,12 +4896,12 @@ export namespace Prisma {
   }
 
   export type ItineraryItemAvgAggregateOutputType = {
-    estimatedCost: number | null
+    cost: number | null
     order: number | null
   }
 
   export type ItineraryItemSumAggregateOutputType = {
-    estimatedCost: number | null
+    cost: number | null
     order: number | null
   }
 
@@ -4762,7 +4909,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
-    estimatedCost: number | null
+    cost: number | null
     currency: string | null
     order: number | null
     itineraryId: string | null
@@ -4774,7 +4921,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
-    estimatedCost: number | null
+    cost: number | null
     currency: string | null
     order: number | null
     itineraryId: string | null
@@ -4786,9 +4933,8 @@ export namespace Prisma {
     id: number
     name: number
     description: number
-    estimatedCost: number
+    cost: number
     currency: number
-    media: number
     order: number
     itineraryId: number
     createdAt: number
@@ -4798,12 +4944,12 @@ export namespace Prisma {
 
 
   export type ItineraryItemAvgAggregateInputType = {
-    estimatedCost?: true
+    cost?: true
     order?: true
   }
 
   export type ItineraryItemSumAggregateInputType = {
-    estimatedCost?: true
+    cost?: true
     order?: true
   }
 
@@ -4811,7 +4957,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    estimatedCost?: true
+    cost?: true
     currency?: true
     order?: true
     itineraryId?: true
@@ -4823,7 +4969,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    estimatedCost?: true
+    cost?: true
     currency?: true
     order?: true
     itineraryId?: true
@@ -4835,9 +4981,8 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    estimatedCost?: true
+    cost?: true
     currency?: true
-    media?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -4935,9 +5080,8 @@ export namespace Prisma {
     id: string
     name: string
     description: string | null
-    estimatedCost: number | null
+    cost: number | null
     currency: string | null
-    media: string[]
     order: number
     itineraryId: string
     createdAt: Date
@@ -4967,24 +5111,24 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    estimatedCost?: boolean
+    cost?: boolean
     currency?: boolean
-    media?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    media?: boolean | ItineraryItem$mediaArgs<ExtArgs>
     location?: boolean | ItineraryItem$locationArgs<ExtArgs>
     itinerary?: boolean | ItineraryDefaultArgs<ExtArgs>
+    _count?: boolean | ItineraryItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["itineraryItem"]>
 
   export type ItineraryItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     description?: boolean
-    estimatedCost?: boolean
+    cost?: boolean
     currency?: boolean
-    media?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
@@ -4996,9 +5140,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    estimatedCost?: boolean
+    cost?: boolean
     currency?: boolean
-    media?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
@@ -5010,19 +5153,20 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    estimatedCost?: boolean
+    cost?: boolean
     currency?: boolean
-    media?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "estimatedCost" | "currency" | "media" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
+  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "cost" | "currency" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
   export type ItineraryItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    media?: boolean | ItineraryItem$mediaArgs<ExtArgs>
     location?: boolean | ItineraryItem$locationArgs<ExtArgs>
     itinerary?: boolean | ItineraryDefaultArgs<ExtArgs>
+    _count?: boolean | ItineraryItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ItineraryItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     itinerary?: boolean | ItineraryDefaultArgs<ExtArgs>
@@ -5034,6 +5178,7 @@ export namespace Prisma {
   export type $ItineraryItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ItineraryItem"
     objects: {
+      media: Prisma.$MediaPayload<ExtArgs>[]
       location: Prisma.$LocationPayload<ExtArgs> | null
       itinerary: Prisma.$ItineraryPayload<ExtArgs>
     }
@@ -5041,9 +5186,8 @@ export namespace Prisma {
       id: string
       name: string
       description: string | null
-      estimatedCost: number | null
+      cost: number | null
       currency: string | null
-      media: string[]
       order: number
       itineraryId: string
       createdAt: Date
@@ -5442,6 +5586,7 @@ export namespace Prisma {
    */
   export interface Prisma__ItineraryItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    media<T extends ItineraryItem$mediaArgs<ExtArgs> = {}>(args?: Subset<T, ItineraryItem$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     location<T extends ItineraryItem$locationArgs<ExtArgs> = {}>(args?: Subset<T, ItineraryItem$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     itinerary<T extends ItineraryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ItineraryDefaultArgs<ExtArgs>>): Prisma__ItineraryClient<$Result.GetResult<Prisma.$ItineraryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -5476,9 +5621,8 @@ export namespace Prisma {
     readonly id: FieldRef<"ItineraryItem", 'String'>
     readonly name: FieldRef<"ItineraryItem", 'String'>
     readonly description: FieldRef<"ItineraryItem", 'String'>
-    readonly estimatedCost: FieldRef<"ItineraryItem", 'Float'>
+    readonly cost: FieldRef<"ItineraryItem", 'Float'>
     readonly currency: FieldRef<"ItineraryItem", 'String'>
-    readonly media: FieldRef<"ItineraryItem", 'String[]'>
     readonly order: FieldRef<"ItineraryItem", 'Int'>
     readonly itineraryId: FieldRef<"ItineraryItem", 'String'>
     readonly createdAt: FieldRef<"ItineraryItem", 'DateTime'>
@@ -5879,6 +6023,30 @@ export namespace Prisma {
   }
 
   /**
+   * ItineraryItem.media
+   */
+  export type ItineraryItem$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    where?: MediaWhereInput
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    cursor?: MediaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MediaScalarFieldEnum | MediaScalarFieldEnum[]
+  }
+
+  /**
    * ItineraryItem.location
    */
   export type ItineraryItem$locationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6083,14 +6251,6 @@ export namespace Prisma {
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
-  export type LocationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    itineraryItemId?: boolean
-    country?: boolean
-    city?: boolean
-    address?: boolean
-    itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["location"]>
 
   export type LocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
@@ -6111,9 +6271,6 @@ export namespace Prisma {
 
   export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itineraryItemId" | "country" | "city" | "address", ExtArgs["result"]["location"]>
   export type LocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
-  }
-  export type LocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     itineraryItem?: boolean | ItineraryItemDefaultArgs<ExtArgs>
   }
   export type LocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6221,58 +6378,6 @@ export namespace Prisma {
     findMany<T extends LocationFindManyArgs>(args?: SelectSubset<T, LocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Location.
-     * @param {LocationCreateArgs} args - Arguments to create a Location.
-     * @example
-     * // Create one Location
-     * const Location = await prisma.location.create({
-     *   data: {
-     *     // ... data to create a Location
-     *   }
-     * })
-     * 
-     */
-    create<T extends LocationCreateArgs>(args: SelectSubset<T, LocationCreateArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Locations.
-     * @param {LocationCreateManyArgs} args - Arguments to create many Locations.
-     * @example
-     * // Create many Locations
-     * const location = await prisma.location.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends LocationCreateManyArgs>(args?: SelectSubset<T, LocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Locations and returns the data saved in the database.
-     * @param {LocationCreateManyAndReturnArgs} args - Arguments to create many Locations.
-     * @example
-     * // Create many Locations
-     * const location = await prisma.location.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Locations and only return the `id`
-     * const locationWithIdOnly = await prisma.location.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends LocationCreateManyAndReturnArgs>(args?: SelectSubset<T, LocationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
      * Delete a Location.
      * @param {LocationDeleteArgs} args - Arguments to delete one Location.
      * @example
@@ -6365,25 +6470,6 @@ export namespace Prisma {
      * 
      */
     updateManyAndReturn<T extends LocationUpdateManyAndReturnArgs>(args: SelectSubset<T, LocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Location.
-     * @param {LocationUpsertArgs} args - Arguments to update or create a Location.
-     * @example
-     * // Update or create a Location
-     * const location = await prisma.location.upsert({
-     *   create: {
-     *     // ... data to create a Location
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Location we want to update
-     *   }
-     * })
-     */
-    upsert<T extends LocationUpsertArgs>(args: SelectSubset<T, LocationUpsertArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -6760,62 +6846,6 @@ export namespace Prisma {
   }
 
   /**
-   * Location create
-   */
-  export type LocationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Location
-     */
-    select?: LocationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Location
-     */
-    omit?: LocationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LocationInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Location.
-     */
-    data: XOR<LocationCreateInput, LocationUncheckedCreateInput>
-  }
-
-  /**
-   * Location createMany
-   */
-  export type LocationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Locations.
-     */
-    data: LocationCreateManyInput | LocationCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Location createManyAndReturn
-   */
-  export type LocationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Location
-     */
-    select?: LocationSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Location
-     */
-    omit?: LocationOmit<ExtArgs> | null
-    /**
-     * The data used to create many Locations.
-     */
-    data: LocationCreateManyInput | LocationCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LocationIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
    * Location update
    */
   export type LocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6890,36 +6920,6 @@ export namespace Prisma {
   }
 
   /**
-   * Location upsert
-   */
-  export type LocationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Location
-     */
-    select?: LocationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Location
-     */
-    omit?: LocationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LocationInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Location to update in case it exists.
-     */
-    where: LocationWhereUniqueInput
-    /**
-     * In case the Location found by the `where` argument doesn't exist, create a new Location with this data.
-     */
-    create: XOR<LocationCreateInput, LocationUncheckedCreateInput>
-    /**
-     * In case the Location was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<LocationUpdateInput, LocationUncheckedUpdateInput>
-  }
-
-  /**
    * Location delete
    */
   export type LocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6975,6 +6975,1110 @@ export namespace Prisma {
 
 
   /**
+   * Model Media
+   */
+
+  export type AggregateMedia = {
+    _count: MediaCountAggregateOutputType | null
+    _min: MediaMinAggregateOutputType | null
+    _max: MediaMaxAggregateOutputType | null
+  }
+
+  export type MediaMinAggregateOutputType = {
+    id: string | null
+    thumbnail: string | null
+    feed: string | null
+    itineraryId: string | null
+    itineraryItemId: string | null
+  }
+
+  export type MediaMaxAggregateOutputType = {
+    id: string | null
+    thumbnail: string | null
+    feed: string | null
+    itineraryId: string | null
+    itineraryItemId: string | null
+  }
+
+  export type MediaCountAggregateOutputType = {
+    id: number
+    thumbnail: number
+    feed: number
+    itineraryId: number
+    itineraryItemId: number
+    _all: number
+  }
+
+
+  export type MediaMinAggregateInputType = {
+    id?: true
+    thumbnail?: true
+    feed?: true
+    itineraryId?: true
+    itineraryItemId?: true
+  }
+
+  export type MediaMaxAggregateInputType = {
+    id?: true
+    thumbnail?: true
+    feed?: true
+    itineraryId?: true
+    itineraryItemId?: true
+  }
+
+  export type MediaCountAggregateInputType = {
+    id?: true
+    thumbnail?: true
+    feed?: true
+    itineraryId?: true
+    itineraryItemId?: true
+    _all?: true
+  }
+
+  export type MediaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Media to aggregate.
+     */
+    where?: MediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Media to fetch.
+     */
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Media from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Media.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Media
+    **/
+    _count?: true | MediaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MediaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MediaMaxAggregateInputType
+  }
+
+  export type GetMediaAggregateType<T extends MediaAggregateArgs> = {
+        [P in keyof T & keyof AggregateMedia]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMedia[P]>
+      : GetScalarType<T[P], AggregateMedia[P]>
+  }
+
+
+
+
+  export type MediaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MediaWhereInput
+    orderBy?: MediaOrderByWithAggregationInput | MediaOrderByWithAggregationInput[]
+    by: MediaScalarFieldEnum[] | MediaScalarFieldEnum
+    having?: MediaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MediaCountAggregateInputType | true
+    _min?: MediaMinAggregateInputType
+    _max?: MediaMaxAggregateInputType
+  }
+
+  export type MediaGroupByOutputType = {
+    id: string
+    thumbnail: string
+    feed: string
+    itineraryId: string | null
+    itineraryItemId: string | null
+    _count: MediaCountAggregateOutputType | null
+    _min: MediaMinAggregateOutputType | null
+    _max: MediaMaxAggregateOutputType | null
+  }
+
+  type GetMediaGroupByPayload<T extends MediaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MediaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MediaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MediaGroupByOutputType[P]>
+            : GetScalarType<T[P], MediaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MediaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    thumbnail?: boolean
+    feed?: boolean
+    itineraryId?: boolean
+    itineraryItemId?: boolean
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }, ExtArgs["result"]["media"]>
+
+  export type MediaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    thumbnail?: boolean
+    feed?: boolean
+    itineraryId?: boolean
+    itineraryItemId?: boolean
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }, ExtArgs["result"]["media"]>
+
+  export type MediaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    thumbnail?: boolean
+    feed?: boolean
+    itineraryId?: boolean
+    itineraryItemId?: boolean
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }, ExtArgs["result"]["media"]>
+
+  export type MediaSelectScalar = {
+    id?: boolean
+    thumbnail?: boolean
+    feed?: boolean
+    itineraryId?: boolean
+    itineraryItemId?: boolean
+  }
+
+  export type MediaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "thumbnail" | "feed" | "itineraryId" | "itineraryItemId", ExtArgs["result"]["media"]>
+  export type MediaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }
+  export type MediaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }
+  export type MediaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    itinerary?: boolean | Media$itineraryArgs<ExtArgs>
+    itineraryItem?: boolean | Media$itineraryItemArgs<ExtArgs>
+  }
+
+  export type $MediaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Media"
+    objects: {
+      itinerary: Prisma.$ItineraryPayload<ExtArgs> | null
+      itineraryItem: Prisma.$ItineraryItemPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      thumbnail: string
+      feed: string
+      itineraryId: string | null
+      itineraryItemId: string | null
+    }, ExtArgs["result"]["media"]>
+    composites: {}
+  }
+
+  type MediaGetPayload<S extends boolean | null | undefined | MediaDefaultArgs> = $Result.GetResult<Prisma.$MediaPayload, S>
+
+  type MediaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MediaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MediaCountAggregateInputType | true
+    }
+
+  export interface MediaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Media'], meta: { name: 'Media' } }
+    /**
+     * Find zero or one Media that matches the filter.
+     * @param {MediaFindUniqueArgs} args - Arguments to find a Media
+     * @example
+     * // Get one Media
+     * const media = await prisma.media.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MediaFindUniqueArgs>(args: SelectSubset<T, MediaFindUniqueArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Media that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MediaFindUniqueOrThrowArgs} args - Arguments to find a Media
+     * @example
+     * // Get one Media
+     * const media = await prisma.media.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MediaFindUniqueOrThrowArgs>(args: SelectSubset<T, MediaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Media that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaFindFirstArgs} args - Arguments to find a Media
+     * @example
+     * // Get one Media
+     * const media = await prisma.media.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MediaFindFirstArgs>(args?: SelectSubset<T, MediaFindFirstArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Media that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaFindFirstOrThrowArgs} args - Arguments to find a Media
+     * @example
+     * // Get one Media
+     * const media = await prisma.media.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MediaFindFirstOrThrowArgs>(args?: SelectSubset<T, MediaFindFirstOrThrowArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Media that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Media
+     * const media = await prisma.media.findMany()
+     * 
+     * // Get first 10 Media
+     * const media = await prisma.media.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mediaWithIdOnly = await prisma.media.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MediaFindManyArgs>(args?: SelectSubset<T, MediaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Media.
+     * @param {MediaCreateArgs} args - Arguments to create a Media.
+     * @example
+     * // Create one Media
+     * const Media = await prisma.media.create({
+     *   data: {
+     *     // ... data to create a Media
+     *   }
+     * })
+     * 
+     */
+    create<T extends MediaCreateArgs>(args: SelectSubset<T, MediaCreateArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Media.
+     * @param {MediaCreateManyArgs} args - Arguments to create many Media.
+     * @example
+     * // Create many Media
+     * const media = await prisma.media.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MediaCreateManyArgs>(args?: SelectSubset<T, MediaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Media and returns the data saved in the database.
+     * @param {MediaCreateManyAndReturnArgs} args - Arguments to create many Media.
+     * @example
+     * // Create many Media
+     * const media = await prisma.media.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Media and only return the `id`
+     * const mediaWithIdOnly = await prisma.media.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MediaCreateManyAndReturnArgs>(args?: SelectSubset<T, MediaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Media.
+     * @param {MediaDeleteArgs} args - Arguments to delete one Media.
+     * @example
+     * // Delete one Media
+     * const Media = await prisma.media.delete({
+     *   where: {
+     *     // ... filter to delete one Media
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MediaDeleteArgs>(args: SelectSubset<T, MediaDeleteArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Media.
+     * @param {MediaUpdateArgs} args - Arguments to update one Media.
+     * @example
+     * // Update one Media
+     * const media = await prisma.media.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MediaUpdateArgs>(args: SelectSubset<T, MediaUpdateArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Media.
+     * @param {MediaDeleteManyArgs} args - Arguments to filter Media to delete.
+     * @example
+     * // Delete a few Media
+     * const { count } = await prisma.media.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MediaDeleteManyArgs>(args?: SelectSubset<T, MediaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Media.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Media
+     * const media = await prisma.media.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MediaUpdateManyArgs>(args: SelectSubset<T, MediaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Media and returns the data updated in the database.
+     * @param {MediaUpdateManyAndReturnArgs} args - Arguments to update many Media.
+     * @example
+     * // Update many Media
+     * const media = await prisma.media.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Media and only return the `id`
+     * const mediaWithIdOnly = await prisma.media.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MediaUpdateManyAndReturnArgs>(args: SelectSubset<T, MediaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Media.
+     * @param {MediaUpsertArgs} args - Arguments to update or create a Media.
+     * @example
+     * // Update or create a Media
+     * const media = await prisma.media.upsert({
+     *   create: {
+     *     // ... data to create a Media
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Media we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MediaUpsertArgs>(args: SelectSubset<T, MediaUpsertArgs<ExtArgs>>): Prisma__MediaClient<$Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Media.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaCountArgs} args - Arguments to filter Media to count.
+     * @example
+     * // Count the number of Media
+     * const count = await prisma.media.count({
+     *   where: {
+     *     // ... the filter for the Media we want to count
+     *   }
+     * })
+    **/
+    count<T extends MediaCountArgs>(
+      args?: Subset<T, MediaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MediaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Media.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MediaAggregateArgs>(args: Subset<T, MediaAggregateArgs>): Prisma.PrismaPromise<GetMediaAggregateType<T>>
+
+    /**
+     * Group by Media.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MediaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MediaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MediaGroupByArgs['orderBy'] }
+        : { orderBy?: MediaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MediaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMediaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Media model
+   */
+  readonly fields: MediaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Media.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MediaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    itinerary<T extends Media$itineraryArgs<ExtArgs> = {}>(args?: Subset<T, Media$itineraryArgs<ExtArgs>>): Prisma__ItineraryClient<$Result.GetResult<Prisma.$ItineraryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    itineraryItem<T extends Media$itineraryItemArgs<ExtArgs> = {}>(args?: Subset<T, Media$itineraryItemArgs<ExtArgs>>): Prisma__ItineraryItemClient<$Result.GetResult<Prisma.$ItineraryItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Media model
+   */
+  interface MediaFieldRefs {
+    readonly id: FieldRef<"Media", 'String'>
+    readonly thumbnail: FieldRef<"Media", 'String'>
+    readonly feed: FieldRef<"Media", 'String'>
+    readonly itineraryId: FieldRef<"Media", 'String'>
+    readonly itineraryItemId: FieldRef<"Media", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Media findUnique
+   */
+  export type MediaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter, which Media to fetch.
+     */
+    where: MediaWhereUniqueInput
+  }
+
+  /**
+   * Media findUniqueOrThrow
+   */
+  export type MediaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter, which Media to fetch.
+     */
+    where: MediaWhereUniqueInput
+  }
+
+  /**
+   * Media findFirst
+   */
+  export type MediaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter, which Media to fetch.
+     */
+    where?: MediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Media to fetch.
+     */
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Media.
+     */
+    cursor?: MediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Media from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Media.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Media.
+     */
+    distinct?: MediaScalarFieldEnum | MediaScalarFieldEnum[]
+  }
+
+  /**
+   * Media findFirstOrThrow
+   */
+  export type MediaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter, which Media to fetch.
+     */
+    where?: MediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Media to fetch.
+     */
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Media.
+     */
+    cursor?: MediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Media from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Media.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Media.
+     */
+    distinct?: MediaScalarFieldEnum | MediaScalarFieldEnum[]
+  }
+
+  /**
+   * Media findMany
+   */
+  export type MediaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter, which Media to fetch.
+     */
+    where?: MediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Media to fetch.
+     */
+    orderBy?: MediaOrderByWithRelationInput | MediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Media.
+     */
+    cursor?: MediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Media from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Media.
+     */
+    skip?: number
+    distinct?: MediaScalarFieldEnum | MediaScalarFieldEnum[]
+  }
+
+  /**
+   * Media create
+   */
+  export type MediaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Media.
+     */
+    data: XOR<MediaCreateInput, MediaUncheckedCreateInput>
+  }
+
+  /**
+   * Media createMany
+   */
+  export type MediaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Media.
+     */
+    data: MediaCreateManyInput | MediaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Media createManyAndReturn
+   */
+  export type MediaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * The data used to create many Media.
+     */
+    data: MediaCreateManyInput | MediaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Media update
+   */
+  export type MediaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Media.
+     */
+    data: XOR<MediaUpdateInput, MediaUncheckedUpdateInput>
+    /**
+     * Choose, which Media to update.
+     */
+    where: MediaWhereUniqueInput
+  }
+
+  /**
+   * Media updateMany
+   */
+  export type MediaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Media.
+     */
+    data: XOR<MediaUpdateManyMutationInput, MediaUncheckedUpdateManyInput>
+    /**
+     * Filter which Media to update
+     */
+    where?: MediaWhereInput
+    /**
+     * Limit how many Media to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Media updateManyAndReturn
+   */
+  export type MediaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * The data used to update Media.
+     */
+    data: XOR<MediaUpdateManyMutationInput, MediaUncheckedUpdateManyInput>
+    /**
+     * Filter which Media to update
+     */
+    where?: MediaWhereInput
+    /**
+     * Limit how many Media to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Media upsert
+   */
+  export type MediaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Media to update in case it exists.
+     */
+    where: MediaWhereUniqueInput
+    /**
+     * In case the Media found by the `where` argument doesn't exist, create a new Media with this data.
+     */
+    create: XOR<MediaCreateInput, MediaUncheckedCreateInput>
+    /**
+     * In case the Media was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MediaUpdateInput, MediaUncheckedUpdateInput>
+  }
+
+  /**
+   * Media delete
+   */
+  export type MediaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+    /**
+     * Filter which Media to delete.
+     */
+    where: MediaWhereUniqueInput
+  }
+
+  /**
+   * Media deleteMany
+   */
+  export type MediaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Media to delete
+     */
+    where?: MediaWhereInput
+    /**
+     * Limit how many Media to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Media.itinerary
+   */
+  export type Media$itineraryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Itinerary
+     */
+    select?: ItinerarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Itinerary
+     */
+    omit?: ItineraryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItineraryInclude<ExtArgs> | null
+    where?: ItineraryWhereInput
+  }
+
+  /**
+   * Media.itineraryItem
+   */
+  export type Media$itineraryItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItineraryItem
+     */
+    select?: ItineraryItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItineraryItem
+     */
+    omit?: ItineraryItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItineraryItemInclude<ExtArgs> | null
+    where?: ItineraryItemWhereInput
+  }
+
+  /**
+   * Media without action
+   */
+  export type MediaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Media
+     */
+    select?: MediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Media
+     */
+    omit?: MediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MediaInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -7022,7 +8126,7 @@ export namespace Prisma {
     description: 'description',
     startDate: 'startDate',
     endDate: 'endDate',
-    media: 'media',
+    isArchived: 'isArchived',
     ownerId: 'ownerId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -7035,9 +8139,8 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
-    estimatedCost: 'estimatedCost',
+    cost: 'cost',
     currency: 'currency',
-    media: 'media',
     order: 'order',
     itineraryId: 'itineraryId',
     createdAt: 'createdAt',
@@ -7056,6 +8159,17 @@ export namespace Prisma {
   };
 
   export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
+
+
+  export const MediaScalarFieldEnum: {
+    id: 'id',
+    thumbnail: 'thumbnail',
+    feed: 'feed',
+    itineraryId: 'itineraryId',
+    itineraryItemId: 'itineraryItemId'
+  };
+
+  export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -7326,10 +8440,11 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
-    media?: StringNullableListFilter<"Itinerary">
+    isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
     updatedAt?: DateTimeFilter<"Itinerary"> | Date | string
+    media?: MediaListRelationFilter
     itineraryItems?: ItineraryItemListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -7340,10 +8455,11 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
-    media?: SortOrder
+    isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    media?: MediaOrderByRelationAggregateInput
     itineraryItems?: ItineraryItemOrderByRelationAggregateInput
     owner?: UserOrderByWithRelationInput
   }
@@ -7357,10 +8473,11 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
-    media?: StringNullableListFilter<"Itinerary">
+    isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
     updatedAt?: DateTimeFilter<"Itinerary"> | Date | string
+    media?: MediaListRelationFilter
     itineraryItems?: ItineraryItemListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -7371,7 +8488,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
-    media?: SortOrder
+    isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7389,7 +8506,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableWithAggregatesFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableWithAggregatesFilter<"Itinerary"> | Date | string | null
-    media?: StringNullableListFilter<"Itinerary">
+    isArchived?: BoolWithAggregatesFilter<"Itinerary"> | boolean
     ownerId?: StringWithAggregatesFilter<"Itinerary"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Itinerary"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Itinerary"> | Date | string
@@ -7402,13 +8519,13 @@ export namespace Prisma {
     id?: StringFilter<"ItineraryItem"> | string
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
-    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    cost?: FloatNullableFilter<"ItineraryItem"> | number | null
     currency?: StringNullableFilter<"ItineraryItem"> | string | null
-    media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
     updatedAt?: DateTimeFilter<"ItineraryItem"> | Date | string
+    media?: MediaListRelationFilter
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     itinerary?: XOR<ItineraryScalarRelationFilter, ItineraryWhereInput>
   }
@@ -7417,13 +8534,13 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    estimatedCost?: SortOrderInput | SortOrder
+    cost?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
-    media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    media?: MediaOrderByRelationAggregateInput
     location?: LocationOrderByWithRelationInput
     itinerary?: ItineraryOrderByWithRelationInput
   }
@@ -7436,13 +8553,13 @@ export namespace Prisma {
     NOT?: ItineraryItemWhereInput | ItineraryItemWhereInput[]
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
-    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    cost?: FloatNullableFilter<"ItineraryItem"> | number | null
     currency?: StringNullableFilter<"ItineraryItem"> | string | null
-    media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
     updatedAt?: DateTimeFilter<"ItineraryItem"> | Date | string
+    media?: MediaListRelationFilter
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     itinerary?: XOR<ItineraryScalarRelationFilter, ItineraryWhereInput>
   }, "id" | "itineraryId_order">
@@ -7451,9 +8568,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    estimatedCost?: SortOrderInput | SortOrder
+    cost?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
-    media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -7472,9 +8588,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ItineraryItem"> | string
     name?: StringWithAggregatesFilter<"ItineraryItem"> | string
     description?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
-    estimatedCost?: FloatNullableWithAggregatesFilter<"ItineraryItem"> | number | null
+    cost?: FloatNullableWithAggregatesFilter<"ItineraryItem"> | number | null
     currency?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
-    media?: StringNullableListFilter<"ItineraryItem">
     order?: IntWithAggregatesFilter<"ItineraryItem"> | number
     itineraryId?: StringWithAggregatesFilter<"ItineraryItem"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ItineraryItem"> | Date | string
@@ -7534,6 +8649,64 @@ export namespace Prisma {
     country?: StringNullableWithAggregatesFilter<"Location"> | string | null
     city?: StringNullableWithAggregatesFilter<"Location"> | string | null
     address?: StringNullableWithAggregatesFilter<"Location"> | string | null
+  }
+
+  export type MediaWhereInput = {
+    AND?: MediaWhereInput | MediaWhereInput[]
+    OR?: MediaWhereInput[]
+    NOT?: MediaWhereInput | MediaWhereInput[]
+    id?: StringFilter<"Media"> | string
+    thumbnail?: StringFilter<"Media"> | string
+    feed?: StringFilter<"Media"> | string
+    itineraryId?: StringNullableFilter<"Media"> | string | null
+    itineraryItemId?: StringNullableFilter<"Media"> | string | null
+    itinerary?: XOR<ItineraryNullableScalarRelationFilter, ItineraryWhereInput> | null
+    itineraryItem?: XOR<ItineraryItemNullableScalarRelationFilter, ItineraryItemWhereInput> | null
+  }
+
+  export type MediaOrderByWithRelationInput = {
+    id?: SortOrder
+    thumbnail?: SortOrder
+    feed?: SortOrder
+    itineraryId?: SortOrderInput | SortOrder
+    itineraryItemId?: SortOrderInput | SortOrder
+    itinerary?: ItineraryOrderByWithRelationInput
+    itineraryItem?: ItineraryItemOrderByWithRelationInput
+  }
+
+  export type MediaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MediaWhereInput | MediaWhereInput[]
+    OR?: MediaWhereInput[]
+    NOT?: MediaWhereInput | MediaWhereInput[]
+    thumbnail?: StringFilter<"Media"> | string
+    feed?: StringFilter<"Media"> | string
+    itineraryId?: StringNullableFilter<"Media"> | string | null
+    itineraryItemId?: StringNullableFilter<"Media"> | string | null
+    itinerary?: XOR<ItineraryNullableScalarRelationFilter, ItineraryWhereInput> | null
+    itineraryItem?: XOR<ItineraryItemNullableScalarRelationFilter, ItineraryItemWhereInput> | null
+  }, "id">
+
+  export type MediaOrderByWithAggregationInput = {
+    id?: SortOrder
+    thumbnail?: SortOrder
+    feed?: SortOrder
+    itineraryId?: SortOrderInput | SortOrder
+    itineraryItemId?: SortOrderInput | SortOrder
+    _count?: MediaCountOrderByAggregateInput
+    _max?: MediaMaxOrderByAggregateInput
+    _min?: MediaMinOrderByAggregateInput
+  }
+
+  export type MediaScalarWhereWithAggregatesInput = {
+    AND?: MediaScalarWhereWithAggregatesInput | MediaScalarWhereWithAggregatesInput[]
+    OR?: MediaScalarWhereWithAggregatesInput[]
+    NOT?: MediaScalarWhereWithAggregatesInput | MediaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Media"> | string
+    thumbnail?: StringWithAggregatesFilter<"Media"> | string
+    feed?: StringWithAggregatesFilter<"Media"> | string
+    itineraryId?: StringNullableWithAggregatesFilter<"Media"> | string | null
+    itineraryItemId?: StringNullableWithAggregatesFilter<"Media"> | string | null
   }
 
   export type UserCreateInput = {
@@ -7706,9 +8879,10 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutItineraryInput
     owner: UserCreateNestedOneWithoutCreatedItinerariesInput
   }
@@ -7719,10 +8893,11 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutItineraryInput
   }
 
@@ -7732,9 +8907,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutItineraryNestedInput
     owner?: UserUpdateOneRequiredWithoutCreatedItinerariesNestedInput
   }
@@ -7745,10 +8921,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutItineraryNestedInput
   }
 
@@ -7758,7 +8935,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7770,7 +8947,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7781,7 +8958,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7791,12 +8968,12 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryItemInput
     location?: LocationCreateNestedOneWithoutItineraryItemInput
     itinerary: ItineraryCreateNestedOneWithoutItineraryItemsInput
   }
@@ -7805,13 +8982,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryItemInput
     location?: LocationUncheckedCreateNestedOneWithoutItineraryItemInput
   }
 
@@ -7819,12 +8996,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryItemNestedInput
     location?: LocationUpdateOneWithoutItineraryItemNestedInput
     itinerary?: ItineraryUpdateOneRequiredWithoutItineraryItemsNestedInput
   }
@@ -7833,13 +9010,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryItemNestedInput
     location?: LocationUncheckedUpdateOneWithoutItineraryItemNestedInput
   }
 
@@ -7847,9 +9024,8 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
     createdAt?: Date | string
@@ -7860,9 +9036,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7872,29 +9047,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type LocationCreateInput = {
-    id?: string
-    country?: string | null
-    city?: string | null
-    address?: string | null
-    itineraryItem: ItineraryItemCreateNestedOneWithoutLocationInput
-  }
-
-  export type LocationUncheckedCreateInput = {
-    id?: string
-    itineraryItemId: string
-    country?: string | null
-    city?: string | null
-    address?: string | null
   }
 
   export type LocationUpdateInput = {
@@ -7913,14 +9071,6 @@ export namespace Prisma {
     address?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type LocationCreateManyInput = {
-    id?: string
-    itineraryItemId: string
-    country?: string | null
-    city?: string | null
-    address?: string | null
-  }
-
   export type LocationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     country?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7934,6 +9084,60 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MediaCreateInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itinerary?: ItineraryCreateNestedOneWithoutMediaInput
+    itineraryItem?: ItineraryItemCreateNestedOneWithoutMediaInput
+  }
+
+  export type MediaUncheckedCreateInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryId?: string | null
+    itineraryItemId?: string | null
+  }
+
+  export type MediaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itinerary?: ItineraryUpdateOneWithoutMediaNestedInput
+    itineraryItem?: ItineraryItemUpdateOneWithoutMediaNestedInput
+  }
+
+  export type MediaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryId?: NullableStringFieldUpdateOperationsInput | string | null
+    itineraryItemId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MediaCreateManyInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryId?: string | null
+    itineraryItemId?: string | null
+  }
+
+  export type MediaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MediaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryId?: NullableStringFieldUpdateOperationsInput | string | null
+    itineraryItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8169,18 +9373,20 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
+  export type MediaListRelationFilter = {
+    every?: MediaWhereInput
+    some?: MediaWhereInput
+    none?: MediaWhereInput
   }
 
   export type ItineraryItemListRelationFilter = {
     every?: ItineraryItemWhereInput
     some?: ItineraryItemWhereInput
     none?: ItineraryItemWhereInput
+  }
+
+  export type MediaOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ItineraryItemOrderByRelationAggregateInput = {
@@ -8193,7 +9399,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
-    media?: SortOrder
+    isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8205,6 +9411,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
+    isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8216,6 +9423,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
+    isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8276,9 +9484,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    estimatedCost?: SortOrder
+    cost?: SortOrder
     currency?: SortOrder
-    media?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -8286,7 +9493,7 @@ export namespace Prisma {
   }
 
   export type ItineraryItemAvgOrderByAggregateInput = {
-    estimatedCost?: SortOrder
+    cost?: SortOrder
     order?: SortOrder
   }
 
@@ -8294,7 +9501,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    estimatedCost?: SortOrder
+    cost?: SortOrder
     currency?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
@@ -8306,7 +9513,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    estimatedCost?: SortOrder
+    cost?: SortOrder
     currency?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
@@ -8315,7 +9522,7 @@ export namespace Prisma {
   }
 
   export type ItineraryItemSumOrderByAggregateInput = {
-    estimatedCost?: SortOrder
+    cost?: SortOrder
     order?: SortOrder
   }
 
@@ -8378,6 +9585,40 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrder
     address?: SortOrder
+  }
+
+  export type ItineraryNullableScalarRelationFilter = {
+    is?: ItineraryWhereInput | null
+    isNot?: ItineraryWhereInput | null
+  }
+
+  export type ItineraryItemNullableScalarRelationFilter = {
+    is?: ItineraryItemWhereInput | null
+    isNot?: ItineraryItemWhereInput | null
+  }
+
+  export type MediaCountOrderByAggregateInput = {
+    id?: SortOrder
+    thumbnail?: SortOrder
+    feed?: SortOrder
+    itineraryId?: SortOrder
+    itineraryItemId?: SortOrder
+  }
+
+  export type MediaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    thumbnail?: SortOrder
+    feed?: SortOrder
+    itineraryId?: SortOrder
+    itineraryItemId?: SortOrder
+  }
+
+  export type MediaMinOrderByAggregateInput = {
+    id?: SortOrder
+    thumbnail?: SortOrder
+    feed?: SortOrder
+    itineraryId?: SortOrder
+    itineraryItemId?: SortOrder
   }
 
   export type FollowsCreateNestedManyWithoutFollowedByInput = {
@@ -8554,8 +9795,11 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFollowingInput, UserUpdateWithoutFollowingInput>, UserUncheckedUpdateWithoutFollowingInput>
   }
 
-  export type ItineraryCreatemediaInput = {
-    set: string[]
+  export type MediaCreateNestedManyWithoutItineraryInput = {
+    create?: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput> | MediaCreateWithoutItineraryInput[] | MediaUncheckedCreateWithoutItineraryInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryInput | MediaCreateOrConnectWithoutItineraryInput[]
+    createMany?: MediaCreateManyItineraryInputEnvelope
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
   }
 
   export type ItineraryItemCreateNestedManyWithoutItineraryInput = {
@@ -8571,6 +9815,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type MediaUncheckedCreateNestedManyWithoutItineraryInput = {
+    create?: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput> | MediaCreateWithoutItineraryInput[] | MediaUncheckedCreateWithoutItineraryInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryInput | MediaCreateOrConnectWithoutItineraryInput[]
+    createMany?: MediaCreateManyItineraryInputEnvelope
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+  }
+
   export type ItineraryItemUncheckedCreateNestedManyWithoutItineraryInput = {
     create?: XOR<ItineraryItemCreateWithoutItineraryInput, ItineraryItemUncheckedCreateWithoutItineraryInput> | ItineraryItemCreateWithoutItineraryInput[] | ItineraryItemUncheckedCreateWithoutItineraryInput[]
     connectOrCreate?: ItineraryItemCreateOrConnectWithoutItineraryInput | ItineraryItemCreateOrConnectWithoutItineraryInput[]
@@ -8582,9 +9833,18 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type ItineraryUpdatemediaInput = {
-    set?: string[]
-    push?: string | string[]
+  export type MediaUpdateManyWithoutItineraryNestedInput = {
+    create?: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput> | MediaCreateWithoutItineraryInput[] | MediaUncheckedCreateWithoutItineraryInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryInput | MediaCreateOrConnectWithoutItineraryInput[]
+    upsert?: MediaUpsertWithWhereUniqueWithoutItineraryInput | MediaUpsertWithWhereUniqueWithoutItineraryInput[]
+    createMany?: MediaCreateManyItineraryInputEnvelope
+    set?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    disconnect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    delete?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    update?: MediaUpdateWithWhereUniqueWithoutItineraryInput | MediaUpdateWithWhereUniqueWithoutItineraryInput[]
+    updateMany?: MediaUpdateManyWithWhereWithoutItineraryInput | MediaUpdateManyWithWhereWithoutItineraryInput[]
+    deleteMany?: MediaScalarWhereInput | MediaScalarWhereInput[]
   }
 
   export type ItineraryItemUpdateManyWithoutItineraryNestedInput = {
@@ -8609,6 +9869,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedItinerariesInput, UserUpdateWithoutCreatedItinerariesInput>, UserUncheckedUpdateWithoutCreatedItinerariesInput>
   }
 
+  export type MediaUncheckedUpdateManyWithoutItineraryNestedInput = {
+    create?: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput> | MediaCreateWithoutItineraryInput[] | MediaUncheckedCreateWithoutItineraryInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryInput | MediaCreateOrConnectWithoutItineraryInput[]
+    upsert?: MediaUpsertWithWhereUniqueWithoutItineraryInput | MediaUpsertWithWhereUniqueWithoutItineraryInput[]
+    createMany?: MediaCreateManyItineraryInputEnvelope
+    set?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    disconnect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    delete?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    update?: MediaUpdateWithWhereUniqueWithoutItineraryInput | MediaUpdateWithWhereUniqueWithoutItineraryInput[]
+    updateMany?: MediaUpdateManyWithWhereWithoutItineraryInput | MediaUpdateManyWithWhereWithoutItineraryInput[]
+    deleteMany?: MediaScalarWhereInput | MediaScalarWhereInput[]
+  }
+
   export type ItineraryItemUncheckedUpdateManyWithoutItineraryNestedInput = {
     create?: XOR<ItineraryItemCreateWithoutItineraryInput, ItineraryItemUncheckedCreateWithoutItineraryInput> | ItineraryItemCreateWithoutItineraryInput[] | ItineraryItemUncheckedCreateWithoutItineraryInput[]
     connectOrCreate?: ItineraryItemCreateOrConnectWithoutItineraryInput | ItineraryItemCreateOrConnectWithoutItineraryInput[]
@@ -8623,13 +9897,14 @@ export namespace Prisma {
     deleteMany?: ItineraryItemScalarWhereInput | ItineraryItemScalarWhereInput[]
   }
 
-  export type ItineraryItemCreatemediaInput = {
-    set: string[]
+  export type MediaCreateNestedManyWithoutItineraryItemInput = {
+    create?: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput> | MediaCreateWithoutItineraryItemInput[] | MediaUncheckedCreateWithoutItineraryItemInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryItemInput | MediaCreateOrConnectWithoutItineraryItemInput[]
+    createMany?: MediaCreateManyItineraryItemInputEnvelope
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
   }
 
   export type LocationCreateNestedOneWithoutItineraryItemInput = {
-    create?: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
-    connectOrCreate?: LocationCreateOrConnectWithoutItineraryItemInput
     connect?: LocationWhereUniqueInput
   }
 
@@ -8639,9 +9914,14 @@ export namespace Prisma {
     connect?: ItineraryWhereUniqueInput
   }
 
+  export type MediaUncheckedCreateNestedManyWithoutItineraryItemInput = {
+    create?: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput> | MediaCreateWithoutItineraryItemInput[] | MediaUncheckedCreateWithoutItineraryItemInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryItemInput | MediaCreateOrConnectWithoutItineraryItemInput[]
+    createMany?: MediaCreateManyItineraryItemInputEnvelope
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+  }
+
   export type LocationUncheckedCreateNestedOneWithoutItineraryItemInput = {
-    create?: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
-    connectOrCreate?: LocationCreateOrConnectWithoutItineraryItemInput
     connect?: LocationWhereUniqueInput
   }
 
@@ -8653,11 +9933,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type ItineraryItemUpdatemediaInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -8666,10 +9941,21 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type MediaUpdateManyWithoutItineraryItemNestedInput = {
+    create?: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput> | MediaCreateWithoutItineraryItemInput[] | MediaUncheckedCreateWithoutItineraryItemInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryItemInput | MediaCreateOrConnectWithoutItineraryItemInput[]
+    upsert?: MediaUpsertWithWhereUniqueWithoutItineraryItemInput | MediaUpsertWithWhereUniqueWithoutItineraryItemInput[]
+    createMany?: MediaCreateManyItineraryItemInputEnvelope
+    set?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    disconnect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    delete?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    update?: MediaUpdateWithWhereUniqueWithoutItineraryItemInput | MediaUpdateWithWhereUniqueWithoutItineraryItemInput[]
+    updateMany?: MediaUpdateManyWithWhereWithoutItineraryItemInput | MediaUpdateManyWithWhereWithoutItineraryItemInput[]
+    deleteMany?: MediaScalarWhereInput | MediaScalarWhereInput[]
+  }
+
   export type LocationUpdateOneWithoutItineraryItemNestedInput = {
-    create?: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
-    connectOrCreate?: LocationCreateOrConnectWithoutItineraryItemInput
-    upsert?: LocationUpsertWithoutItineraryItemInput
     disconnect?: LocationWhereInput | boolean
     delete?: LocationWhereInput | boolean
     connect?: LocationWhereUniqueInput
@@ -8684,20 +9970,25 @@ export namespace Prisma {
     update?: XOR<XOR<ItineraryUpdateToOneWithWhereWithoutItineraryItemsInput, ItineraryUpdateWithoutItineraryItemsInput>, ItineraryUncheckedUpdateWithoutItineraryItemsInput>
   }
 
+  export type MediaUncheckedUpdateManyWithoutItineraryItemNestedInput = {
+    create?: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput> | MediaCreateWithoutItineraryItemInput[] | MediaUncheckedCreateWithoutItineraryItemInput[]
+    connectOrCreate?: MediaCreateOrConnectWithoutItineraryItemInput | MediaCreateOrConnectWithoutItineraryItemInput[]
+    upsert?: MediaUpsertWithWhereUniqueWithoutItineraryItemInput | MediaUpsertWithWhereUniqueWithoutItineraryItemInput[]
+    createMany?: MediaCreateManyItineraryItemInputEnvelope
+    set?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    disconnect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    delete?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    connect?: MediaWhereUniqueInput | MediaWhereUniqueInput[]
+    update?: MediaUpdateWithWhereUniqueWithoutItineraryItemInput | MediaUpdateWithWhereUniqueWithoutItineraryItemInput[]
+    updateMany?: MediaUpdateManyWithWhereWithoutItineraryItemInput | MediaUpdateManyWithWhereWithoutItineraryItemInput[]
+    deleteMany?: MediaScalarWhereInput | MediaScalarWhereInput[]
+  }
+
   export type LocationUncheckedUpdateOneWithoutItineraryItemNestedInput = {
-    create?: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
-    connectOrCreate?: LocationCreateOrConnectWithoutItineraryItemInput
-    upsert?: LocationUpsertWithoutItineraryItemInput
     disconnect?: LocationWhereInput | boolean
     delete?: LocationWhereInput | boolean
     connect?: LocationWhereUniqueInput
     update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutItineraryItemInput, LocationUpdateWithoutItineraryItemInput>, LocationUncheckedUpdateWithoutItineraryItemInput>
-  }
-
-  export type ItineraryItemCreateNestedOneWithoutLocationInput = {
-    create?: XOR<ItineraryItemCreateWithoutLocationInput, ItineraryItemUncheckedCreateWithoutLocationInput>
-    connectOrCreate?: ItineraryItemCreateOrConnectWithoutLocationInput
-    connect?: ItineraryItemWhereUniqueInput
   }
 
   export type ItineraryItemUpdateOneRequiredWithoutLocationNestedInput = {
@@ -8706,6 +9997,38 @@ export namespace Prisma {
     upsert?: ItineraryItemUpsertWithoutLocationInput
     connect?: ItineraryItemWhereUniqueInput
     update?: XOR<XOR<ItineraryItemUpdateToOneWithWhereWithoutLocationInput, ItineraryItemUpdateWithoutLocationInput>, ItineraryItemUncheckedUpdateWithoutLocationInput>
+  }
+
+  export type ItineraryCreateNestedOneWithoutMediaInput = {
+    create?: XOR<ItineraryCreateWithoutMediaInput, ItineraryUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ItineraryCreateOrConnectWithoutMediaInput
+    connect?: ItineraryWhereUniqueInput
+  }
+
+  export type ItineraryItemCreateNestedOneWithoutMediaInput = {
+    create?: XOR<ItineraryItemCreateWithoutMediaInput, ItineraryItemUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ItineraryItemCreateOrConnectWithoutMediaInput
+    connect?: ItineraryItemWhereUniqueInput
+  }
+
+  export type ItineraryUpdateOneWithoutMediaNestedInput = {
+    create?: XOR<ItineraryCreateWithoutMediaInput, ItineraryUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ItineraryCreateOrConnectWithoutMediaInput
+    upsert?: ItineraryUpsertWithoutMediaInput
+    disconnect?: ItineraryWhereInput | boolean
+    delete?: ItineraryWhereInput | boolean
+    connect?: ItineraryWhereUniqueInput
+    update?: XOR<XOR<ItineraryUpdateToOneWithWhereWithoutMediaInput, ItineraryUpdateWithoutMediaInput>, ItineraryUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type ItineraryItemUpdateOneWithoutMediaNestedInput = {
+    create?: XOR<ItineraryItemCreateWithoutMediaInput, ItineraryItemUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ItineraryItemCreateOrConnectWithoutMediaInput
+    upsert?: ItineraryItemUpsertWithoutMediaInput
+    disconnect?: ItineraryItemWhereInput | boolean
+    delete?: ItineraryItemWhereInput | boolean
+    connect?: ItineraryItemWhereUniqueInput
+    update?: XOR<XOR<ItineraryItemUpdateToOneWithWhereWithoutMediaInput, ItineraryItemUpdateWithoutMediaInput>, ItineraryItemUncheckedUpdateWithoutMediaInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8980,9 +10303,10 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutItineraryInput
   }
 
@@ -8992,9 +10316,10 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutItineraryInput
   }
 
@@ -9076,7 +10401,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
-    media?: StringNullableListFilter<"Itinerary">
+    isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
     updatedAt?: DateTimeFilter<"Itinerary"> | Date | string
@@ -9242,16 +10567,40 @@ export namespace Prisma {
     createdItineraries?: ItineraryUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
+  export type MediaCreateWithoutItineraryInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryItem?: ItineraryItemCreateNestedOneWithoutMediaInput
+  }
+
+  export type MediaUncheckedCreateWithoutItineraryInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryItemId?: string | null
+  }
+
+  export type MediaCreateOrConnectWithoutItineraryInput = {
+    where: MediaWhereUniqueInput
+    create: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput>
+  }
+
+  export type MediaCreateManyItineraryInputEnvelope = {
+    data: MediaCreateManyItineraryInput | MediaCreateManyItineraryInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ItineraryItemCreateWithoutItineraryInput = {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryItemInput
     location?: LocationCreateNestedOneWithoutItineraryItemInput
   }
 
@@ -9259,12 +10608,12 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryItemInput
     location?: LocationUncheckedCreateNestedOneWithoutItineraryItemInput
   }
 
@@ -9315,6 +10664,33 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutCreatedItinerariesInput, UserUncheckedCreateWithoutCreatedItinerariesInput>
   }
 
+  export type MediaUpsertWithWhereUniqueWithoutItineraryInput = {
+    where: MediaWhereUniqueInput
+    update: XOR<MediaUpdateWithoutItineraryInput, MediaUncheckedUpdateWithoutItineraryInput>
+    create: XOR<MediaCreateWithoutItineraryInput, MediaUncheckedCreateWithoutItineraryInput>
+  }
+
+  export type MediaUpdateWithWhereUniqueWithoutItineraryInput = {
+    where: MediaWhereUniqueInput
+    data: XOR<MediaUpdateWithoutItineraryInput, MediaUncheckedUpdateWithoutItineraryInput>
+  }
+
+  export type MediaUpdateManyWithWhereWithoutItineraryInput = {
+    where: MediaScalarWhereInput
+    data: XOR<MediaUpdateManyMutationInput, MediaUncheckedUpdateManyWithoutItineraryInput>
+  }
+
+  export type MediaScalarWhereInput = {
+    AND?: MediaScalarWhereInput | MediaScalarWhereInput[]
+    OR?: MediaScalarWhereInput[]
+    NOT?: MediaScalarWhereInput | MediaScalarWhereInput[]
+    id?: StringFilter<"Media"> | string
+    thumbnail?: StringFilter<"Media"> | string
+    feed?: StringFilter<"Media"> | string
+    itineraryId?: StringNullableFilter<"Media"> | string | null
+    itineraryItemId?: StringNullableFilter<"Media"> | string | null
+  }
+
   export type ItineraryItemUpsertWithWhereUniqueWithoutItineraryInput = {
     where: ItineraryItemWhereUniqueInput
     update: XOR<ItineraryItemUpdateWithoutItineraryInput, ItineraryItemUncheckedUpdateWithoutItineraryInput>
@@ -9338,9 +10714,8 @@ export namespace Prisma {
     id?: StringFilter<"ItineraryItem"> | string
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
-    estimatedCost?: FloatNullableFilter<"ItineraryItem"> | number | null
+    cost?: FloatNullableFilter<"ItineraryItem"> | number | null
     currency?: StringNullableFilter<"ItineraryItem"> | string | null
-    media?: StringNullableListFilter<"ItineraryItem">
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
@@ -9390,23 +10765,28 @@ export namespace Prisma {
     following?: FollowsUncheckedUpdateManyWithoutFollowingNestedInput
   }
 
-  export type LocationCreateWithoutItineraryItemInput = {
+  export type MediaCreateWithoutItineraryItemInput = {
     id?: string
-    country?: string | null
-    city?: string | null
-    address?: string | null
+    thumbnail: string
+    feed: string
+    itinerary?: ItineraryCreateNestedOneWithoutMediaInput
   }
 
-  export type LocationUncheckedCreateWithoutItineraryItemInput = {
+  export type MediaUncheckedCreateWithoutItineraryItemInput = {
     id?: string
-    country?: string | null
-    city?: string | null
-    address?: string | null
+    thumbnail: string
+    feed: string
+    itineraryId?: string | null
   }
 
-  export type LocationCreateOrConnectWithoutItineraryItemInput = {
-    where: LocationWhereUniqueInput
-    create: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
+  export type MediaCreateOrConnectWithoutItineraryItemInput = {
+    where: MediaWhereUniqueInput
+    create: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput>
+  }
+
+  export type MediaCreateManyItineraryItemInputEnvelope = {
+    data: MediaCreateManyItineraryItemInput | MediaCreateManyItineraryItemInput[]
+    skipDuplicates?: boolean
   }
 
   export type ItineraryCreateWithoutItineraryItemsInput = {
@@ -9415,9 +10795,10 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryInput
     owner: UserCreateNestedOneWithoutCreatedItinerariesInput
   }
 
@@ -9427,10 +10808,11 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryInput
   }
 
   export type ItineraryCreateOrConnectWithoutItineraryItemsInput = {
@@ -9438,10 +10820,20 @@ export namespace Prisma {
     create: XOR<ItineraryCreateWithoutItineraryItemsInput, ItineraryUncheckedCreateWithoutItineraryItemsInput>
   }
 
-  export type LocationUpsertWithoutItineraryItemInput = {
-    update: XOR<LocationUpdateWithoutItineraryItemInput, LocationUncheckedUpdateWithoutItineraryItemInput>
-    create: XOR<LocationCreateWithoutItineraryItemInput, LocationUncheckedCreateWithoutItineraryItemInput>
-    where?: LocationWhereInput
+  export type MediaUpsertWithWhereUniqueWithoutItineraryItemInput = {
+    where: MediaWhereUniqueInput
+    update: XOR<MediaUpdateWithoutItineraryItemInput, MediaUncheckedUpdateWithoutItineraryItemInput>
+    create: XOR<MediaCreateWithoutItineraryItemInput, MediaUncheckedCreateWithoutItineraryItemInput>
+  }
+
+  export type MediaUpdateWithWhereUniqueWithoutItineraryItemInput = {
+    where: MediaWhereUniqueInput
+    data: XOR<MediaUpdateWithoutItineraryItemInput, MediaUncheckedUpdateWithoutItineraryItemInput>
+  }
+
+  export type MediaUpdateManyWithWhereWithoutItineraryItemInput = {
+    where: MediaScalarWhereInput
+    data: XOR<MediaUpdateManyMutationInput, MediaUncheckedUpdateManyWithoutItineraryItemInput>
   }
 
   export type LocationUpdateToOneWithWhereWithoutItineraryItemInput = {
@@ -9480,9 +10872,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryNestedInput
     owner?: UserUpdateOneRequiredWithoutCreatedItinerariesNestedInput
   }
 
@@ -9492,22 +10885,23 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryNestedInput
   }
 
   export type ItineraryItemCreateWithoutLocationInput = {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaCreateNestedManyWithoutItineraryItemInput
     itinerary: ItineraryCreateNestedOneWithoutItineraryItemsInput
   }
 
@@ -9515,13 +10909,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     itineraryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    media?: MediaUncheckedCreateNestedManyWithoutItineraryItemInput
   }
 
   export type ItineraryItemCreateOrConnectWithoutLocationInput = {
@@ -9544,12 +10938,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryItemNestedInput
     itinerary?: ItineraryUpdateOneRequiredWithoutItineraryItemsNestedInput
   }
 
@@ -9557,13 +10951,149 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryItemNestedInput
+  }
+
+  export type ItineraryCreateWithoutMediaInput = {
+    id?: string
+    title: string
+    description?: string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isArchived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    itineraryItems?: ItineraryItemCreateNestedManyWithoutItineraryInput
+    owner: UserCreateNestedOneWithoutCreatedItinerariesInput
+  }
+
+  export type ItineraryUncheckedCreateWithoutMediaInput = {
+    id?: string
+    title: string
+    description?: string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isArchived?: boolean
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutItineraryInput
+  }
+
+  export type ItineraryCreateOrConnectWithoutMediaInput = {
+    where: ItineraryWhereUniqueInput
+    create: XOR<ItineraryCreateWithoutMediaInput, ItineraryUncheckedCreateWithoutMediaInput>
+  }
+
+  export type ItineraryItemCreateWithoutMediaInput = {
+    id?: string
+    name: string
+    description?: string | null
+    cost?: number | null
+    currency?: string | null
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location?: LocationCreateNestedOneWithoutItineraryItemInput
+    itinerary: ItineraryCreateNestedOneWithoutItineraryItemsInput
+  }
+
+  export type ItineraryItemUncheckedCreateWithoutMediaInput = {
+    id?: string
+    name: string
+    description?: string | null
+    cost?: number | null
+    currency?: string | null
+    order: number
+    itineraryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location?: LocationUncheckedCreateNestedOneWithoutItineraryItemInput
+  }
+
+  export type ItineraryItemCreateOrConnectWithoutMediaInput = {
+    where: ItineraryItemWhereUniqueInput
+    create: XOR<ItineraryItemCreateWithoutMediaInput, ItineraryItemUncheckedCreateWithoutMediaInput>
+  }
+
+  export type ItineraryUpsertWithoutMediaInput = {
+    update: XOR<ItineraryUpdateWithoutMediaInput, ItineraryUncheckedUpdateWithoutMediaInput>
+    create: XOR<ItineraryCreateWithoutMediaInput, ItineraryUncheckedCreateWithoutMediaInput>
+    where?: ItineraryWhereInput
+  }
+
+  export type ItineraryUpdateToOneWithWhereWithoutMediaInput = {
+    where?: ItineraryWhereInput
+    data: XOR<ItineraryUpdateWithoutMediaInput, ItineraryUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type ItineraryUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    itineraryItems?: ItineraryItemUpdateManyWithoutItineraryNestedInput
+    owner?: UserUpdateOneRequiredWithoutCreatedItinerariesNestedInput
+  }
+
+  export type ItineraryUncheckedUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutItineraryNestedInput
+  }
+
+  export type ItineraryItemUpsertWithoutMediaInput = {
+    update: XOR<ItineraryItemUpdateWithoutMediaInput, ItineraryItemUncheckedUpdateWithoutMediaInput>
+    create: XOR<ItineraryItemCreateWithoutMediaInput, ItineraryItemUncheckedCreateWithoutMediaInput>
+    where?: ItineraryItemWhereInput
+  }
+
+  export type ItineraryItemUpdateToOneWithWhereWithoutMediaInput = {
+    where?: ItineraryItemWhereInput
+    data: XOR<ItineraryItemUpdateWithoutMediaInput, ItineraryItemUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type ItineraryItemUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUpdateOneWithoutItineraryItemNestedInput
+    itinerary?: ItineraryUpdateOneRequiredWithoutItineraryItemsNestedInput
+  }
+
+  export type ItineraryItemUncheckedUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    itineraryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUncheckedUpdateOneWithoutItineraryItemNestedInput
   }
 
   export type FollowsCreateManyFollowedByInput = {
@@ -9586,7 +11116,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
-    media?: ItineraryCreatemediaInput | string[]
+    isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9639,9 +11169,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutItineraryNestedInput
   }
 
@@ -9651,9 +11182,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutItineraryNestedInput
   }
 
@@ -9663,33 +11195,60 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    media?: ItineraryUpdatemediaInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MediaCreateManyItineraryInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryItemId?: string | null
   }
 
   export type ItineraryItemCreateManyItineraryInput = {
     id?: string
     name: string
     description?: string | null
-    estimatedCost?: number | null
+    cost?: number | null
     currency?: string | null
-    media?: ItineraryItemCreatemediaInput | string[]
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type MediaUpdateWithoutItineraryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryItem?: ItineraryItemUpdateOneWithoutMediaNestedInput
+  }
+
+  export type MediaUncheckedUpdateWithoutItineraryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryItemId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MediaUncheckedUpdateManyWithoutItineraryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ItineraryItemUpdateWithoutItineraryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUpdateManyWithoutItineraryItemNestedInput
     location?: LocationUpdateOneWithoutItineraryItemNestedInput
   }
 
@@ -9697,12 +11256,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    media?: MediaUncheckedUpdateManyWithoutItineraryItemNestedInput
     location?: LocationUncheckedUpdateOneWithoutItineraryItemNestedInput
   }
 
@@ -9710,12 +11269,39 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    estimatedCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
-    media?: ItineraryItemUpdatemediaInput | string[]
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MediaCreateManyItineraryItemInput = {
+    id?: string
+    thumbnail: string
+    feed: string
+    itineraryId?: string | null
+  }
+
+  export type MediaUpdateWithoutItineraryItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itinerary?: ItineraryUpdateOneWithoutMediaNestedInput
+  }
+
+  export type MediaUncheckedUpdateWithoutItineraryItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MediaUncheckedUpdateManyWithoutItineraryItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    feed?: StringFieldUpdateOperationsInput | string
+    itineraryId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

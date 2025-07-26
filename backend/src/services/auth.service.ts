@@ -12,7 +12,11 @@ export class AuthService {
   /**
    * creating user for when a user signs up
    */
-  async createUser(userData: { email: string; username: string; password: string }): Promise<User> {
+  async createUser(userData: {
+    email: string;
+    username: string;
+    password: string;
+  }): Promise<User> {
     const { email, username, password } = userData;
 
     // normalizing username to lowercase to ensure uniqueness checks are case insensitive
@@ -44,7 +48,10 @@ export class AuthService {
   /**
    * logs in a user
    */
-  async authenticateUser(authData: { email: string; password: string }): Promise<User> {
+  async authenticateUser(authData: {
+    email: string;
+    password: string;
+  }): Promise<User> {
     const { email, password } = authData;
 
     const normalizedEmail = email.toLowerCase();
@@ -55,14 +62,20 @@ export class AuthService {
       throw new UserNotFoundError();
     }
 
-    const isPasswordCorrect = await this.verifyPassword(password, user.password);
+    const isPasswordCorrect = await this.verifyPassword(
+      password,
+      user.password
+    );
     if (!isPasswordCorrect) {
       throw new InvalidCredentialsError();
     }
 
     // if a (soft) deleted user logs back in, then automatically reactivate their account
     if (user.isDeleted) {
-      user = await prisma.user.update({ where: { id: user.id }, data: { isDeleted: false } });
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { isDeleted: false },
+      });
     }
 
     return user;
@@ -93,7 +106,10 @@ export class AuthService {
    * @param hashedPassword hashed password stored in database
    * @returns boolean of whether the passwords match
    */
-  async verifyPassword(inputPassword: string, hashedPassword: string): Promise<boolean> {
+  async verifyPassword(
+    inputPassword: string,
+    hashedPassword: string
+  ): Promise<boolean> {
     return await bcrypt.compare(inputPassword, hashedPassword);
   }
 

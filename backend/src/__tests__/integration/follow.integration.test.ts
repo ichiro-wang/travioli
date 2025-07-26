@@ -7,7 +7,7 @@ import { FollowStatus } from "../../generated/client/index.js";
 import { FollowAction, FollowActionType } from "../../types/types.js";
 
 describe("follow user integration tests", () => {
-  const FOLLOW_URL = (id: string) => `/api/follow/${id}`;
+  const FOLLOW_URL = (id: string) => `/api/follows/${id}`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -138,7 +138,7 @@ describe("follow user integration tests", () => {
 });
 
 describe("update follow status integration tests", () => {
-  const UPDATE_URL = (id: string, type: FollowActionType): string => `/api/follow/${id}/status/${type}`;
+  const UPDATE_URL = (id: string): string => `/api/follows/${id}/status`;
   let testData: TestData;
 
   beforeAll(async () => {
@@ -165,7 +165,8 @@ describe("update follow status integration tests", () => {
 
   it("should successfully accept a follow request", async () => {
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.accept))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.accept })
       .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
@@ -175,7 +176,8 @@ describe("update follow status integration tests", () => {
 
   it("should successfully reject a follow request", async () => {
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.reject))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.reject })
       .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
@@ -185,7 +187,8 @@ describe("update follow status integration tests", () => {
 
   it("should successfully remove a follower", async () => {
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.remove))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.remove })
       .set("Cookie", testData.accessTokenCookie);
   });
 
@@ -200,7 +203,8 @@ describe("update follow status integration tests", () => {
     });
 
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.cancel))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.cancel })
       .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
@@ -219,7 +223,8 @@ describe("update follow status integration tests", () => {
     });
 
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.unfollow))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.unfollow })
       .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(200);
@@ -229,7 +234,8 @@ describe("update follow status integration tests", () => {
 
   it("should fail to update when no follows relationship exists between 2 users", async () => {
     const res = await request(app)
-      .patch(UPDATE_URL(testData.otherUser.id, FollowAction.unfollow))
+      .patch(UPDATE_URL(testData.otherUser.id))
+      .send({ type: FollowAction.unfollow })
       .set("Cookie", testData.accessTokenCookie);
 
     expect(res.statusCode).toBe(404);
