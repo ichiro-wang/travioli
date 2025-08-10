@@ -1,14 +1,27 @@
 import prisma from "../db/prisma.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { User } from "../generated/client/index.js";
 import {
   EmailAlreadyExistsError,
+  EmailNotVerifiedError,
   InvalidCredentialsError,
   UsernameAlreadyExistsError,
   UserNotFoundError,
 } from "../errors/auth.errors.js";
+import { EmailService } from "./email.service.js";
+import { RedisService } from "./redis.service.js";
 
 export class AuthService {
+  private emailService: EmailService;
+  private redisService: RedisService;
+  private EMAIL_VERIFICATION_LINK_EXPIRY = 600;
+
+  constructor(emailService: EmailService, redisService: RedisService) {
+    this.emailService = emailService;
+    this.redisService = redisService;
+  }
+
   /**
    * creating user for when a user signs up
    */
@@ -62,6 +75,14 @@ export class AuthService {
       throw new UserNotFoundError();
     }
 
+    /**
+     * verifiedAt is null as long as the user has not verified it
+     * give the user a message reminding to verify their email
+     */
+    if (!user.verifiedAt) {
+      throw new EmailNotVerifiedError();
+    }
+
     const isPasswordCorrect = await this.verifyPassword(
       password,
       user.password
@@ -81,6 +102,54 @@ export class AuthService {
     return user;
   }
 
+  async handleVerificationEmail(recipient: string): Promise<void> {
+    const email_verif_token = crypto.randomBytes(32).toString("hex");
+
+    const tokenCacheKey = `await_email_verification:${email_verif_token}`;
+    await this.redisService.setEx(
+      tokenCacheKey,
+      recipient,
+      this.EMAIL_VERIFICATION_LINK_EXPIRY
+    );
+
+    // swap these when using frontend vs backend
+    // frontend:
+    // const verificationMessage = `<p>Verify your email <a href=${process.env.REQUEST_ORIGIN}/verify-email?token=${email_verif_token}>here</a>.</p>`;
+    // backend:
+    const verificationMessage = `
+      <p>Verify your email 
+        <a href=http://localhost/api/auth/verify-email?token=${email_verif_token}>here</a>.
+      </p>`;
+
+    await this.emailService.sendEmail(
+      recipient,
+      "Email Verification",
+      verificationMessage
+    );
+  }
+
+  /**
+   * this function is called when a user clicks the link in their email to verify that the email belongs to them
+   */
+  async verifyEmail(email: string): Promise<User> {
+    try {
+      const currentTime = new Date();
+
+      const user = await prisma.user.update({
+        where: { email },
+        data: { verifiedAt: currentTime },
+      });
+
+      return user;
+    } catch (error: any) {
+      if (error.code === "P2025") {
+        throw new UserNotFoundError();
+      }
+
+      throw new Error();
+    }
+  }
+
   async findUserById(id: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { id } });
     return user && !user.isDeleted ? user : null;
@@ -96,7 +165,7 @@ export class AuthService {
    * an account marked as deleted will reactivate if they log back in.
    * so if we don't return the deleted user then we can't reactivate their account on log in
    */
-  private async findUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { email } });
     return user;
   }

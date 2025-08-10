@@ -30,7 +30,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/itineraries", itineraryRoutes);
 
-await redisService.connect();
 
 const server: http.Server = http.createServer(app);
 

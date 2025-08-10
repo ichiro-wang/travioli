@@ -17,7 +17,7 @@ import {
   deleteItinerary,
   getItinerary,
   updateItinerary,
-} from "../controllers/itinerary.controller.js";
+} from "../controllers/itineraries.controller.js";
 
 const router = express.Router();
 

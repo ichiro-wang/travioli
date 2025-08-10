@@ -8,7 +8,9 @@ export class RedisService {
     const redisUrl = process.env.REDIS_URL || "redis://redis:6379";
     this.client = createClient({ url: redisUrl });
 
-    this.client.on("error", (error) => console.log("Redis Client Error", error));
+    this.client.on("error", (error) =>
+      console.log("Redis Client Error", error)
+    );
   }
 
   async connect(): Promise<void> {
@@ -26,8 +28,8 @@ export class RedisService {
   }
 
   /**
-   * returns parsed value from redis cache. 
-   * specify type, otherwise you receive the value as an unknown type. 
+   * returns parsed value from redis cache.
+   * specify type, otherwise you receive the value as an unknown type.
    */
   async get<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
@@ -35,10 +37,14 @@ export class RedisService {
   }
 
   /**
-   * pass in value without stringifying. 
-   * centralizing stringify logic inside redis service class. 
+   * pass in value without stringifying.
+   * centralizing stringify logic inside redis service class.
    */
-  async setEx<T>(key: string, value: T, ttl: number = this.DEFAULT_CACHE_EXPIRATION): Promise<boolean> {
+  async setEx<T>(
+    key: string,
+    value: T,
+    ttl: number = this.DEFAULT_CACHE_EXPIRATION
+  ): Promise<boolean> {
     try {
       const stringifiedValue = JSON.stringify(value);
       return (await this.client.setEx(key, ttl, stringifiedValue)) === "OK";
@@ -55,7 +61,10 @@ export class RedisService {
     }
   }
 
-  async expire(key: string, ttl: number = this.DEFAULT_CACHE_EXPIRATION): Promise<boolean> {
+  async expire(
+    key: string,
+    ttl: number = this.DEFAULT_CACHE_EXPIRATION
+  ): Promise<boolean> {
     try {
       return (await this.client.expire(key, ttl)) === 1;
     } catch (error) {

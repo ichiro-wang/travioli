@@ -27,3 +27,11 @@ export class UsernameAlreadyExistsError extends Error {
     super(`Account with the username @${username} already exists`);
   }
 }
+
+export class EmailNotVerifiedError extends Error {
+  constructor() {
+    super(
+      "Email not verified, please check your inbox for a verification link"
+    );
+  }
+}

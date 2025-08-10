@@ -38,6 +38,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  verifiedAt DateTime? // NULL until email is verified
+
   @@index([email])
   @@index([username])
 }

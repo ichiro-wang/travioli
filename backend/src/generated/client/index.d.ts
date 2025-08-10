@@ -1467,6 +1467,7 @@ export namespace Prisma {
     isDeleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    verifiedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1481,6 +1482,7 @@ export namespace Prisma {
     isDeleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    verifiedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1495,6 +1497,7 @@ export namespace Prisma {
     isDeleted: number
     createdAt: number
     updatedAt: number
+    verifiedAt: number
     _all: number
   }
 
@@ -1511,6 +1514,7 @@ export namespace Prisma {
     isDeleted?: true
     createdAt?: true
     updatedAt?: true
+    verifiedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1525,6 +1529,7 @@ export namespace Prisma {
     isDeleted?: true
     createdAt?: true
     updatedAt?: true
+    verifiedAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1539,6 +1544,7 @@ export namespace Prisma {
     isDeleted?: true
     createdAt?: true
     updatedAt?: true
+    verifiedAt?: true
     _all?: true
   }
 
@@ -1626,6 +1632,7 @@ export namespace Prisma {
     isDeleted: boolean
     createdAt: Date
     updatedAt: Date
+    verifiedAt: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1657,6 +1664,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verifiedAt?: boolean
     followedBy?: boolean | User$followedByArgs<ExtArgs>
     following?: boolean | User$followingArgs<ExtArgs>
     createdItineraries?: boolean | User$createdItinerariesArgs<ExtArgs>
@@ -1675,6 +1683,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verifiedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1689,6 +1698,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verifiedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1703,9 +1713,10 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verifiedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "name" | "bio" | "password" | "profilePic" | "isPrivate" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "name" | "bio" | "password" | "profilePic" | "isPrivate" | "isDeleted" | "createdAt" | "updatedAt" | "verifiedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     followedBy?: boolean | User$followedByArgs<ExtArgs>
     following?: boolean | User$followingArgs<ExtArgs>
@@ -1734,6 +1745,7 @@ export namespace Prisma {
       isDeleted: boolean
       createdAt: Date
       updatedAt: Date
+      verifiedAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2171,6 +2183,7 @@ export namespace Prisma {
     readonly isDeleted: FieldRef<"User", 'Boolean'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly verifiedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -8103,7 +8116,8 @@ export namespace Prisma {
     isPrivate: 'isPrivate',
     isDeleted: 'isDeleted',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    verifiedAt: 'verifiedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -8296,6 +8310,7 @@ export namespace Prisma {
     isDeleted?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    verifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     followedBy?: FollowsListRelationFilter
     following?: FollowsListRelationFilter
     createdItineraries?: ItineraryListRelationFilter
@@ -8313,6 +8328,7 @@ export namespace Prisma {
     isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     followedBy?: FollowsOrderByRelationAggregateInput
     following?: FollowsOrderByRelationAggregateInput
     createdItineraries?: ItineraryOrderByRelationAggregateInput
@@ -8333,6 +8349,7 @@ export namespace Prisma {
     isDeleted?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    verifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     followedBy?: FollowsListRelationFilter
     following?: FollowsListRelationFilter
     createdItineraries?: ItineraryListRelationFilter
@@ -8350,6 +8367,7 @@ export namespace Prisma {
     isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -8370,6 +8388,7 @@ export namespace Prisma {
     isDeleted?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type FollowsWhereInput = {
@@ -8721,6 +8740,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsCreateNestedManyWithoutFollowedByInput
     following?: FollowsCreateNestedManyWithoutFollowingInput
     createdItineraries?: ItineraryCreateNestedManyWithoutOwnerInput
@@ -8738,6 +8758,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsUncheckedCreateNestedManyWithoutFollowedByInput
     following?: FollowsUncheckedCreateNestedManyWithoutFollowingInput
     createdItineraries?: ItineraryUncheckedCreateNestedManyWithoutOwnerInput
@@ -8755,6 +8776,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUpdateManyWithoutFollowedByNestedInput
     following?: FollowsUpdateManyWithoutFollowingNestedInput
     createdItineraries?: ItineraryUpdateManyWithoutOwnerNestedInput
@@ -8772,6 +8794,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUncheckedUpdateManyWithoutFollowedByNestedInput
     following?: FollowsUncheckedUpdateManyWithoutFollowingNestedInput
     createdItineraries?: ItineraryUncheckedUpdateManyWithoutOwnerNestedInput
@@ -8789,6 +8812,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -8803,6 +8827,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -8817,6 +8842,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowsCreateInput = {
@@ -9186,6 +9212,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type FollowsListRelationFilter = {
     every?: FollowsWhereInput
     some?: FollowsWhereInput
@@ -9223,6 +9260,7 @@ export namespace Prisma {
     isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verifiedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -9237,6 +9275,7 @@ export namespace Prisma {
     isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verifiedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -9251,6 +9290,7 @@ export namespace Prisma {
     isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verifiedAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -9311,6 +9351,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type EnumFollowStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.FollowStatus | EnumFollowStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FollowStatus[] | ListEnumFollowStatusFieldRefInput<$PrismaModel>
@@ -9360,17 +9414,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFollowStatusFilter<$PrismaModel>
     _max?: NestedEnumFollowStatusFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type MediaListRelationFilter = {
@@ -9427,20 +9470,6 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -9679,6 +9708,10 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type FollowsUpdateManyWithoutFollowedByNestedInput = {
     create?: XOR<FollowsCreateWithoutFollowedByInput, FollowsUncheckedCreateWithoutFollowedByInput> | FollowsCreateWithoutFollowedByInput[] | FollowsUncheckedCreateWithoutFollowedByInput[]
     connectOrCreate?: FollowsCreateOrConnectWithoutFollowedByInput | FollowsCreateOrConnectWithoutFollowedByInput[]
@@ -9827,10 +9860,6 @@ export namespace Prisma {
     connectOrCreate?: ItineraryItemCreateOrConnectWithoutItineraryInput | ItineraryItemCreateOrConnectWithoutItineraryInput[]
     createMany?: ItineraryItemCreateManyItineraryInputEnvelope
     connect?: ItineraryItemWhereUniqueInput | ItineraryItemWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type MediaUpdateManyWithoutItineraryNestedInput = {
@@ -10075,6 +10104,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10153,6 +10193,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumFollowStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.FollowStatus | EnumFollowStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FollowStatus[] | ListEnumFollowStatusFieldRefInput<$PrismaModel>
@@ -10168,31 +10222,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFollowStatusFilter<$PrismaModel>
     _max?: NestedEnumFollowStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -10419,6 +10448,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     following?: FollowsCreateNestedManyWithoutFollowingInput
     createdItineraries?: ItineraryCreateNestedManyWithoutOwnerInput
   }
@@ -10435,6 +10465,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     following?: FollowsUncheckedCreateNestedManyWithoutFollowingInput
     createdItineraries?: ItineraryUncheckedCreateNestedManyWithoutOwnerInput
   }
@@ -10456,6 +10487,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsCreateNestedManyWithoutFollowedByInput
     createdItineraries?: ItineraryCreateNestedManyWithoutOwnerInput
   }
@@ -10472,6 +10504,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsUncheckedCreateNestedManyWithoutFollowedByInput
     createdItineraries?: ItineraryUncheckedCreateNestedManyWithoutOwnerInput
   }
@@ -10504,6 +10537,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     following?: FollowsUpdateManyWithoutFollowingNestedInput
     createdItineraries?: ItineraryUpdateManyWithoutOwnerNestedInput
   }
@@ -10520,6 +10554,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     following?: FollowsUncheckedUpdateManyWithoutFollowingNestedInput
     createdItineraries?: ItineraryUncheckedUpdateManyWithoutOwnerNestedInput
   }
@@ -10547,6 +10582,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUpdateManyWithoutFollowedByNestedInput
     createdItineraries?: ItineraryUpdateManyWithoutOwnerNestedInput
   }
@@ -10563,6 +10599,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUncheckedUpdateManyWithoutFollowedByNestedInput
     createdItineraries?: ItineraryUncheckedUpdateManyWithoutOwnerNestedInput
   }
@@ -10639,6 +10676,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsCreateNestedManyWithoutFollowedByInput
     following?: FollowsCreateNestedManyWithoutFollowingInput
   }
@@ -10655,6 +10693,7 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    verifiedAt?: Date | string | null
     followedBy?: FollowsUncheckedCreateNestedManyWithoutFollowedByInput
     following?: FollowsUncheckedCreateNestedManyWithoutFollowingInput
   }
@@ -10745,6 +10784,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUpdateManyWithoutFollowedByNestedInput
     following?: FollowsUpdateManyWithoutFollowingNestedInput
   }
@@ -10761,6 +10801,7 @@ export namespace Prisma {
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     followedBy?: FollowsUncheckedUpdateManyWithoutFollowedByNestedInput
     following?: FollowsUncheckedUpdateManyWithoutFollowingNestedInput
   }

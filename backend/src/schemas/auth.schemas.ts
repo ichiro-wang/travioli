@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { emailSchema, passwordSchema, usernameSchema } from "./common.schema.js";
+import {
+  emailSchema,
+  passwordSchema,
+  usernameSchema,
+} from "./common.schema.js";
 
 export const signupSchema = z.object({
   body: z
@@ -15,6 +19,24 @@ export const signupSchema = z.object({
 });
 
 export type SignupBody = z.infer<typeof signupSchema>["body"];
+
+export const verifyEmailSchema = z.object({
+  query: z.object({
+    token: z.string(),
+  }),
+});
+
+export type VerifyEmailQuery = z.infer<typeof verifyEmailSchema>["query"];
+
+export const resendVerificationEmailSchema = z.object({
+  body: z.object({
+    email: emailSchema,
+  }),
+});
+
+export type ResendVerificationEmailBody = z.infer<
+  typeof resendVerificationEmailSchema
+>["body"];
 
 export const loginSchema = z.object({
   body: z.object({

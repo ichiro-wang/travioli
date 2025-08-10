@@ -11,7 +11,7 @@ import {
   softDeleteUser,
   updatePrivacy,
   updateProfile,
-} from "../controllers/user.controller.js";
+} from "../controllers/users.controller.js";
 import { authenticateAccessToken } from "../middleware/authenticateToken.js";
 import { validateData } from "../middleware/validateData.js";
 import {

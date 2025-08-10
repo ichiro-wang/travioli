@@ -71,7 +71,7 @@ describe("UserService unit tests", () => {
     isDeleted: false,
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
+  } as User;
 
   beforeEach(() => {
     mockAuthService = {
@@ -92,7 +92,11 @@ describe("UserService unit tests", () => {
       del: mockRedisServiceDel,
     } as any;
 
-    userService = new UserService(mockAuthService, mockFollowService, mockRedisService);
+    userService = new UserService(
+      mockAuthService,
+      mockFollowService,
+      mockRedisService
+    );
     vi.clearAllMocks();
   });
 
@@ -102,7 +106,10 @@ describe("UserService unit tests", () => {
 
   describe("checkUsernameAvailability", () => {
     it("should return unavailable with reason 'current' when username matches current user", async () => {
-      const result = await userService.checkUsernameAvailability("lebronjames", "lebronjames");
+      const result = await userService.checkUsernameAvailability(
+        "lebronjames",
+        "lebronjames"
+      );
 
       expect(result).toEqual({
         available: false,
@@ -116,25 +123,35 @@ describe("UserService unit tests", () => {
 
       await userService.checkUsernameAvailability("LeBronJames", "currentuser");
 
-      expect(mockAuthServiceFindUserByUsername).toHaveBeenCalledWith("lebronjames");
+      expect(mockAuthServiceFindUserByUsername).toHaveBeenCalledWith(
+        "lebronjames"
+      );
     });
 
     it("should return unavailable with reason 'taken' when username already exists", async () => {
       mockAuthServiceFindUserByUsername.mockResolvedValue(mockTargetUser);
 
-      const result = await userService.checkUsernameAvailability("existinguser", "lebronjames");
+      const result = await userService.checkUsernameAvailability(
+        "existinguser",
+        "lebronjames"
+      );
 
       expect(result).toEqual({
         available: false,
         reason: "taken",
       });
-      expect(mockAuthServiceFindUserByUsername).toHaveBeenCalledWith("existinguser");
+      expect(mockAuthServiceFindUserByUsername).toHaveBeenCalledWith(
+        "existinguser"
+      );
     });
 
     it("should return available when username is not taken", async () => {
       mockAuthServiceFindUserByUsername.mockResolvedValue(null);
 
-      const result = await userService.checkUsernameAvailability("newuser", "lebronjames");
+      const result = await userService.checkUsernameAvailability(
+        "newuser",
+        "lebronjames"
+      );
 
       expect(result).toEqual({
         available: true,
@@ -155,7 +172,10 @@ describe("UserService unit tests", () => {
     it("should return profile data for current user (self)", async () => {
       mockFollowServiceGetFollowStatus.mockResolvedValue(null);
 
-      const result = await userService.getUserProfileData(mockUser.id, mockUser);
+      const result = await userService.getUserProfileData(
+        mockUser.id,
+        mockUser
+      );
 
       expect(result.user.id).toBe(mockUser.id);
       expect(result.user.username).toBe(mockUser.username);
@@ -164,14 +184,20 @@ describe("UserService unit tests", () => {
       expect(result.followingCount).toBe(5);
       expect(result).not.toHaveProperty("followStatus");
       expect(mockAuthServiceFindUserById).not.toHaveBeenCalled();
-      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(mockUser.id, mockUser.id);
+      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(
+        mockUser.id,
+        mockUser.id
+      );
     });
 
     it("should return profile data for another user", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
       mockFollowServiceGetFollowStatus.mockResolvedValue(FollowStatus.accepted);
 
-      const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
+      const result = await userService.getUserProfileData(
+        mockTargetUser.id,
+        mockUser
+      );
 
       expect(result.user.id).toBe(mockTargetUser.id);
       expect(result.user.username).toBe(mockTargetUser.username);
@@ -179,35 +205,58 @@ describe("UserService unit tests", () => {
       expect(result.followedByCount).toBe(5);
       expect(result.followingCount).toBe(5);
       expect(result.followStatus).toBe(FollowStatus.accepted); // check beforeEach to see that we set this to accepted
-      expect(mockAuthServiceFindUserById).toHaveBeenCalledWith(mockTargetUser.id);
-      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(mockUser.id, mockTargetUser.id);
+      expect(mockAuthServiceFindUserById).toHaveBeenCalledWith(
+        mockTargetUser.id
+      );
+      expect(mockFollowServiceGetFollowStatus).toHaveBeenCalledWith(
+        mockUser.id,
+        mockTargetUser.id
+      );
     });
 
     it("should throw error when target user is not found", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(null);
 
-      await expect(userService.getUserProfileData("nonexistent", mockUser)).rejects.toThrow(/user not found/i);
+      await expect(
+        userService.getUserProfileData("nonexistent", mockUser)
+      ).rejects.toThrow(/user not found/i);
     });
 
     it("should return notFollowing status when no follow relationship exists", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
-      mockFollowServiceGetFollowStatus.mockResolvedValue(FollowStatus.notFollowing);
+      mockFollowServiceGetFollowStatus.mockResolvedValue(
+        FollowStatus.notFollowing
+      );
 
-      const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
+      const result = await userService.getUserProfileData(
+        mockTargetUser.id,
+        mockUser
+      );
 
       expect(result.followStatus).toBe(FollowStatus.notFollowing);
     });
 
     it("should count followers and following correctly", async () => {
       mockAuthServiceFindUserById.mockResolvedValue(mockTargetUser);
-      mockFollowServiceGetFollowCount.mockResolvedValueOnce(10).mockResolvedValueOnce(15);
+      mockFollowServiceGetFollowCount
+        .mockResolvedValueOnce(10)
+        .mockResolvedValueOnce(15);
 
-      const result = await userService.getUserProfileData(mockTargetUser.id, mockUser);
+      const result = await userService.getUserProfileData(
+        mockTargetUser.id,
+        mockUser
+      );
 
       expect(result.followedByCount).toBe(10);
       expect(result.followingCount).toBe(15);
-      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(mockTargetUser.id, FollowRelation.followedBy);
-      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(mockTargetUser.id, FollowRelation.following);
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
+        mockTargetUser.id,
+        FollowRelation.followedBy
+      );
+      expect(mockFollowServiceGetFollowCount).toHaveBeenCalledWith(
+        mockTargetUser.id,
+        FollowRelation.following
+      );
     });
 
     //
@@ -224,7 +273,10 @@ describe("UserService unit tests", () => {
       const updatedUser = { ...mockUser, ...updatedFields };
       mockPrismaUserUpdate.mockResolvedValue(updatedUser);
 
-      const result = await userService.updateUserProfile(mockUser, updatedFields);
+      const result = await userService.updateUserProfile(
+        mockUser,
+        updatedFields
+      );
 
       expect(mockPrismaUserUpdate).toHaveBeenCalledWith({
         where: { id: mockUser.id },
@@ -333,9 +385,16 @@ describe("UserService unit tests", () => {
       const deletedUser = { ...mockUser, isDeleted: true };
       mockPrismaUserUpdate.mockResolvedValue(deletedUser);
 
-      const result = await userService.softDeleteUser(mockUser.id, inputPassword, hashedPassword);
+      const result = await userService.softDeleteUser(
+        mockUser.id,
+        inputPassword,
+        hashedPassword
+      );
 
-      expect(mockAuthServiceVerifyPassword).toHaveBeenCalledWith(inputPassword, hashedPassword);
+      expect(mockAuthServiceVerifyPassword).toHaveBeenCalledWith(
+        inputPassword,
+        hashedPassword
+      );
       expect(mockPrismaUserUpdate).toHaveBeenCalledWith({
         where: { id: mockUser.id },
         data: { isDeleted: true },
@@ -346,9 +405,9 @@ describe("UserService unit tests", () => {
     it("should throw error with incorrect password", async () => {
       mockAuthServiceVerifyPassword.mockResolvedValue(false);
 
-      await expect(userService.softDeleteUser(mockUser.id, "wrongpassword", hashedPassword)).rejects.toThrow(
-        /invalid credentials/i
-      );
+      await expect(
+        userService.softDeleteUser(mockUser.id, "wrongpassword", hashedPassword)
+      ).rejects.toThrow(/invalid credentials/i);
 
       expect(mockPrismaUserUpdate).not.toHaveBeenCalled();
     });
@@ -358,21 +417,31 @@ describe("UserService unit tests", () => {
 
   describe("error handling", () => {
     it("should handle database errors in getUserProfileData", async () => {
-      mockAuthServiceFindUserById.mockRejectedValue(new Error("Database error"));
+      mockAuthServiceFindUserById.mockRejectedValue(
+        new Error("Database error")
+      );
 
-      await expect(userService.getUserProfileData("userid", mockUser)).rejects.toThrow(/database error/i);
+      await expect(
+        userService.getUserProfileData("userid", mockUser)
+      ).rejects.toThrow(/database error/i);
     });
 
     it("should handle database errors in updateUserProfile", async () => {
       mockPrismaUserUpdate.mockRejectedValue(new Error("Database error"));
 
-      await expect(userService.updateUserProfile(mockUser, { name: "New Name" })).rejects.toThrow(/database error/i);
+      await expect(
+        userService.updateUserProfile(mockUser, { name: "New Name" })
+      ).rejects.toThrow(/database error/i);
     });
 
     it("should handle auth service errors in checkUsernameAvailability", async () => {
-      mockAuthServiceFindUserByUsername.mockRejectedValue(new Error("Auth error"));
+      mockAuthServiceFindUserByUsername.mockRejectedValue(
+        new Error("Auth error")
+      );
 
-      await expect(userService.checkUsernameAvailability("username", "current")).rejects.toThrow(/auth error/i);
+      await expect(
+        userService.checkUsernameAvailability("username", "current")
+      ).rejects.toThrow(/auth error/i);
     });
 
     //

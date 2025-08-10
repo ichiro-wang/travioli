@@ -18,7 +18,7 @@ import {
   getFollowStatus,
   getPendingRequests,
   updateFollowStatus,
-} from "../controllers/follow.controller.js";
+} from "../controllers/follows.controller.js";
 
 const router = express.Router();
 

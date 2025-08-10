@@ -42,18 +42,6 @@ const stripLocation = <T extends { location: unknown }>(items: T[]) => {
   return items.map(({ location, ...rest }) => rest);
 };
 
-/**
- * ### explaining my thought process behind this function
- *
- * - we create the itinerary first
- *    - this is just a single insert on the itinerary table
- *
- * **when using Prisma createMany, we can't do nested create's**
- *
- * - we create itinerary items in parallel
- * - we create locations in parallel
- * - we fetch the itinerary with all nested items to return it to the user
- */
 export const createItinerary = async (
   req: Request<{}, {}, CreateItineraryBody>,
   res: Response
@@ -147,9 +135,6 @@ export const updateItinerary = async (
   res: Response
 ): Promise<void> => {
   try {
-    /**
-     * - multiple fields: new items, items to delete, items to reorder, updated items, updated fields
-     */
     const { id } = req.params;
     const {
       itineraryFields,

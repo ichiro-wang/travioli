@@ -131,7 +131,8 @@ exports.Prisma.UserScalarFieldEnum = {
   isPrivate: 'isPrivate',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  verifiedAt: 'verifiedAt'
 };
 
 exports.Prisma.FollowsScalarFieldEnum = {
