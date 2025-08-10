@@ -194,7 +194,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/mnt/d/Coding/travioli/backend/src/generated/client",
+      "value": "/usr/src/app/src/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -203,14 +203,14 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [
       "postgresqlExtensions"
     ],
-    "sourceFilePath": "/mnt/d/Coding/travioli/backend/prisma/schema.prisma",
+    "sourceFilePath": "/usr/src/app/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

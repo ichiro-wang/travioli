@@ -1,6 +1,5 @@
 import { CookieOptions, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import {
   generateAccessToken,
   generateTokens,
@@ -14,7 +13,7 @@ import {
   SignupBody,
   VerifyEmailQuery,
 } from "../schemas/auth.schemas.js";
-import { authService, emailService, redisService } from "../services/index.js";
+import { authService, redisService } from "../services/index.js";
 import {
   invalidCredentialsResponse,
   userNotFoundResponse,

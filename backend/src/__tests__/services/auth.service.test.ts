@@ -3,6 +3,8 @@ import { AuthService } from "../../services/auth.service.js";
 import prisma from "../../db/prisma.js";
 import bcrypt from "bcryptjs";
 import { User } from "../../generated/client/index.js";
+import { EmailService } from "../../services/email.service.js";
+import { RedisService } from "../../services/redis.service.js";
 
 vi.mock("../../db/prisma.js", () => ({
   default: {
@@ -31,6 +33,8 @@ const mockBcryptCompare = bcrypt.compare as Mock;
 
 describe("AuthService unit tests", () => {
   let authService: AuthService;
+  let mockEmailService: EmailService;
+  let mockRedisService: RedisService;
 
   const mockUser = {
     id: "1",
@@ -40,10 +44,18 @@ describe("AuthService unit tests", () => {
     isDeleted: false,
     createdAt: new Date(),
     updatedAt: new Date(),
+    verifiedAt: new Date(),
   };
 
   beforeEach(() => {
-    authService = new AuthService();
+    mockEmailService = {
+      sendEmail: vi.fn().mockResolvedValue(undefined), // mock sendEmail
+    } as any;
+    mockRedisService = {
+      setEx: vi.fn().mockResolvedValue(true), // mock setEx
+    } as any;
+
+    authService = new AuthService(mockEmailService, mockRedisService);
     vi.clearAllMocks();
   });
 
@@ -100,18 +112,27 @@ describe("AuthService unit tests", () => {
 
       mockPrismaUserCreate.mockResolvedValue({} as Partial<User>);
 
-      const res = await authService.createUser({ ...userData, username: "LEBRONJAMES" });
+      const res = await authService.createUser({
+        ...userData,
+        username: "LEBRONJAMES",
+      });
 
-      expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({ where: { username: "lebronjames" } });
+      expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
+        where: { username: "lebronjames" },
+      });
     });
 
     it("should throw an error if email already exists", async () => {
       // create user with existing email
       const existingUser = { email: "lebronjames@gmail.com" };
 
-      mockPrismaUserFindUnique.mockResolvedValueOnce(existingUser).mockResolvedValueOnce(null);
+      mockPrismaUserFindUnique
+        .mockResolvedValueOnce(existingUser)
+        .mockResolvedValueOnce(null);
 
-      await expect(authService.createUser(userData)).rejects.toThrow(/lebronjames@gmail.com already exists/i);
+      await expect(authService.createUser(userData)).rejects.toThrow(
+        /lebronjames@gmail.com already exists/i
+      );
 
       expect(mockBcryptGenSalt).not.toHaveBeenCalled();
       expect(mockPrismaUserCreate).not.toHaveBeenCalled();
@@ -121,9 +142,13 @@ describe("AuthService unit tests", () => {
       // create user with existing username
       const existingUser = { username: "lebronjames" };
 
-      mockPrismaUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(existingUser);
+      mockPrismaUserFindUnique
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(existingUser);
 
-      await expect(authService.createUser(userData)).rejects.toThrow(/@lebronjames already exists/i);
+      await expect(authService.createUser(userData)).rejects.toThrow(
+        /@lebronjames already exists/i
+      );
 
       expect(mockBcryptGenSalt).not.toHaveBeenCalled();
       expect(mockPrismaUserCreate).not.toHaveBeenCalled();
@@ -148,13 +173,18 @@ describe("AuthService unit tests", () => {
       expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
         where: { email: "lebronjames@gmail.com" },
       });
-      expect(mockBcryptCompare).toHaveBeenCalledWith("password", "hashedPassword");
+      expect(mockBcryptCompare).toHaveBeenCalledWith(
+        "password",
+        "hashedPassword"
+      );
     });
 
     it("should throw error if user not found", async () => {
       mockPrismaUserFindUnique.mockResolvedValue(null);
 
-      await expect(authService.authenticateUser(authData)).rejects.toThrow(/user not found/i);
+      await expect(authService.authenticateUser(authData)).rejects.toThrow(
+        /user not found/i
+      );
 
       expect(mockBcryptCompare).not.toHaveBeenCalled();
     });
@@ -163,11 +193,16 @@ describe("AuthService unit tests", () => {
       mockPrismaUserFindUnique.mockResolvedValue(mockUser);
       mockBcryptCompare.mockResolvedValue(false);
 
-      await expect(authService.authenticateUser(authData)).rejects.toThrow(/invalid credentials/i);
+      await expect(authService.authenticateUser(authData)).rejects.toThrow(
+        /invalid credentials/i
+      );
     });
 
     it("should reactivate account if deleted user logs in", async () => {
-      mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
+      mockPrismaUserFindUnique.mockResolvedValue({
+        ...mockUser,
+        isDeleted: true,
+      });
       mockBcryptCompare.mockResolvedValue(true);
       mockPrismaUserUpdate.mockResolvedValue({ ...mockUser, isDeleted: false });
 
@@ -190,7 +225,9 @@ describe("AuthService unit tests", () => {
       const result = await authService.findUserById("1");
 
       expect(result).toEqual(mockUser);
-      expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({ where: { id: "1" } });
+      expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
+        where: { id: "1" },
+      });
     });
 
     it("should return null if user is not found", async () => {
@@ -202,7 +239,10 @@ describe("AuthService unit tests", () => {
     });
 
     it("should return null if user is deleted", async () => {
-      mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
+      mockPrismaUserFindUnique.mockResolvedValue({
+        ...mockUser,
+        isDeleted: true,
+      });
 
       const result = await authService.findUserById("1");
 
@@ -233,7 +273,10 @@ describe("AuthService unit tests", () => {
     });
 
     it("should return null if user is deleted", async () => {
-      mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
+      mockPrismaUserFindUnique.mockResolvedValue({
+        ...mockUser,
+        isDeleted: true,
+      });
 
       const result = await authService.findUserByUsername("lebronjames");
 
@@ -250,7 +293,9 @@ describe("AuthService unit tests", () => {
       // since findUserByEmail is a private method, we need to access it by casting it to 'any' type
       // this works since compiled JS has no private members, it is just a TS thing
       // private technically doesn't actually exist
-      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+      const result = await (authService as any).findUserByEmail(
+        "lebronjames@gmail.com"
+      );
 
       expect(result).toEqual(mockUser);
       expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
@@ -261,15 +306,22 @@ describe("AuthService unit tests", () => {
     it("should return null if user is not found", async () => {
       mockPrismaUserFindUnique.mockResolvedValue(null);
 
-      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+      const result = await (authService as any).findUserByEmail(
+        "lebronjames@gmail.com"
+      );
 
       expect(result).toBeNull();
     });
 
     it("should return a user even if user is deleted", async () => {
-      mockPrismaUserFindUnique.mockResolvedValue({ ...mockUser, isDeleted: true });
+      mockPrismaUserFindUnique.mockResolvedValue({
+        ...mockUser,
+        isDeleted: true,
+      });
 
-      const result = await (authService as any).findUserByEmail("lebronjames@gmail.com");
+      const result = await (authService as any).findUserByEmail(
+        "lebronjames@gmail.com"
+      );
 
       // findUserByEmail doesn't return null even if the user is deleted
       // this is so deleted users who log back in can be automatically reactivated
@@ -283,19 +335,31 @@ describe("AuthService unit tests", () => {
     it("should return true for correct password", async () => {
       mockBcryptCompare.mockResolvedValue(true);
 
-      const result = await authService.verifyPassword("password", "hashedPassword");
+      const result = await authService.verifyPassword(
+        "password",
+        "hashedPassword"
+      );
 
       expect(result).toBe(true);
-      expect(mockBcryptCompare).toHaveBeenCalledWith("password", "hashedPassword");
+      expect(mockBcryptCompare).toHaveBeenCalledWith(
+        "password",
+        "hashedPassword"
+      );
     });
 
     it("should return false for incorrect password", async () => {
       mockBcryptCompare.mockResolvedValue(false);
 
-      const result = await authService.verifyPassword("wrongpassword", "hashedPassword");
+      const result = await authService.verifyPassword(
+        "wrongpassword",
+        "hashedPassword"
+      );
 
       expect(result).toBe(false);
-      expect(mockBcryptCompare).toHaveBeenCalledWith("wrongpassword", "hashedPassword");
+      expect(mockBcryptCompare).toHaveBeenCalledWith(
+        "wrongpassword",
+        "hashedPassword"
+      );
     });
 
     //
@@ -311,13 +375,17 @@ describe("AuthService unit tests", () => {
 
       mockPrismaUserFindUnique.mockRejectedValue(new Error("Database error"));
 
-      await expect(authService.createUser(userData)).rejects.toThrow("Database error");
+      await expect(authService.createUser(userData)).rejects.toThrow(
+        "Database error"
+      );
     });
 
     it("should handle bcrypt errors", async () => {
       mockBcryptCompare.mockRejectedValue(new Error("Bcrypt error"));
 
-      await expect(authService.verifyPassword("password", "hash")).rejects.toThrow("Bcrypt error");
+      await expect(
+        authService.verifyPassword("password", "hash")
+      ).rejects.toThrow("Bcrypt error");
     });
   });
 });

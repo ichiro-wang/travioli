@@ -5,26 +5,32 @@ import { app } from "../../index.js";
 
 const LOGIN_URL = "/api/auth/login";
 
+const CURRENT_DATE = new Date();
+
 const testUsers = {
   user: {
     email: "lebronjames@gmail.com",
     username: "lebronjames",
     password: "password",
+    verifiedAt: CURRENT_DATE,
   },
   otherUser: {
     email: "bronnyjames@gmail.com",
     username: "bronnyjames",
     password: "password",
+    verifiedAt: CURRENT_DATE,
   },
   privateUser: {
     email: "brycejames@gmail.com",
     username: "brycejames",
     password: "password",
+    verifiedAt: CURRENT_DATE,
   },
   deletedUser: {
     email: "deleted@gmail.com",
     username: "deleted",
     password: "password",
+    verifiedAt: CURRENT_DATE,
   },
 };
 

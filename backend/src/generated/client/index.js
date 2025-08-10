@@ -195,7 +195,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/mnt/d/Coding/travioli/backend/src/generated/client",
+      "value": "/usr/src/app/src/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -204,14 +204,14 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [
       "postgresqlExtensions"
     ],
-    "sourceFilePath": "/mnt/d/Coding/travioli/backend/prisma/schema.prisma",
+    "sourceFilePath": "/usr/src/app/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -273,8 +273,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "src/generated/client/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/client/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/client/schema.prisma")

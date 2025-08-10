@@ -28,15 +28,7 @@ describe("signup integration tests", () => {
     const res = await request(app).post(SIGNUP_URL).send(validSignupData);
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.user.id).toBeDefined();
-    expect(res.body.user).toHaveProperty("username", "lebronjames");
-    expect(res.body.user).toHaveProperty("email", "lebronjames@gmail.com");
-
-    const setCookieHeader = res.headers["set-cookie"];
-
-    expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader[0]).toMatch(/accessToken=/);
-    expect(setCookieHeader[1]).toMatch(/refreshToken=/);
+    expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
   it("should fail if email already exists", async () => {
@@ -122,14 +114,17 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, username: "123" });
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.user.id).toBeDefined();
+    expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
   it("should fail if username is too long", async () => {
     // check auth.schemas.ts to see valid username format
     const res = await request(app)
       .post(SIGNUP_URL)
-      .send({ ...validSignupData, username: "1234567890123456789012345678901" });
+      .send({
+        ...validSignupData,
+        username: "1234567890123456789012345678901",
+      });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/maximum 30/i);
@@ -142,14 +137,18 @@ describe("signup integration tests", () => {
       .send({ ...validSignupData, username: "123456789012345678901234567890" });
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.user.id).toBeDefined();
+    expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
   it("should fail if password is too short", async () => {
     // password must be min length 8
     const res = await request(app)
       .post(SIGNUP_URL)
-      .send({ ...validSignupData, password: "1234567", confirmPassword: "1234567" });
+      .send({
+        ...validSignupData,
+        password: "1234567",
+        confirmPassword: "1234567",
+      });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/password must be at least 8/i);
@@ -183,6 +182,13 @@ describe("login integration tests", () => {
     await takeDownTest();
   });
 
+  beforeEach(async () => {
+    await prisma.user.update({
+      where: { email },
+      data: { verifiedAt: new Date() },
+    });
+  });
+
   it("should login a user successfully", async () => {
     const res = await request(app).post(LOGIN_URL).send({ email, password });
 
@@ -197,14 +203,33 @@ describe("login integration tests", () => {
   });
 
   it("should fail if email not found", async () => {
-    const res = await request(app).post(LOGIN_URL).send({ email: "random_email@gmail.com", password });
+    const res = await request(app)
+      .post(LOGIN_URL)
+      .send({ email: "random_email@gmail.com", password });
 
-    expect(res.statusCode).toBe(404);
-    expect(res.body.message).toMatch(/user not found/i);
+    // backend gives generic message without telling if email exists or not
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/invalid credentials/i);
+  });
+
+  it("should fail if email not verified", async () => {
+    await prisma.user.update({
+      where: { email: "lebronjames@gmail.com" },
+      data: { verifiedAt: null },
+    });
+
+    const res = await request(app)
+      .post(LOGIN_URL)
+      .send({ email: "lebronjames@gmail.com", password });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/email not verified/i);
   });
 
   it("should fail if password incorrect", async () => {
-    const res = await request(app).post(LOGIN_URL).send({ email, password: "bad_password" });
+    const res = await request(app)
+      .post(LOGIN_URL)
+      .send({ email, password: "bad_password" });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/invalid credentials/i);
@@ -218,6 +243,7 @@ describe("login integration tests", () => {
         username: "deleted",
         password: hashedPassword,
         isDeleted: true,
+        verifiedAt: new Date(),
       },
     });
 
@@ -237,7 +263,9 @@ describe("login integration tests", () => {
   });
 
   it("should fail if email bad format", async () => {
-    const res = await request(app).post(LOGIN_URL).send({ email: "bad email", password });
+    const res = await request(app)
+      .post(LOGIN_URL)
+      .send({ email: "bad email", password });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errors.join(",")).toMatch(/invalid email format/i);
@@ -257,7 +285,12 @@ describe("logout integration tests", () => {
     hashedPassword = await bcrypt.hash(password, salt);
 
     await prisma.user.create({
-      data: { email, username: "lebronjames", password: hashedPassword },
+      data: {
+        email,
+        username: "lebronjames",
+        password: hashedPassword,
+        verifiedAt: new Date(),
+      },
     });
   });
 
@@ -267,7 +300,9 @@ describe("logout integration tests", () => {
 
   it("should successfully logout a user and clear the JWT cookie", async () => {
     // make sure a user is logged in
-    const loginRes = await request(app).post(LOGIN_URL).send({ email, password });
+    const loginRes = await request(app)
+      .post(LOGIN_URL)
+      .send({ email, password });
 
     expect(loginRes.statusCode).toBe(200);
     expect(loginRes.body.user.id).toBeDefined();
@@ -278,7 +313,9 @@ describe("logout integration tests", () => {
     expect(setCookieHeader[1]).toMatch(/refreshToken=/);
 
     // logout the user
-    const res = await request(app).post(LOGOUT_URL).set("Cookie", setCookieHeader[1]);
+    const res = await request(app)
+      .post(LOGOUT_URL)
+      .set("Cookie", setCookieHeader[1]);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/logged out successfully/i);
@@ -307,7 +344,12 @@ describe("get-me integration tests", () => {
     hashedPassword = await bcrypt.hash(password, salt);
 
     await prisma.user.create({
-      data: { email, username: "lebronjames", password: hashedPassword },
+      data: {
+        email,
+        username: "lebronjames",
+        password: hashedPassword,
+        verifiedAt: new Date(),
+      },
     });
   });
 
@@ -317,7 +359,9 @@ describe("get-me integration tests", () => {
 
   it("should return current user's details if logged in", async () => {
     // log in first, get the JWT cookie
-    const loginRes = await request(app).post(LOGIN_URL).send({ email, password });
+    const loginRes = await request(app)
+      .post(LOGIN_URL)
+      .send({ email, password });
     const jwtCookie = loginRes.headers["set-cookie"];
 
     // send get request with cookie set
