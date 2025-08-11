@@ -73,6 +73,7 @@ model Itinerary {
   description String?
   startDate   DateTime?
   endDate     DateTime?
+  currency    String    @default("CAD")
 
   media Media[] @relation("itineraryMedia")
 
@@ -92,11 +93,11 @@ model Itinerary {
 }
 
 model ItineraryItem {
-  id          String  @id @default(cuid())
-  name        String  @db.VarChar(255)
-  description String?
-  cost        Float?
-  currency    String? @default("CAD")
+  id               String  @id @default(cuid())
+  name             String  @db.VarChar(255)
+  description      String?
+  cost             Float?
+  currencyOverride String?
 
   media Media[] @relation("itineraryItemMedia")
 
