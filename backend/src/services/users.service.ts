@@ -1,5 +1,10 @@
+import z from "zod";
 import prisma from "../db/prisma.js";
-import { InvalidCredentialsError, UsernameAlreadyExistsError, UserNotFoundError } from "../errors/auth.errors.js";
+import {
+  InvalidCredentialsError,
+  UsernameAlreadyExistsError,
+  UserNotFoundError,
+} from "../errors/auth.errors.js";
 import { FollowStatus, User } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
 import { FollowRelation, USER_CACHE_EXPIRATION } from "../types/types.js";
@@ -7,6 +12,7 @@ import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
 import { FollowService } from "./follows.service.js";
 import { RedisService } from "./redis.service.js";
+import { getProfileResponseSchema } from "../schemas/users.schemas.js";
 
 interface CheckUsernameAvailabilityResult {
   available: boolean;
@@ -27,7 +33,11 @@ export class UserService {
   private followService: FollowService;
   private redisService: RedisService;
 
-  constructor(authService: AuthService, followService: FollowService, redisService: RedisService) {
+  constructor(
+    authService: AuthService,
+    followService: FollowService,
+    redisService: RedisService
+  ) {
     this.authService = authService;
     this.followService = followService;
     this.redisService = redisService;
@@ -52,7 +62,10 @@ export class UserService {
     return { available: !user, reason: user ? "taken" : null };
   }
 
-  async getUserProfileData(targetUserId: string, currentUser: User): Promise<GetUserProfileDataResult> {
+  async getUserProfileData(
+    targetUserId: string,
+    currentUser: User
+  ): Promise<z.infer<typeof getProfileResponseSchema>> {
     const isSelf = targetUserId === currentUser.id;
 
     let targetUser: User | null;
@@ -70,7 +83,11 @@ export class UserService {
         if (targetUser) {
           // we only need to set cache here since if (isSelf) is true,
           // authenticateToken middleware should already handle the cache storage
-          await this.redisService.setEx(userCacheKey, targetUser, USER_CACHE_EXPIRATION);
+          await this.redisService.setEx(
+            userCacheKey,
+            targetUser,
+            USER_CACHE_EXPIRATION
+          );
         }
       }
     }
@@ -81,7 +98,10 @@ export class UserService {
 
     // fetch these promises in parallel for efficiency
     const [followedByCount, followingCount, followStatus] = await Promise.all([
-      this.followService.getFollowCount(targetUserId, FollowRelation.followedBy),
+      this.followService.getFollowCount(
+        targetUserId,
+        FollowRelation.followedBy
+      ),
       this.followService.getFollowCount(targetUserId, FollowRelation.following),
       this.followService.getFollowStatus(currentUser.id, targetUserId),
     ]);
@@ -111,7 +131,10 @@ export class UserService {
       filteredUpdates.name = name;
     }
 
-    if (normalizedUsername !== undefined && normalizedUsername !== currentUser.username) {
+    if (
+      normalizedUsername !== undefined &&
+      normalizedUsername !== currentUser.username
+    ) {
       filteredUpdates.username = normalizedUsername;
     }
 
@@ -130,7 +153,11 @@ export class UserService {
         data: filteredUpdates,
       });
 
-      await this.redisService.setEx(`user:${updatedUser.id}`, updatedUser, USER_CACHE_EXPIRATION);
+      await this.redisService.setEx(
+        `user:${updatedUser.id}`,
+        updatedUser,
+        USER_CACHE_EXPIRATION
+      );
 
       return filterUser(updatedUser, true);
     } catch (error: any) {
@@ -151,7 +178,10 @@ export class UserService {
     inputPassword: string,
     currentUserPassword: string
   ): Promise<FilteredUser> {
-    const isPasswordCorrect = await this.authService.verifyPassword(inputPassword, currentUserPassword);
+    const isPasswordCorrect = await this.authService.verifyPassword(
+      inputPassword,
+      currentUserPassword
+    );
     if (!isPasswordCorrect) {
       throw new InvalidCredentialsError();
     }

@@ -12,6 +12,24 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../src/generated/zod"
+  writeBarrelFiles                 = true
+  createInputTypes                 = false
+  createModelTypes                 = true
+  addInputTypeValidation           = false
+  addIncludeType                   = true
+  addSelectType                    = true
+  validateWhereUniqueInput         = false
+  createOptionalDefaultValuesTypes = false
+  createRelationValuesTypes        = true
+  createPartialTypes               = false
+  useDefaultValidators             = true
+  coerceDate                       = true
+  writeNullishInModelTypes         = true
+}
+
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
@@ -73,6 +91,7 @@ model Itinerary {
   description String?
   startDate   DateTime?
   endDate     DateTime?
+  currency    String    @default("CAD")
 
   media Media[] @relation("itineraryMedia")
 
@@ -92,11 +111,11 @@ model Itinerary {
 }
 
 model ItineraryItem {
-  id          String  @id @default(cuid())
-  name        String  @db.VarChar(255)
-  description String?
-  cost        Float?
-  currency    String? @default("CAD")
+  id               String  @id @default(cuid())
+  name             String  @db.VarChar(255)
+  description      String?
+  cost             Float?
+  currencyOverride String?
 
   media Media[] @relation("itineraryItemMedia")
 

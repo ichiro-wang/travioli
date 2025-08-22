@@ -164,19 +164,14 @@ export const getUserItineraries = async (
       return;
     }
 
-    const loadIndex = Math.max(0, parseInt(req.query.loadIndex) || 0);
+    const loadIndex = Math.max(0, parseInt(req.query.loadIndex || "0"));
 
     const result = await itineraryService.getItinerariesByUserId(
       userId,
       loadIndex
     );
 
-    res
-      .status(200)
-      .json({
-        itineraries: result.itineraries,
-        pagination: { loadIndex, hasMore: result.hasMore },
-      });
+    res.status(200).json(result);
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {

@@ -12,6 +12,24 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../src/generated/zod"
+  writeBarrelFiles                 = true
+  createInputTypes                 = false
+  createModelTypes                 = true
+  addInputTypeValidation           = false
+  addIncludeType                   = true
+  addSelectType                    = true
+  validateWhereUniqueInput         = false
+  createOptionalDefaultValuesTypes = false
+  createRelationValuesTypes        = true
+  createPartialTypes               = false
+  useDefaultValidators             = true
+  coerceDate                       = true
+  writeNullishInModelTypes         = true
+}
+
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")

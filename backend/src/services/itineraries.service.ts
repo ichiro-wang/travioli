@@ -1,3 +1,4 @@
+import z from "zod";
 import prisma from "../db/prisma.js";
 import { ItineraryNotFoundError } from "../errors/itineraries.errors.js";
 import { Itinerary, ItineraryItem } from "../generated/client/index.js";
@@ -6,6 +7,7 @@ import {
   UpdateItineraryBodyUpdatedItems,
 } from "../schemas/itineraries.schema.js";
 import { PrismaTransactionalClient } from "../types/global.js";
+import { getUserItinerariesResponseSchema } from "../schemas/users.schemas.js";
 
 interface ItineraryData {
   title: string;
@@ -395,12 +397,12 @@ export class ItineraryService {
   async getItinerariesByUserId(
     userId: string,
     loadIndex: number
-  ): Promise<{ itineraries: Itinerary[]; hasMore: boolean }> {
+  ): Promise<z.infer<typeof getUserItinerariesResponseSchema>> {
     const offset = ItineraryService.PAGINATION_TAKE_SIZE * loadIndex;
     const take = ItineraryService.PAGINATION_TAKE_SIZE + 1;
 
     const retrievedItineraries = await prisma.itinerary.findMany({
-      where: { ownerId: userId },
+      where: { ownerId: userId, isArchived: false },
       orderBy: { createdAt: "desc" },
       skip: offset,
       take,
@@ -420,6 +422,6 @@ export class ItineraryService {
       itineraries = retrievedItineraries;
     }
 
-    return { itineraries, hasMore };
+    return { itineraries, pagination: { hasMore, loadIndex } };
   }
 }

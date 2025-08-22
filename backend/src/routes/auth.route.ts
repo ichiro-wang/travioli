@@ -8,7 +8,6 @@ import {
   getMe,
   login,
   logout,
-  pingPong,
   refresh,
   resendVerificationEmail,
   signup,
@@ -28,7 +27,6 @@ import {
 
 const router = express.Router();
 
-router.get("/ping", pingPong);
 router.post("/signup", validateData(signupSchema), signup);
 router.get("/verify-email", validateData(verifyEmailSchema), verifyEmail);
 router.post(

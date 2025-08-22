@@ -6,17 +6,22 @@ import path from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+
+  server: {
+    host: true,
+    port: parseInt(process.env.PORT ?? "5173"),
+    watch: {
+      usePolling: true,
+      interval: 100,
+    },
+    allowedHosts: ["frontend"],
+  },
+
+  base: "/",
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  server: {
-    port: parseInt(process.env.PORT ?? "5173"),
-    host: true,
-    watch: {
-      usePolling: true,
-    },
-    allowedHosts: ["frontend"],
   },
 });

@@ -3744,6 +3744,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
+    currency: string | null
     isArchived: boolean | null
     ownerId: string | null
     createdAt: Date | null
@@ -3756,6 +3757,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
+    currency: string | null
     isArchived: boolean | null
     ownerId: string | null
     createdAt: Date | null
@@ -3768,6 +3770,7 @@ export namespace Prisma {
     description: number
     startDate: number
     endDate: number
+    currency: number
     isArchived: number
     ownerId: number
     createdAt: number
@@ -3782,6 +3785,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
+    currency?: true
     isArchived?: true
     ownerId?: true
     createdAt?: true
@@ -3794,6 +3798,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
+    currency?: true
     isArchived?: true
     ownerId?: true
     createdAt?: true
@@ -3806,6 +3811,7 @@ export namespace Prisma {
     description?: true
     startDate?: true
     endDate?: true
+    currency?: true
     isArchived?: true
     ownerId?: true
     createdAt?: true
@@ -3891,6 +3897,7 @@ export namespace Prisma {
     description: string | null
     startDate: Date | null
     endDate: Date | null
+    currency: string
     isArchived: boolean
     ownerId: string
     createdAt: Date
@@ -3920,6 +3927,7 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
+    currency?: boolean
     isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3936,6 +3944,7 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
+    currency?: boolean
     isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3949,6 +3958,7 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
+    currency?: boolean
     isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3962,13 +3972,14 @@ export namespace Prisma {
     description?: boolean
     startDate?: boolean
     endDate?: boolean
+    currency?: boolean
     isArchived?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "isArchived" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["itinerary"]>
+  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "currency" | "isArchived" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["itinerary"]>
   export type ItineraryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     media?: boolean | Itinerary$mediaArgs<ExtArgs>
     itineraryItems?: boolean | Itinerary$itineraryItemsArgs<ExtArgs>
@@ -3995,6 +4006,7 @@ export namespace Prisma {
       description: string | null
       startDate: Date | null
       endDate: Date | null
+      currency: string
       isArchived: boolean
       ownerId: string
       createdAt: Date
@@ -4430,6 +4442,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Itinerary", 'String'>
     readonly startDate: FieldRef<"Itinerary", 'DateTime'>
     readonly endDate: FieldRef<"Itinerary", 'DateTime'>
+    readonly currency: FieldRef<"Itinerary", 'String'>
     readonly isArchived: FieldRef<"Itinerary", 'Boolean'>
     readonly ownerId: FieldRef<"Itinerary", 'String'>
     readonly createdAt: FieldRef<"Itinerary", 'DateTime'>
@@ -4923,7 +4936,7 @@ export namespace Prisma {
     name: string | null
     description: string | null
     cost: number | null
-    currency: string | null
+    currencyOverride: string | null
     order: number | null
     itineraryId: string | null
     createdAt: Date | null
@@ -4935,7 +4948,7 @@ export namespace Prisma {
     name: string | null
     description: string | null
     cost: number | null
-    currency: string | null
+    currencyOverride: string | null
     order: number | null
     itineraryId: string | null
     createdAt: Date | null
@@ -4947,7 +4960,7 @@ export namespace Prisma {
     name: number
     description: number
     cost: number
-    currency: number
+    currencyOverride: number
     order: number
     itineraryId: number
     createdAt: number
@@ -4971,7 +4984,7 @@ export namespace Prisma {
     name?: true
     description?: true
     cost?: true
-    currency?: true
+    currencyOverride?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -4983,7 +4996,7 @@ export namespace Prisma {
     name?: true
     description?: true
     cost?: true
-    currency?: true
+    currencyOverride?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -4995,7 +5008,7 @@ export namespace Prisma {
     name?: true
     description?: true
     cost?: true
-    currency?: true
+    currencyOverride?: true
     order?: true
     itineraryId?: true
     createdAt?: true
@@ -5094,7 +5107,7 @@ export namespace Prisma {
     name: string
     description: string | null
     cost: number | null
-    currency: string | null
+    currencyOverride: string | null
     order: number
     itineraryId: string
     createdAt: Date
@@ -5125,7 +5138,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     cost?: boolean
-    currency?: boolean
+    currencyOverride?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
@@ -5141,7 +5154,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     cost?: boolean
-    currency?: boolean
+    currencyOverride?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
@@ -5154,7 +5167,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     cost?: boolean
-    currency?: boolean
+    currencyOverride?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
@@ -5167,14 +5180,14 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     cost?: boolean
-    currency?: boolean
+    currencyOverride?: boolean
     order?: boolean
     itineraryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "cost" | "currency" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
+  export type ItineraryItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "cost" | "currencyOverride" | "order" | "itineraryId" | "createdAt" | "updatedAt", ExtArgs["result"]["itineraryItem"]>
   export type ItineraryItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     media?: boolean | ItineraryItem$mediaArgs<ExtArgs>
     location?: boolean | ItineraryItem$locationArgs<ExtArgs>
@@ -5200,7 +5213,7 @@ export namespace Prisma {
       name: string
       description: string | null
       cost: number | null
-      currency: string | null
+      currencyOverride: string | null
       order: number
       itineraryId: string
       createdAt: Date
@@ -5635,7 +5648,7 @@ export namespace Prisma {
     readonly name: FieldRef<"ItineraryItem", 'String'>
     readonly description: FieldRef<"ItineraryItem", 'String'>
     readonly cost: FieldRef<"ItineraryItem", 'Float'>
-    readonly currency: FieldRef<"ItineraryItem", 'String'>
+    readonly currencyOverride: FieldRef<"ItineraryItem", 'String'>
     readonly order: FieldRef<"ItineraryItem", 'Int'>
     readonly itineraryId: FieldRef<"ItineraryItem", 'String'>
     readonly createdAt: FieldRef<"ItineraryItem", 'DateTime'>
@@ -8140,6 +8153,7 @@ export namespace Prisma {
     description: 'description',
     startDate: 'startDate',
     endDate: 'endDate',
+    currency: 'currency',
     isArchived: 'isArchived',
     ownerId: 'ownerId',
     createdAt: 'createdAt',
@@ -8154,7 +8168,7 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     cost: 'cost',
-    currency: 'currency',
+    currencyOverride: 'currencyOverride',
     order: 'order',
     itineraryId: 'itineraryId',
     createdAt: 'createdAt',
@@ -8459,6 +8473,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
+    currency?: StringFilter<"Itinerary"> | string
     isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
@@ -8474,6 +8489,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
+    currency?: SortOrder
     isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -8492,6 +8508,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
+    currency?: StringFilter<"Itinerary"> | string
     isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
@@ -8507,6 +8524,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
+    currency?: SortOrder
     isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -8525,6 +8543,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableWithAggregatesFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableWithAggregatesFilter<"Itinerary"> | Date | string | null
+    currency?: StringWithAggregatesFilter<"Itinerary"> | string
     isArchived?: BoolWithAggregatesFilter<"Itinerary"> | boolean
     ownerId?: StringWithAggregatesFilter<"Itinerary"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Itinerary"> | Date | string
@@ -8539,7 +8558,7 @@ export namespace Prisma {
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
     cost?: FloatNullableFilter<"ItineraryItem"> | number | null
-    currency?: StringNullableFilter<"ItineraryItem"> | string | null
+    currencyOverride?: StringNullableFilter<"ItineraryItem"> | string | null
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
@@ -8554,7 +8573,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     cost?: SortOrderInput | SortOrder
-    currency?: SortOrderInput | SortOrder
+    currencyOverride?: SortOrderInput | SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -8573,7 +8592,7 @@ export namespace Prisma {
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
     cost?: FloatNullableFilter<"ItineraryItem"> | number | null
-    currency?: StringNullableFilter<"ItineraryItem"> | string | null
+    currencyOverride?: StringNullableFilter<"ItineraryItem"> | string | null
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
@@ -8588,7 +8607,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     cost?: SortOrderInput | SortOrder
-    currency?: SortOrderInput | SortOrder
+    currencyOverride?: SortOrderInput | SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -8608,7 +8627,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"ItineraryItem"> | string
     description?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
     cost?: FloatNullableWithAggregatesFilter<"ItineraryItem"> | number | null
-    currency?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
+    currencyOverride?: StringNullableWithAggregatesFilter<"ItineraryItem"> | string | null
     order?: IntWithAggregatesFilter<"ItineraryItem"> | number
     itineraryId?: StringWithAggregatesFilter<"ItineraryItem"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ItineraryItem"> | Date | string
@@ -8905,6 +8924,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8919,6 +8939,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
@@ -8933,6 +8954,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8947,6 +8969,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8961,6 +8984,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
@@ -8973,6 +8997,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8984,6 +9009,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8995,7 +9021,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9009,7 +9035,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     itineraryId: string
     createdAt?: Date | string
@@ -9023,7 +9049,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9037,7 +9063,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9051,7 +9077,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     itineraryId: string
     createdAt?: Date | string
@@ -9063,7 +9089,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9074,7 +9100,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9442,6 +9468,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
+    currency?: SortOrder
     isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -9454,6 +9481,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
+    currency?: SortOrder
     isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -9466,6 +9494,7 @@ export namespace Prisma {
     description?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
+    currency?: SortOrder
     isArchived?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -9514,7 +9543,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     cost?: SortOrder
-    currency?: SortOrder
+    currencyOverride?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -9531,7 +9560,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     cost?: SortOrder
-    currency?: SortOrder
+    currencyOverride?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -9543,7 +9572,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     cost?: SortOrder
-    currency?: SortOrder
+    currencyOverride?: SortOrder
     order?: SortOrder
     itineraryId?: SortOrder
     createdAt?: SortOrder
@@ -10332,6 +10361,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10345,6 +10375,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10430,6 +10461,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Itinerary"> | string | null
     startDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
     endDate?: DateTimeNullableFilter<"Itinerary"> | Date | string | null
+    currency?: StringFilter<"Itinerary"> | string
     isArchived?: BoolFilter<"Itinerary"> | boolean
     ownerId?: StringFilter<"Itinerary"> | string
     createdAt?: DateTimeFilter<"Itinerary"> | Date | string
@@ -10633,7 +10665,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10646,7 +10678,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10754,7 +10786,7 @@ export namespace Prisma {
     name?: StringFilter<"ItineraryItem"> | string
     description?: StringNullableFilter<"ItineraryItem"> | string | null
     cost?: FloatNullableFilter<"ItineraryItem"> | number | null
-    currency?: StringNullableFilter<"ItineraryItem"> | string | null
+    currencyOverride?: StringNullableFilter<"ItineraryItem"> | string | null
     order?: IntFilter<"ItineraryItem"> | number
     itineraryId?: StringFilter<"ItineraryItem"> | string
     createdAt?: DateTimeFilter<"ItineraryItem"> | Date | string
@@ -10836,6 +10868,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10849,6 +10882,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
@@ -10913,6 +10947,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10926,6 +10961,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10938,7 +10974,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10951,7 +10987,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     itineraryId: string
     createdAt?: Date | string
@@ -10980,7 +11016,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10993,7 +11029,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11007,6 +11043,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11020,6 +11057,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     ownerId: string
     createdAt?: Date | string
@@ -11037,7 +11075,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11050,7 +11088,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     itineraryId: string
     createdAt?: Date | string
@@ -11080,6 +11118,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11093,6 +11132,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11116,7 +11156,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11129,7 +11169,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     itineraryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11157,6 +11197,7 @@ export namespace Prisma {
     description?: string | null
     startDate?: Date | string | null
     endDate?: Date | string | null
+    currency?: string
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11210,6 +11251,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11223,6 +11265,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11236,6 +11279,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11253,7 +11297,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     cost?: number | null
-    currency?: string | null
+    currencyOverride?: string | null
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11285,7 +11329,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11298,7 +11342,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11311,7 +11355,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    currencyOverride?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -1,0 +1,616 @@
+openapi: 3.1.0
+info:
+  title: Backend API
+  version: 1.0.0
+  description: This is the backend API. This doc was generated on 2025-08-22.
+servers:
+  - url: http://localhost:5000/api
+    description: Dev server
+components:
+  schemas:
+    ResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+      description: A simple response with a message
+    ErrorResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+        - message
+      description: A simple error response with a message, and optional array of errors
+    InternalServerError:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        errorLocation:
+          type: string
+      required:
+        - message
+      description: Internal server error response
+    Email:
+      type: string
+      format: email
+      description: A valid email address
+      example: lebronjames@gmail.com
+    Username:
+      type: string
+      minLength: 3
+      maxLength: 30
+      pattern: ^(?!_+$)[a-z0-9_]+$
+      description: A username with letters, numbers, and underscores
+      example: lebron_james_23
+    Password:
+      type: string
+      minLength: 8
+      description: A password with minimum 8 characters
+      example: password123
+    FilteredUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+          description: User ID
+        username:
+          $ref: "#/components/schemas/Username"
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+          example: LeBron
+        bio:
+          type: string
+          nullable: true
+          maxLength: 255
+          example: This is my bio
+        profilePic:
+          type: string
+          example: https://profile_picture_link
+        isPrivate:
+          type: boolean
+        email:
+          allOf:
+            - $ref: "#/components/schemas/Email"
+            - nullable: true
+      required:
+        - id
+        - username
+        - name
+        - bio
+        - profilePic
+        - isPrivate
+        - email
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/FilteredUser"
+      required:
+        - user
+    CheckUsernameResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        available:
+          type: boolean
+      required:
+        - message
+        - available
+    GetUserItinerariesResponse:
+      type: object
+      properties:
+        itineraries:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: cuid
+              title:
+                type: string
+              description:
+                type: string
+                nullable: true
+              startDate:
+                type: string
+                nullable: true
+                format: date
+              endDate:
+                type: string
+                nullable: true
+                format: date
+              currency:
+                type: string
+              isArchived:
+                type: boolean
+              ownerId:
+                type: string
+              createdAt:
+                type: string
+                nullable: true
+                format: date
+              updatedAt:
+                type: string
+                nullable: true
+                format: date
+            required:
+              - id
+              - title
+              - currency
+              - isArchived
+              - ownerId
+              - createdAt
+              - updatedAt
+        pagination:
+          type: object
+          properties:
+            loadIndex:
+              type: integer
+              minimum: 0
+            hasMore:
+              type: boolean
+          required:
+            - loadIndex
+            - hasMore
+      required:
+        - itineraries
+        - pagination
+    GetProfileResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/FilteredUser"
+        isSelf:
+          type: boolean
+        followedByCount:
+          type: integer
+          minimum: 0
+        followingCount:
+          type: integer
+          minimum: 0
+        followStatus:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - notFollowing
+      required:
+        - user
+        - isSelf
+        - followedByCount
+        - followingCount
+  parameters: {}
+paths:
+  /auth/signup:
+    post:
+      description: Signup a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+                username:
+                  $ref: "#/components/schemas/Username"
+                password:
+                  $ref: "#/components/schemas/Password"
+                confirmPassword:
+                  $ref: "#/components/schemas/Password"
+              required:
+                - email
+                - username
+                - password
+                - confirmPassword
+      responses:
+        "201":
+          description: User created, check email to complete signup
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
+        "400":
+          description: Signup failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/login:
+    post:
+      description: Login a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+                password:
+                  $ref: "#/components/schemas/Password"
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Login failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/logout:
+    post:
+      description: Logout a user
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
+        "400":
+          description: "Logout failed: No refresh token secret key. This is a problem with
+            environment variable not being set on backend."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "401":
+          description: "Logout failed: Invalid token type, This is a problem with an
+            access token being attached as a 'refreshToken'."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/verify-email:
+    get:
+      description: Verify email
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: token
+          in: query
+      responses:
+        "200":
+          description: Email successfully verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
+        "404":
+          description: Invalid verification token provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/resend-verification-email:
+    post:
+      description: Resend verification email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+              required:
+                - email
+      responses:
+        "200":
+          description: Verification email resent. The email is only sent in the case that
+            the email exists and is pending verification. If the email does not
+            exist or is already verified, no email is sent. Response message are
+            same in all cases.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
+        "400":
+          description: Error in sending email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/me:
+    get:
+      description: Get me
+      responses:
+        "200":
+          description: Successfully got self
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /auth/refresh:
+    get:
+      description: Refresh JWT
+      responses:
+        "200":
+          description: Successfully refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
+        "400":
+          description: No refresh token secret key. This is a problem with environment
+            variable not being set on backend.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /users/check-username:
+    get:
+      description: Check if a username is available
+      parameters:
+        - schema:
+            $ref: "#/components/schemas/Username"
+          required: true
+          description: A username with letters, numbers, and underscores
+          name: username
+          in: query
+      responses:
+        "200":
+          description: Username is available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckUsernameResponse"
+        "400":
+          description: Check-Username failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "409":
+          description: Username taken, or already yours
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckUsernameResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /users/{id}/itineraries:
+    get:
+      description: Get the itineraries of a user
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+        - schema:
+            type: string
+            description: A positive integer to specify which entries to retrieve for
+              pagination
+          required: false
+          description: A positive integer to specify which entries to retrieve for
+            pagination
+          name: loadIndex
+          in: query
+      responses:
+        "200":
+          description: Retrieved index N of user's itineraries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserItinerariesResponse"
+        "400":
+          description: Error fetching user's itineraries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "403":
+          description: Cannot view user's itineraries as their account is private
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: This user was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /users/{id}:
+    get:
+      description: Get User Profile
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProfileResponse"
+        "400":
+          description: Error retrieving user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /users/me:
+    patch:
+      description: Update own profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  $ref: "#/components/schemas/Username"
+                name:
+                  type: string
+                  maxLength: 255
+                  example: LeBron James
+                bio:
+                  type: string
+                  maxLength: 255
+                  example: This is my bio
+      responses:
+        "200":
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/FilteredUser"
+                required:
+                  - user
+        "400":
+          description: Error in updating profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "409":
+          description: Username already taken
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+    delete:
+      description: Soft delete own account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  $ref: "#/components/schemas/Password"
+              required:
+                - password
+      responses:
+        "200":
+          description: Successfully (soft) deleted account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    allOf:
+                      - $ref: "#/components/schemas/FilteredUser"
+                      - type: object
+                        properties:
+                          isDeleted:
+                            type: boolean
+                        required:
+                          - isDeleted
+                required:
+                  - user
+        "400":
+          description: Error deleting account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"

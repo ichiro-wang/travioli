@@ -19,6 +19,9 @@ notes
 .env
 .env.*
 
+# will git to this some time later
+openapi.yml
+
 database
 
 # Editor directories and files

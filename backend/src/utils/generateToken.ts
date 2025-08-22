@@ -12,42 +12,29 @@ interface GenerateTokensReturn {
   refreshToken: string;
 }
 
-export const generateAccessToken = (
+export const generateToken = (
   userId: string,
+  tokenType: TokenType,
   source: TokenSource = "credentials"
 ): string => {
   const secretKey = process.env.ACCESS_TOKEN_SECRET;
   if (!secretKey) {
-    throw new NoSecretKeyError("access");
+    throw new NoSecretKeyError(tokenType);
   }
 
   const payload: DecodedToken = {
     userId,
-    type: "access",
+    type: tokenType,
     source,
     jti: randomUUID(),
   };
 
-  return jwt.sign(payload, secretKey, { expiresIn: `${ACCESS_TIME_MINUTES}m` });
-};
+  const expiresIn =
+    tokenType === "access"
+      ? `${ACCESS_TIME_MINUTES}m`
+      : `${REFRESH_TIME_DAYS}d`;
 
-export const generateRefreshToken = (
-  userId: string,
-  source: TokenSource = "credentials"
-): string => {
-  const secretKey = process.env.REFRESH_TOKEN_SECRET;
-  if (!secretKey) {
-    throw new NoSecretKeyError("refresh");
-  }
-
-  const payload: DecodedToken = {
-    userId,
-    type: "refresh",
-    source,
-    jti: randomUUID(),
-  };
-
-  return jwt.sign(payload, secretKey, { expiresIn: `${REFRESH_TIME_DAYS}d` });
+  return jwt.sign(payload, secretKey, { expiresIn });
 };
 
 export const getTokenOptions = (tokenType: TokenType): CookieOptions => {
@@ -56,11 +43,13 @@ export const getTokenOptions = (tokenType: TokenType): CookieOptions => {
     tokenType === "access"
       ? ACCESS_TIME_MINUTES * 60 * 1000
       : REFRESH_TIME_DAYS * 24 * 60 * 60 * 1000;
+
+  const inDevelopment = process.env.NODE_ENV === "development";
   return {
     maxAge,
     httpOnly: true, // not accessible via JS
-    sameSite: "strict", // prevent xss
-    secure: process.env.NODE_ENV !== "development", // https if not development env
+    sameSite: inDevelopment ? "lax" : "strict", // prevent xss
+    secure: !inDevelopment, // https if not development env
   };
 };
 
@@ -71,8 +60,8 @@ export const generateTokens = (
   res: Response,
   userId: string
 ): GenerateTokensReturn => {
-  const accessToken = generateAccessToken(userId);
-  const refreshToken = generateRefreshToken(userId);
+  const accessToken = generateToken(userId, "access");
+  const refreshToken = generateToken(userId, "refresh");
 
   res.cookie("accessToken", accessToken, getTokenOptions("access"));
   res.cookie("refreshToken", refreshToken, getTokenOptions("refresh"));

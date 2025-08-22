@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "../lib/zod.openapi.js";
 import { cuidSchema } from "./common.schema.js";
 import { FollowActionList, FollowRelationList } from "../types/types.js";
 

@@ -1,5 +1,7 @@
 import { Prisma, User } from "../generated/client/index.js";
 import { JwtPayload } from "jsonwebtoken";
+import { FilteredUser } from "../schemas/common.schema.ts";
+import { z } from "../lib/zod.openapi.ts";
 
 export type TokenType = "access" | "refresh";
 
@@ -28,7 +30,7 @@ declare global {
 }
 
 // what to expose to the frontend
-export interface FilteredUser {
+/* export interface FilteredUser {
   id: string;
   username: string;
   name: string | null;
@@ -36,6 +38,7 @@ export interface FilteredUser {
   profilePic: string;
   isPrivate: boolean;
   email: string | null;
-}
+} */
+export type FilteredUser = z.infer<typeof FilteredUser>;
 
-export type PrismaTransactionalClient = Prisma.TransactionClient
+export type PrismaTransactionalClient = Prisma.TransactionClient;

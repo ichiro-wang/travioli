@@ -1,7 +1,7 @@
 import { CookieOptions, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import {
-  generateAccessToken,
+  generateToken,
   generateTokens,
   getTokenOptions,
 } from "../utils/generateToken.js";
@@ -9,6 +9,7 @@ import { filterUser } from "../utils/filterUser.js";
 import { internalServerError } from "../utils/internalServerError.js";
 import {
   LoginBody,
+  loginResponseSchema,
   ResendVerificationEmailBody,
   SignupBody,
   VerifyEmailQuery,
@@ -28,14 +29,7 @@ import {
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
 import { DecodedToken } from "../types/global.js";
 import { USER_CACHE_EXPIRATION } from "../types/types.js";
-
-/**
- * method simply for testing backend connection
- */
-export const pingPong = (req: Request, res: Response): void => {
-  res.status(200).json({ message: "pong" });
-  return;
-};
+import { EmailSendError } from "../errors/email.errors.js";
 
 /**
  * - request body should include: email, username, password, confirmPassword
@@ -53,12 +47,12 @@ export const signup = async (
     await authService.handleVerificationEmail(email);
 
     res.status(201).json({ message: "Check email to complete signup" });
-    return;
   } catch (error: unknown) {
     if (
       error instanceof EmailAlreadyExistsError ||
       error instanceof UsernameAlreadyExistsError ||
-      error instanceof NoSecretKeyError
+      error instanceof NoSecretKeyError ||
+      error instanceof EmailSendError
     ) {
       res.status(400).json({ message: error.message });
       return;
@@ -89,7 +83,6 @@ export const verifyEmail = async (
     await authService.verifyEmail(email);
 
     res.status(200).json({ message: "Email successfully verified" });
-    return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
       userNotFoundResponse(res);
@@ -108,25 +101,21 @@ export const resendVerificationEmail = async (
 
     const existingUser = await authService.findUserByEmail(email);
 
-    if (!existingUser) {
-      res.status(400).json({
-        message: `User with email ${email} not found. Please create an account first`,
-      });
-      return;
-    }
+    const genericMessage = `An email will be sent if ${email} is found and not yet verified`;
 
-    if (existingUser.verifiedAt !== null) {
-      res.status(400).json({ message: "This email is already verified" });
+    if (!existingUser || existingUser.verifiedAt !== null) {
+      res.status(200).json({ message: genericMessage });
       return;
     }
 
     await authService.handleVerificationEmail(email);
 
-    res
-      .status(200)
-      .json({ message: "Verification email sent. Please check your email" });
-    return;
+    res.status(200).json({ message: genericMessage });
   } catch (error: unknown) {
+    if (error instanceof EmailSendError) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
     internalServerError(error, res, "resendVerificationEmail controller");
   }
 };
@@ -149,8 +138,10 @@ export const login = async (
     await redisService.setEx(userCacheKey, user, USER_CACHE_EXPIRATION);
 
     const filteredUser = filterUser(user, true);
-    res.status(200).json({ user: filteredUser });
-    return;
+
+    const validatedResponse = loginResponseSchema.parse({ user: filteredUser });
+
+    res.status(200).json(validatedResponse);
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
       // dont tell if user is not found, just return a generic message
@@ -210,7 +201,6 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     res.cookie("refreshToken", "", options);
 
     res.status(200).json({ message: "Logged out successfully" });
-    return;
   } catch (error: unknown) {
     internalServerError(error, res, "logout controller");
   }
@@ -224,8 +214,12 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     const loggedInUser = req.user;
 
     const filteredUser = filterUser(loggedInUser, true);
-    res.status(200).json({ user: filteredUser });
-    return;
+
+    const response = { user: filteredUser };
+
+    const validatedResponse = loginResponseSchema.parse(response);
+
+    res.status(200).json(validatedResponse);
   } catch (error: unknown) {
     internalServerError(error, res, "getMe controller");
   }
@@ -251,7 +245,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const accessToken = generateAccessToken(user.id, "refresh");
+    const accessToken = generateToken(user.id, "refresh", "refresh");
     res.cookie("accessToken", accessToken, getTokenOptions("access"));
 
     res.status(200).json({ message: "Token refreshed successfully" });

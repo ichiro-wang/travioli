@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer/index.js";
 import SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
+import { EmailSendError } from "../errors/email.errors.js";
 
 export class EmailService {
   private transporter: Mail<
@@ -22,13 +23,17 @@ export class EmailService {
   }
 
   async sendEmail(to: string, subject: string, html: string) {
-    const info = await this.transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to,
-      subject,
-      html, // HTML body
-    });
+    try {
+      const info = await this.transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to,
+        subject,
+        html, // HTML body
+      });
 
-    console.log("Message sent:", info.messageId);
+      console.log("Message sent:", info.messageId);
+    } catch (error: unknown) {
+      throw new EmailSendError();
+    }
   }
 }

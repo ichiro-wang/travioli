@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "../lib/zod.openapi.js";
 import { cuidSchema } from "./common.schema.js";
 
 const dateSchema = z
@@ -102,3 +102,5 @@ export const deleteItinerarySchema = z.object({
 export type DeleteItineraryParams = z.infer<
   typeof deleteItinerarySchema
 >["params"];
+
+

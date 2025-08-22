@@ -33,6 +33,8 @@ services:
     environment:
       - PORT=5173
       - VITE_BACKEND_URL=http://backend:5000
+    ports:
+      - 5173:5173
     command: npm run dev
     container_name: travioli-frontend-dev
   redis:

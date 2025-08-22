@@ -5,11 +5,15 @@ export const FollowRelation = {
   followedBy: "followedBy",
 } as const;
 
-export type FollowRelationType = (typeof FollowRelation)[keyof typeof FollowRelation];
+export type FollowRelationType =
+  (typeof FollowRelation)[keyof typeof FollowRelation];
 
 // need this list to use it in zod enum
 // keep it in this format
-export const FollowRelationList = [FollowRelation.followedBy, FollowRelation.following] as const;
+export const FollowRelationList = [
+  FollowRelation.followedBy,
+  FollowRelation.following,
+] as const;
 
 export const FollowAction = {
   accept: "accept",
