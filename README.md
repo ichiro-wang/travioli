@@ -1,19 +1,22 @@
-# Travioli
+# Travioli ✈️
 
-## Tech Stack
+## Tech Stack 🛠️
 
-- PostgreSQL
-- Express (TypeScript)
-- React (TypeScript)
-- Node
+- ⚡ **Express (TypeScript)**
+- 🌳 **Node**
+- ⚛️ **React (TypeScript)**
+- 🐘 **PostgreSQL**
+- 🟥 **Redis**
 
-## Frontend
+## Frontend 🎨
 
-### 🚧 under construction
+- 🔍 **Server state**: TanStack Query
 
-## Backend
+## Backend 🔧
 
-### Tests
+- 📜 OpenAPI spec [here](./backend/openapi-docs.yml)
 
-- Backend testing done using Vitest and Supertest [here](./backend/src/__tests__/)
-- Run from root using command `./scripts/docker-compose.test.sh`
+### Tests ✅
+
+- 🧪 Backend testing done using Vitest and Supertest [here](./backend/src/__tests__/)
+- ▶️ Run from root using command `./scripts/docker-compose.test.sh`
