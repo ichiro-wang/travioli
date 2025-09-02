@@ -8,11 +8,13 @@ import yaml from "yaml";
 import { cwd } from "process";
 import { currentDateFormatted } from "../src/utils/currentDateFormatted.js";
 import { registerUsersPaths } from "./registerUsersPaths.js";
+import { registerFollowsPaths } from "./registerFollowsPaths.js";
 
 const registry = new OpenAPIRegistry();
 
 registerAuthPaths(registry);
 registerUsersPaths(registry);
+registerFollowsPaths(registry);
 
 /**
  * Creates an OpenAPI JSON document

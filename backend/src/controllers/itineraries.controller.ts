@@ -3,6 +3,7 @@ import cuid from "cuid";
 import { internalServerError } from "../utils/internalServerError.js";
 import {
   CreateItineraryBody,
+  createItineraryResponseSchema,
   DeleteItineraryParams,
   GetItineraryParams,
   ItineraryItemSchema,
@@ -88,7 +89,11 @@ export const createItinerary = async (
       return fullItinerary;
     });
 
-    res.status(201).json({ itinerary: fullItinerary });
+    const validatedResponse = createItineraryResponseSchema.parse({
+      itinerary: fullItinerary,
+    });
+
+    res.status(201).json(validatedResponse);
     return;
   } catch (error: unknown) {
     internalServerError(error, res, "createItinerary controller");

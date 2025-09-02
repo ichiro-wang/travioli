@@ -1,3 +1,4 @@
+import z from "zod";
 import prisma from "../db/prisma.js";
 import { UserNotFoundError } from "../errors/auth.errors.js";
 import {
@@ -8,9 +9,15 @@ import {
 } from "../errors/follow.errors.js";
 import { Follows, FollowStatus } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
-import { FollowAction, FollowActionType, FollowRelation, FollowRelationType } from "../types/types.js";
+import {
+  FollowAction,
+  FollowActionType,
+  FollowRelation,
+  FollowRelationType,
+} from "../types/types.js";
 import { filterUser } from "../utils/filterUser.js";
 import { AuthService } from "./auth.service.js";
+import { updateFollowStatusResponseSchema } from "../schemas/follows.schema.js";
 
 /**
  * from: current/existing status.
@@ -18,7 +25,10 @@ import { AuthService } from "./auth.service.js";
  * if the action doesn't logically match the status update, then we don't allow the action.
  * eg - to accept a follow, the existing status must be pending.
  */
-const STATUS_TRANSITION_MAP: Record<FollowActionType, { from: FollowStatus; to: FollowStatus; message: string }> = {
+const STATUS_TRANSITION_MAP: Record<
+  FollowActionType,
+  { from: FollowStatus; to: FollowStatus; message: string }
+> = {
   [FollowAction.accept]: {
     from: FollowStatus.pending,
     to: FollowStatus.accepted,
@@ -48,7 +58,10 @@ const STATUS_TRANSITION_MAP: Record<FollowActionType, { from: FollowStatus; to: 
 
 const FOLLOW_RELATIONSHIP_MAP: Record<
   FollowRelationType,
-  { whereKey: "followingId" | "followedById"; includeKey: "followedBy" | "following" }
+  {
+    whereKey: "followingId" | "followedById";
+    includeKey: "followedBy" | "following";
+  }
 > = {
   [FollowRelation.followedBy]: {
     whereKey: "followingId",
@@ -68,11 +81,6 @@ interface FollowListResult {
 interface FollowUserResult {
   follow: Follows;
   isNewRelationship: boolean;
-}
-
-interface UpdateFollowResult {
-  follow: Follows;
-  message: string;
 }
 
 export class FollowService {
@@ -113,13 +121,18 @@ export class FollowService {
     const hasMore = followList.length > FollowService.PAGINATION_TAKE_SIZE;
 
     // we only take the extra user at the end to see if there are more results to fetch
-    // we dont want to actually return that user
-    const users = followList.slice(0, take - 1).map((follow) => filterUser(follow[relationType]));
+    // we dont want to actually return that user, so filter it out
+    const users = followList
+      .slice(0, take - 1)
+      .map((follow) => filterUser(follow[relationType]));
 
     return { users, hasMore };
   }
 
-  async followUser(currentUserId: string, targetUserId: string): Promise<FollowUserResult> {
+  async followUser(
+    currentUserId: string,
+    targetUserId: string
+  ): Promise<FollowUserResult> {
     const isSelf = currentUserId === targetUserId;
 
     if (isSelf) {
@@ -132,8 +145,13 @@ export class FollowService {
       throw new UserNotFoundError();
     }
 
-    const existingFollow = await this.getFollowRelationship(currentUserId, targetUserId);
-    const newStatus = targetUser.isPrivate ? FollowStatus.pending : FollowStatus.accepted;
+    const existingFollow = await this.getFollowRelationship(
+      currentUserId,
+      targetUserId
+    );
+    const newStatus = targetUser.isPrivate
+      ? FollowStatus.pending
+      : FollowStatus.accepted;
 
     if (existingFollow) {
       if (existingFollow.status === FollowStatus.accepted) {
@@ -141,7 +159,9 @@ export class FollowService {
       }
 
       if (existingFollow.status === FollowStatus.pending) {
-        throw new FollowUserError("You have already requested to follow this user");
+        throw new FollowUserError(
+          "You have already requested to follow this user"
+        );
       }
 
       // if notFollowing, simply update the existing relationship
@@ -176,20 +196,26 @@ export class FollowService {
     currentUserId: string,
     targetUserId: string,
     actionType: FollowActionType
-  ): Promise<UpdateFollowResult> {
+  ): Promise<z.infer<typeof updateFollowStatusResponseSchema>> {
     // the direction of the relationship depends on the type of action type
     // type === "accept" or "reject" or "remove"
     // the followed user (followingId) is the current user, who is followedBy the target user
     let followedById = targetUserId;
     let followingId = currentUserId;
 
-    if (actionType === FollowAction.cancel || actionType === FollowAction.unfollow) {
+    if (
+      actionType === FollowAction.cancel ||
+      actionType === FollowAction.unfollow
+    ) {
       // the followed user (followingId) is the target user, who is followedBy the current user
       followedById = currentUserId;
       followingId = targetUserId;
     }
 
-    const existingFollow = await this.getFollowRelationship(followedById, followingId);
+    const existingFollow = await this.getFollowRelationship(
+      followedById,
+      followingId
+    );
 
     if (!existingFollow) {
       throw new NoFollowRelationshipError();
@@ -198,7 +224,10 @@ export class FollowService {
     const transition = STATUS_TRANSITION_MAP[actionType];
 
     if (transition.from !== existingFollow.status) {
-      throw new InvalidUpdateStatusActionError(transition.from, existingFollow.status);
+      throw new InvalidUpdateStatusActionError(
+        transition.from,
+        existingFollow.status
+      );
     }
 
     const updatedFollow = await prisma.follows.update({
@@ -218,7 +247,10 @@ export class FollowService {
     return pendingRequests;
   }
 
-  async getFollowStatus(followedById: string, followingId: string): Promise<FollowStatus | null> {
+  async getFollowStatus(
+    followedById: string,
+    followingId: string
+  ): Promise<FollowStatus | null> {
     // don't return a follow status if checking self to avoid confusion
     if (followedById === followingId) {
       return null;
@@ -238,7 +270,10 @@ export class FollowService {
    * check database if there exists a Follows relationship between the 2 users
    * @returns the relationship if found
    */
-  private async getFollowRelationship(followedById: string, followingId: string): Promise<Follows | null> {
+  private async getFollowRelationship(
+    followedById: string,
+    followingId: string
+  ): Promise<Follows | null> {
     // there should not be a follow relationship between self
     if (followedById === followingId) {
       return null;
@@ -255,8 +290,14 @@ export class FollowService {
    * @param relationType followedBy | following
    * @returns integer value of how many followers | following
    */
-  async getFollowCount(targetUserId: string, relationType: FollowRelationType): Promise<number> {
-    const idKey = relationType === FollowRelation.followedBy ? "followedById" : "followingId";
+  async getFollowCount(
+    targetUserId: string,
+    relationType: FollowRelationType
+  ): Promise<number> {
+    const idKey =
+      relationType === FollowRelation.followedBy
+        ? "followedById"
+        : "followingId";
 
     return await prisma.follows.count({
       where: { [idKey]: targetUserId, status: FollowStatus.accepted },

@@ -2,11 +2,16 @@ import { Request, Response } from "express";
 import { internalServerError } from "../utils/internalServerError.js";
 import {
   CheckUsernameQuery,
+  checkUsernameResponseSchema,
   DeleteAccountBody,
+  deleteAccountResponseSchema,
   GetProfileParams,
+  getProfileResponseSchema,
   GetUserItinerariesParams,
   GetUserItinerariesQuery,
+  getUserItinerariesResponseSchema,
   UpdateProfileBody,
+  updateProfileResponseSchema,
 } from "../schemas/users.schemas.js";
 import {
   invalidCredentialsResponse,
@@ -49,7 +54,12 @@ export const checkUsername = async (
       return;
     }
 
-    res.status(200).json({ available, message: `@${username} is available` });
+    const validatedResponse = checkUsernameResponseSchema.parse({
+      available,
+      message: `@${username} is available`,
+    });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     internalServerError(error, res, "checkUsername controller");
@@ -74,7 +84,9 @@ export const getUserProfile = async (
       currentUser
     );
 
-    res.status(200).json(profileData);
+    const validatedResponse = getProfileResponseSchema.parse(profileData);
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
@@ -104,7 +116,11 @@ export const updateProfile = async (
       bio,
     });
 
-    res.status(200).json({ user: updatedUser });
+    const validatedResponse = updateProfileResponseSchema.parse({
+      user: updatedUser,
+    });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof UsernameAlreadyExistsError) {
@@ -133,8 +149,12 @@ export const softDeleteUser = async (
       currentUser.password
     );
 
+    const validatedResponse = deleteAccountResponseSchema.parse({
+      user: { ...deletedUser, isDeleted: true },
+    });
+
     // including isDeleted field for caller reference
-    res.status(200).json({ user: { ...deletedUser, isDeleted: true } });
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof InvalidCredentialsError) {
@@ -171,7 +191,9 @@ export const getUserItineraries = async (
       loadIndex
     );
 
-    res.status(200).json(result);
+    const validatedResponse = getUserItinerariesResponseSchema.parse(result);
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {

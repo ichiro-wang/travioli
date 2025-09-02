@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon",
     "test": "vitest run",
-    "generate:openapi": "tsx ./scripts/generateOpenApi.ts"
+    "generate:openapi": "tsx ./scripts/generateOpenApi.ts",
+    "generate:zod": "npx prisma generate zod"
   },
   "type": "module",
   "keywords": [],

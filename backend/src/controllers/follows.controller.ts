@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
 import {
   FollowUserParams,
+  followUserResponseSchema,
   GetFollowListParams,
   GetFollowListQuery,
+  getFollowListResponseSchema,
+  getFollowRequestsResponseSchema,
+  getFollowStatusResponseSchema,
   UpdateFollowStatusBody,
   UpdateFollowStatusParams,
+  updateFollowStatusResponseSchema,
 } from "../schemas/follows.schema.js";
 import { FollowStatus } from "../generated/client/index.js";
 import { internalServerError } from "../utils/internalServerError.js";
@@ -51,13 +56,13 @@ export const getFollowList = async (
       loadIndex
     );
 
+    const validatedResponse = getFollowListResponseSchema.parse({
+      [relationType]: result.users,
+      pagination: { loadIndex, hasMore: result.hasMore },
+    });
+
     // return followedBy or following list as the filtered user list
-    res
-      .status(200)
-      .json({
-        [relationType]: result.users,
-        pagination: { loadIndex, hasMore: result.hasMore },
-      });
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {
@@ -93,7 +98,12 @@ export const followUser = async (
 
     const statusCode = isNewRelationship ? 201 : 200;
 
-    res.status(statusCode).json({ message, follow });
+    const validatedResponse = followUserResponseSchema.parse({
+      message,
+      follow,
+    });
+
+    res.status(statusCode).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof FollowSelfError || error instanceof FollowUserError) {
@@ -123,13 +133,16 @@ export const updateFollowStatus = async (
     const { type: actionType } = req.body;
     const currentUserId = req.user.id;
 
-    const updateResult = await followService.updateFollowStatus(
+    const updatedResult = await followService.updateFollowStatus(
       currentUserId,
       userId,
       actionType
     );
 
-    res.status(200).json(updateResult);
+    const validatedResponse =
+      updateFollowStatusResponseSchema.parse(updatedResult);
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof NoFollowRelationshipError) {
@@ -154,13 +167,24 @@ export const getPendingRequests = async (
   res: Response
 ): Promise<void> => {
   try {
-    const currentUserId = req.user.id;
+    const currentUser = req.user;
+
+    if (!currentUser.isPrivate) {
+      res
+        .status(400)
+        .json({ message: "Your account is public, you have no requests" });
+      return;
+    }
 
     const pendingRequests = await followService.getPendingFollowRequests(
-      currentUserId
+      currentUser.id
     );
 
-    res.status(200).json({ pendingRequests });
+    const validatedResponse = getFollowRequestsResponseSchema.parse({
+      pendingRequests,
+    });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     internalServerError(error, res, "getPendingRequests controller");
@@ -183,15 +207,17 @@ export const getFollowStatus = async (
       userId
     );
 
-    if (!followStatus) {
-      res
-        .status(400)
-        .json({
-          message: "You do not have a follow relationship with yourself",
-        });
+    if (followStatus === null) {
+      res.status(400).json({
+        message: "You do not have a follow relationship with yourself",
+      });
     }
 
-    res.status(200).json({ followStatus });
+    const validatedResponse = getFollowStatusResponseSchema.parse({
+      followStatus,
+    });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof UserNotFoundError) {

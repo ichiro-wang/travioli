@@ -36,6 +36,11 @@ export const passwordSchema = z
     example: "password123",
   });
 
+export const dateSchema = z
+  .union([z.date(), z.string()])
+  .transform((val) => new Date(val))
+  .openapi("Date");
+
 export const responseMessageSchema = z
   .object({ message: z.string() })
   .openapi("ResponseMessage", {

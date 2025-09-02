@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: Backend API
   version: 1.0.0
@@ -194,6 +194,86 @@ components:
         - isSelf
         - followedByCount
         - followingCount
+    FollowUserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        follow:
+          type: object
+          properties:
+            status:
+              type: string
+              enum:
+                - pending
+                - accepted
+                - notFollowing
+            followedById:
+              type: string
+            followingId:
+              type: string
+            createdAt:
+              type: string
+              nullable: true
+              format: date
+            updatedAt:
+              type: string
+              nullable: true
+              format: date
+          required:
+            - status
+            - followedById
+            - followingId
+            - createdAt
+            - updatedAt
+      required:
+        - message
+        - follow
+    GetFollowStatusResponse:
+      type: object
+      properties:
+        followStatus:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - notFollowing
+      required:
+        - followStatus
+    GetFollowRequestsResponse:
+      type: object
+      properties:
+        pendingRequests:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                  - pending
+                  - accepted
+                  - notFollowing
+              followedById:
+                type: string
+              followingId:
+                type: string
+              createdAt:
+                type: string
+                nullable: true
+                format: date
+              updatedAt:
+                type: string
+                nullable: true
+                format: date
+            required:
+              - status
+              - followedById
+              - followingId
+              - createdAt
+              - updatedAt
+      required:
+        - pendingRequests
   parameters: {}
 paths:
   /auth/signup:
@@ -604,6 +684,244 @@ paths:
                   - user
         "400":
           description: Error deleting account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /follows/{id}:
+    get:
+      description: Follow a user
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Successfully followed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FollowUserResponse"
+        "201":
+          description: Successfully followed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FollowUserResponse"
+        "400":
+          description: Error following user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: "Error following user: User not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /follows/{id}/status:
+    get:
+      description: Check follow status with this user
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFollowStatusResponse"
+        "400":
+          description: Error checking follow status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: "Error checking follow status: User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+    patch:
+      description: Updated follow status of user
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - accept
+                    - reject
+                    - remove
+                    - cancel
+                    - unfollow
+              required:
+                - type
+      responses:
+        "200":
+          description: Successfully updated follow status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  follow:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - pending
+                          - accepted
+                          - notFollowing
+                      followedById:
+                        type: string
+                      followingId:
+                        type: string
+                      createdAt:
+                        type: string
+                        nullable: true
+                        format: date
+                      updatedAt:
+                        type: string
+                        nullable: true
+                        format: date
+                    required:
+                      - status
+                      - followedById
+                      - followingId
+                      - createdAt
+                      - updatedAt
+                required:
+                  - message
+                  - follow
+        "400":
+          description: Error updating follow status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: "Error updating follow status: No follow relationship exists"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /follows/{id}/{type}:
+    get:
+      description: Get following or follower list of a user
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+        - schema:
+            type: string
+            enum:
+              - followedBy
+              - following
+          required: true
+          name: type
+          in: path
+      responses:
+        "200":
+          description: Successfully retrieved follow list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFollowStatusResponse"
+        "400":
+          description: Error retrieving following or follower list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "403":
+          description: "Error retrieving following or follower list: User is private"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: "Error retrieving following or follower list: User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /follows/requests:
+    get:
+      description: Get follow requests
+      responses:
+        "200":
+          description: Successfully retrieved requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFollowRequestsResponse"
+        "400":
+          description: Error retrieving requests
           content:
             application/json:
               schema:
