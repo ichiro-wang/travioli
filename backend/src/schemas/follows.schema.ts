@@ -27,7 +27,7 @@ export const getFollowListResponseSchema = z
     }),
   })
   .refine(
-    (data) => data.followedBy !== undefined && data.following !== undefined,
+    (data) => data.followedBy !== undefined || data.following !== undefined,
     { message: "Must return one of following of followedBy" }
   )
   .openapi("GetFollowListResponse");

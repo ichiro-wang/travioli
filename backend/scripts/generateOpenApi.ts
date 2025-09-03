@@ -9,12 +9,14 @@ import { cwd } from "process";
 import { currentDateFormatted } from "../src/utils/currentDateFormatted.js";
 import { registerUsersPaths } from "./registerUsersPaths.js";
 import { registerFollowsPaths } from "./registerFollowsPaths.js";
+import { registerItinerariesPaths } from "./registerItinerariesPaths.js";
 
 const registry = new OpenAPIRegistry();
 
 registerAuthPaths(registry);
 registerUsersPaths(registry);
 registerFollowsPaths(registry);
+registerItinerariesPaths(registry);
 
 /**
  * Creates an OpenAPI JSON document

@@ -23,13 +23,9 @@ const router = express.Router();
 
 router.use(authenticateAccessToken);
 
-// use base route, nothing extra
-router.post("", validateData(createItinerarySchema), createItinerary);
-
+router.post("", validateData(createItinerarySchema), createItinerary); // use base route here, nothing extra
 router.get("/:id", validateData(getItinerarySchema), getItinerary);
-
 router.patch("/:id", validateData(updateItinerarySchema), updateItinerary);
-
 router.delete("/:id", validateData(deleteItinerarySchema), deleteItinerary);
 
 export default router;

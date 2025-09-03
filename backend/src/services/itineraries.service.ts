@@ -3,7 +3,8 @@ import prisma from "../db/prisma.js";
 import { ItineraryNotFoundError } from "../errors/itineraries.errors.js";
 import { Itinerary, ItineraryItem } from "../generated/client/index.js";
 import {
-  LocationSchema,
+  FullItinerary,
+  LocationCreateSchema,
   UpdateItineraryBodyUpdatedItems,
 } from "../schemas/itineraries.schema.js";
 import { PrismaTransactionalClient } from "../types/global.js";
@@ -47,7 +48,7 @@ interface UpdateItineraryFields {
 }
 
 type LocationWithItineraryItemId = {
-  location: LocationSchema;
+  location: LocationCreateSchema;
   itineraryItemId: string;
 };
 
@@ -65,7 +66,10 @@ export class ItineraryService {
   private static SRID = 4326;
   private static PAGINATION_TAKE_SIZE = 10;
 
-  async getItineraryById(id: string, tx: PrismaTransactionalClient) {
+  async getItineraryById(
+    id: string,
+    tx: PrismaTransactionalClient
+  ): Promise<FullItinerary> {
     const itinerary = await tx.itinerary.findUnique({
       where: { id },
       include: {
@@ -114,7 +118,7 @@ export class ItineraryService {
       }
     }
 
-    return itinerary;
+    return itinerary as FullItinerary;
   }
 
   async ownsItinerary(ownerId: string, itineraryId: string): Promise<boolean> {

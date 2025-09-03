@@ -22,6 +22,7 @@ import {
   InvalidUpdateStatusActionError,
   NoFollowRelationshipError,
 } from "../errors/follow.errors.js";
+import { id } from "zod/locales";
 
 /**
  * get the followedBy or following list of a user
@@ -36,6 +37,8 @@ export const getFollowList = async (
     // ensure data is validated first. check validateData middleware
     const { id: targetUserId, type: relationType } = req.params;
     const currentUserId = req.user.id;
+
+    console.log(targetUserId, relationType);
 
     const permissionCheck = await permissionService.checkUserViewingPermission(
       currentUserId,

@@ -3,6 +3,7 @@ import { CookieOptions, Response } from "express";
 import { DecodedToken, TokenSource, TokenType } from "../types/global.js";
 import { NoSecretKeyError } from "../errors/jwt.errors.js";
 import { randomUUID } from "crypto";
+import { isInDevelopmentEnv } from "../utils/isInDevelopmentEnv.js";
 
 const ACCESS_TIME_MINUTES = 15;
 const REFRESH_TIME_DAYS = 7;
@@ -17,7 +18,12 @@ export const generateToken = (
   tokenType: TokenType,
   source: TokenSource = "credentials"
 ): string => {
-  const secretKey = process.env.ACCESS_TOKEN_SECRET;
+  const isAccessToken = tokenType === "access";
+
+  const secretKey = isAccessToken
+    ? process.env.ACCESS_TOKEN_SECRET
+    : process.env.REFRESH_TOKEN_SECRET;
+
   if (!secretKey) {
     throw new NoSecretKeyError(tokenType);
   }
@@ -29,10 +35,9 @@ export const generateToken = (
     jti: randomUUID(),
   };
 
-  const expiresIn =
-    tokenType === "access"
-      ? `${ACCESS_TIME_MINUTES}m`
-      : `${REFRESH_TIME_DAYS}d`;
+  const expiresIn = isAccessToken
+    ? `${ACCESS_TIME_MINUTES}m`
+    : `${REFRESH_TIME_DAYS}d`;
 
   return jwt.sign(payload, secretKey, { expiresIn });
 };
@@ -44,7 +49,7 @@ export const getTokenOptions = (tokenType: TokenType): CookieOptions => {
       ? ACCESS_TIME_MINUTES * 60 * 1000
       : REFRESH_TIME_DAYS * 24 * 60 * 60 * 1000;
 
-  const inDevelopment = process.env.NODE_ENV === "development";
+  const inDevelopment = isInDevelopmentEnv();
   return {
     maxAge,
     httpOnly: true, // not accessible via JS

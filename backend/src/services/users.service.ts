@@ -19,14 +19,6 @@ interface CheckUsernameAvailabilityResult {
   reason: "current" | "taken" | null;
 }
 
-interface GetUserProfileDataResult {
-  user: FilteredUser;
-  isSelf: boolean;
-  followedByCount: number;
-  followingCount: number;
-  followStatus?: FollowStatus;
-}
-
 export class UserService {
   // dependency injection
   private authService: AuthService;

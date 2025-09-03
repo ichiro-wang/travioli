@@ -6,7 +6,7 @@ import {
 import { z } from "../lib/zod.openapi.js";
 import { cuidSchema, dateSchema } from "./common.schema.js";
 
-const locationSchema = z
+const locationCreateSchema = z
   .object({
     coordinates: z.object({
       lat: z.number().min(-90).max(90),
@@ -18,7 +18,7 @@ const locationSchema = z
   })
   .openapi("LocationInput");
 
-export type LocationSchema = z.infer<typeof locationSchema>;
+export type LocationCreateSchema = z.infer<typeof locationCreateSchema>;
 
 const itineraryItemSchema = z
   .object({
@@ -27,7 +27,7 @@ const itineraryItemSchema = z
     cost: z.number().optional(),
     currency: z.string().trim().optional(),
     order: z.number().min(0),
-    location: locationSchema,
+    location: locationCreateSchema,
   })
   .openapi("ItineraryItemInput");
 
@@ -44,9 +44,8 @@ export const createItinerarySchema = z
         description: z.string().trim().optional(),
         startDate: dateSchema.optional(),
         endDate: dateSchema.optional(),
-        itineraryItems: z
-          .array(itineraryItemSchema)
-          .min(1, { message: "Itinerary must contain at least one item" }),
+        itineraryItems: z.array(itineraryItemSchema),
+        // .min(1, { message: "Itinerary must contain at least one item" }),
       })
       .refine((data) => {
         if (!data.startDate || !data.endDate) {
@@ -59,16 +58,26 @@ export const createItinerarySchema = z
 
 export type CreateItineraryBody = z.infer<typeof createItinerarySchema>["body"];
 
-/**
- * FIX THIS LATER
- */
-export const createItineraryResponseSchema = z
+const LocationWithCoordinatesSchema = LocationSchema.extend({
+  coordinates: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+});
+
+export const fullItineraryResponse = z
   .object({
-    itineraryItems: z.array(
-      ItineraryItemSchema.extend({ location: LocationSchema })
-    ),
+    itinerary: ItinerarySchema.extend({
+      itineraryItems: z.array(
+        ItineraryItemSchema.extend({
+          location: LocationWithCoordinatesSchema.nullish(), // since an item may not have a location
+        })
+      ),
+    }),
   })
   .openapi("CreateItineraryResponse");
+
+export type FullItinerary = z.infer<typeof fullItineraryResponse>["itinerary"];
 
 export const getItinerarySchema = z
   .object({
@@ -82,7 +91,7 @@ const updateItineraryItemSchema = itineraryItemSchema
   .extend({
     id: z.string().cuid(),
     name: z.string().trim().optional(),
-    location: locationSchema.optional(),
+    location: locationCreateSchema.optional(),
   })
   .openapi("UpdateItineraryItemRequest");
 

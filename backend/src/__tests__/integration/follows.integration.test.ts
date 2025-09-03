@@ -341,8 +341,6 @@ describe("update follow status integration tests", () => {
   });
 });
 
-// ...existing code...
-
 describe("get pending follow requests integration tests", () => {
   let testData: TestData;
 
@@ -366,20 +364,37 @@ describe("get pending follow requests integration tests", () => {
     });
   });
 
-  it("should return pending follow requests for current user", async () => {
+  it("should return pending follow requests for current (public) user", async () => {
     const res = await request(app)
       .get("/api/follows/requests")
       .set("Cookie", testData.accessTokenCookie);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/public.*no requests/i);
+  });
+
+  it("should return pending follow requests for private user", async () => {
+    await prisma.follows.create({
+      data: {
+        followedById: testData.user.id,
+        followingId: testData.privateUser.id,
+        status: FollowStatus.pending,
+      },
+    });
+
+    const res = await request(app)
+      .get("/api/follows/requests")
+      .set("Cookie", testData.privateUserAccessTokenCookie);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.pendingRequests).toHaveLength(1);
     expect(res.body.pendingRequests[0]).toHaveProperty(
       "followedById",
-      testData.otherUser.id
+      testData.user.id
     );
     expect(res.body.pendingRequests[0]).toHaveProperty(
       "followingId",
-      testData.user.id
+      testData.privateUser.id
     );
     expect(res.body.pendingRequests[0]).toHaveProperty(
       "status",
@@ -484,6 +499,8 @@ describe("get follow list integration tests", () => {
     const res = await request(app)
       .get(`/api/follows/${testData.user.id}/followedBy?loadIndex=0`)
       .set("Cookie", testData.accessTokenCookie);
+
+    console.log("++++", res.body);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.followedBy).toBeInstanceOf(Array);

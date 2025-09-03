@@ -47,6 +47,7 @@ describe("ItineraryService unit tests", () => {
     description: "Amazing trip to Tokyo",
     startDate: new Date("2024-03-01"),
     endDate: new Date("2024-03-07"),
+    isArchived: false,
     ownerId: "user1",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -60,6 +61,7 @@ describe("ItineraryService unit tests", () => {
     cost: 1000,
     currency: "JPY",
     order: 1,
+    isArchived: false,
     location: {
       id: "location1",
       itineraryItemId: "item1",
@@ -68,7 +70,7 @@ describe("ItineraryService unit tests", () => {
       city: "Tokyo",
       address: "4 Chome-2-8 Shibakoen, Minato City, Tokyo",
     },
-  } as ItineraryItem & { location: any };
+  } as unknown as ItineraryItem & { location: any };
 
   const mockItineraryWithItems = {
     ...mockItinerary,
@@ -411,9 +413,9 @@ describe("ItineraryService unit tests", () => {
       const result = await itineraryService.getItinerariesByUserId("user1", 0);
 
       expect(result.itineraries).toEqual(mockItineraries);
-      expect(result.hasMore).toBe(false);
+      expect(result.pagination.hasMore).toBe(false);
       expect(mockPrismaItineraryFindMany).toHaveBeenCalledWith({
-        where: { ownerId: "user1" },
+        where: { ownerId: "user1", isArchived: false },
         orderBy: { createdAt: "desc" },
         skip: 0,
         take: 11,
@@ -427,7 +429,7 @@ describe("ItineraryService unit tests", () => {
       const result = await itineraryService.getItinerariesByUserId("user1", 0);
 
       expect(result.itineraries).toHaveLength(10);
-      expect(result.hasMore).toBe(true);
+      expect(result.pagination.hasMore).toBe(true);
     });
 
     it("should handle pagination with loadIndex", async () => {
@@ -437,7 +439,7 @@ describe("ItineraryService unit tests", () => {
       await itineraryService.getItinerariesByUserId("user1", 2);
 
       expect(mockPrismaItineraryFindMany).toHaveBeenCalledWith({
-        where: { ownerId: "user1" },
+        where: { ownerId: "user1", isArchived: false },
         orderBy: { createdAt: "desc" },
         skip: 20,
         take: 11,

@@ -77,6 +77,18 @@ export const setUpTestData = async () => {
     .post(LOGIN_URL)
     .send({ email: testUsers.user.email, password: testUsers.user.password });
 
+  // login for other user
+  const otherUserLoginRes = await request(app).post(LOGIN_URL).send({
+    email: testUsers.otherUser.email,
+    password: testUsers.otherUser.password,
+  });
+
+  // login for private user
+  const privateUserLoginRes = await request(app).post(LOGIN_URL).send({
+    email: testUsers.privateUser.email,
+    password: testUsers.privateUser.password,
+  });
+
   return {
     user: { ...testUsers.user, id: user.id },
     otherUser: { ...testUsers.otherUser, id: otherUser.id },
@@ -84,6 +96,10 @@ export const setUpTestData = async () => {
     deletedUser: { ...testUsers.deletedUser, id: deletedUser.id },
     accessTokenCookie: loginRes.headers["set-cookie"][0],
     refreshTokenCookie: loginRes.headers["set-cookie"][1],
+    otherUserAccessTokenCookie: otherUserLoginRes.headers["set-cookie"][0],
+    otherUserRefreshTokenCookie: otherUserLoginRes.headers["set-cookie"][1],
+    privateUserAccessTokenCookie: privateUserLoginRes.headers["set-cookie"][0],
+    privateUserRefreshTokenCookie: privateUserLoginRes.headers["set-cookie"][1],
   };
 };
 
@@ -92,4 +108,7 @@ export type TestData = Awaited<ReturnType<typeof setUpTestData>>;
 export const takeDownTest = async () => {
   await prisma.user.deleteMany();
   await prisma.follows.deleteMany();
+  await prisma.itinerary.deleteMany();
+  await prisma.itineraryItem.deleteMany();
+  await prisma.location.deleteMany();
 };

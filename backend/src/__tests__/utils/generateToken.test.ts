@@ -29,7 +29,9 @@ describe("generateToken unit tests", () => {
     process.env.REFRESH_TOKEN_SECRET = "refresh_secret";
 
     mockRandomUUID.mockReturnValue("mocked_uuid");
-    mockSign.mockReturnValueOnce("access_token").mockReturnValueOnce("refresh_token");
+    mockSign
+      .mockReturnValueOnce("access_token")
+      .mockReturnValueOnce("refresh_token");
 
     mockResponseCookie = vi.fn();
 
@@ -66,19 +68,27 @@ describe("generateToken unit tests", () => {
       { expiresIn: "7d" }
     );
 
-    expect(mockResponseCookie).toHaveBeenCalledWith("accessToken", "access_token", {
-      maxAge: 15 * 60 * 1000, // 15 minutes
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true, // assuming NODE_ENV is not 'development'
-    });
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "refreshToken",
+      "refresh_token",
+      {
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+      }
+    );
 
-    expect(mockResponseCookie).toHaveBeenCalledWith("refreshToken", "refresh_token", {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "accessToken",
+      "access_token",
+      {
+        maxAge: 15 * 60 * 1000, // 15 minutes
+        httpOnly: true,
+        sameSite: "lax", // lax during dev
+        secure: false, // false during dev
+      }
+    );
 
     expect(mockSign).toHaveBeenCalledTimes(2);
     expect(mockResponseCookie).toHaveBeenCalledTimes(2);
@@ -103,22 +113,69 @@ describe("generateToken unit tests", () => {
   it("should use correct cookie options for development environment", () => {
     process.env.NODE_ENV = "development";
     mockSign.mockReset();
-    mockSign.mockReturnValueOnce("access_token").mockReturnValueOnce("refresh_token");
+    mockSign
+      .mockReturnValueOnce("access_token")
+      .mockReturnValueOnce("refresh_token");
 
     const result = generateTokens(mockResponse, "some_user_id");
 
-    expect(mockResponseCookie).toHaveBeenCalledWith("accessToken", "access_token", {
-      maxAge: 15 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "strict",
-      secure: false, // should be false in development
-    });
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "accessToken",
+      "access_token",
+      {
+        maxAge: 15 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false, // should be false in development
+      }
+    );
 
-    expect(mockResponseCookie).toHaveBeenCalledWith("refreshToken", "refresh_token", {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "strict",
-      secure: false, // should be false in development
-    });
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "refreshToken",
+      "refresh_token",
+      {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false, // should be false in development
+      }
+    );
+  });
+
+  it("should use correct cookie options for production environment", () => {
+    // Set environment to production
+    process.env.NODE_ENV = "production";
+
+    // Reset mocks to clear previous calls
+    mockSign.mockReset();
+    mockSign
+      .mockReturnValueOnce("access_token")
+      .mockReturnValueOnce("refresh_token");
+    mockResponseCookie.mockClear();
+
+    const result = generateTokens(mockResponse, "some_user_id");
+
+    // Verify sameSite is "strict" in production
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "accessToken",
+      "access_token",
+      {
+        maxAge: 15 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "strict", // should be strict in production
+        secure: true, // should be true in production
+      }
+    );
+
+    expect(mockResponseCookie).toHaveBeenCalledWith(
+      "refreshToken",
+      "refresh_token",
+      {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "strict", // should be strict in production
+        secure: true, // should be true in production
+      }
+    );
   });
 });

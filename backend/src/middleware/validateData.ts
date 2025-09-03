@@ -13,11 +13,19 @@ export const validateData = (schema: ZodTypeAny) => {
       next();
     } catch (error: unknown) {
       if (error instanceof ZodError) {
-        const errorMessages = error.issues.map((issue) => issue.message);
+        let errorMessages: string[] = [];
+        let errorPaths: PropertyKey[][] = [];
 
-        res
-          .status(400)
-          .json({ message: "Invalid input data", errors: errorMessages });
+        error.issues.forEach((issue) => {
+          errorMessages.push(issue.message);
+          errorPaths.push(issue.path);
+        });
+
+        res.status(400).json({
+          message: "Invalid input data",
+          errors: errorMessages,
+          paths: errorPaths,
+        });
         return;
       } else {
         internalServerError(error, res, "validateData middleware");

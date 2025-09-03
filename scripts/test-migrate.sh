@@ -13,7 +13,7 @@ echo -e "${CYAN}Building containers...${NC}"
 docker compose -f "$DOCKER_COMPOSE_FILE" up --build -d
 
 echo -e "${CYAN}Generating Prisma client and pushing database schema...${NC}"
-docker exec -it "$BACKEND_SERVICE" sh -c "npx prisma generate && npx prisma db push && npm i"
+docker exec -it "$BACKEND_SERVICE" sh -c "npm i && npx prisma generate && npx prisma db push"
 
 echo -e "${GREEN}Test environment is ready!${NC}"
 

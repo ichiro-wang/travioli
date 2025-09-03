@@ -3,8 +3,8 @@ import cuid from "cuid";
 import { internalServerError } from "../utils/internalServerError.js";
 import {
   CreateItineraryBody,
-  createItineraryResponseSchema,
   DeleteItineraryParams,
+  fullItineraryResponse,
   GetItineraryParams,
   ItineraryItemSchema,
   UpdateItineraryBody,
@@ -55,9 +55,9 @@ export const createItinerary = async (
       const itinerary = await itineraryService.createItinerary(
         {
           title,
-          description,
-          startDate,
-          endDate,
+          description: description || undefined,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
           ownerId: currentUserId,
         },
         tx
@@ -89,7 +89,7 @@ export const createItinerary = async (
       return fullItinerary;
     });
 
-    const validatedResponse = createItineraryResponseSchema.parse({
+    const validatedResponse = fullItineraryResponse.parse({
       itinerary: fullItinerary,
     });
 
@@ -117,6 +117,8 @@ export const getItinerary = async (
       itinerary.ownerId
     );
 
+    console.log(currentUserId, itinerary.ownerId, checkPermission);
+
     if (!checkPermission.hasPermission) {
       res
         .status(403)
@@ -124,7 +126,9 @@ export const getItinerary = async (
       return;
     }
 
-    res.status(200).json({ itinerary });
+    const validatedResponse = fullItineraryResponse.parse({ itinerary });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof ItineraryNotFoundError) {
@@ -247,7 +251,11 @@ export const updateItinerary = async (
       return await itineraryService.getItineraryById(id, tx);
     });
 
-    res.status(200).json({ itinerary: updatedItinerary });
+    const validatedResponse = fullItineraryResponse.parse({
+      itinerary: updatedItinerary,
+    });
+
+    res.status(200).json(validatedResponse);
     return;
   } catch (error: unknown) {
     if (error instanceof ItineraryNotFoundError) {
