@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Backend API
- * This is the backend API. This doc was generated on 2025-08-22.
+ * This is the backend API. This doc was generated on 2025-09-03.
  *
  * The version of the OpenAPI document: 1.0.0
  * 
@@ -106,6 +106,221 @@ export interface CheckUsernameResponse {
     'available': boolean;
 }
 /**
+ * 
+ * @export
+ * @interface CreateItineraryResponse
+ */
+export interface CreateItineraryResponse {
+    /**
+     * 
+     * @type {CreateItineraryResponseItinerary}
+     * @memberof CreateItineraryResponse
+     */
+    'itinerary': CreateItineraryResponseItinerary;
+}
+/**
+ * 
+ * @export
+ * @interface CreateItineraryResponseItinerary
+ */
+export interface CreateItineraryResponseItinerary {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'endDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'currency': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'isArchived': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'ownerId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'createdAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'updatedAt': string | null;
+    /**
+     * 
+     * @type {Array<CreateItineraryResponseItineraryItineraryItemsInner>}
+     * @memberof CreateItineraryResponseItinerary
+     */
+    'itineraryItems': Array<CreateItineraryResponseItineraryItineraryItemsInner>;
+}
+/**
+ * 
+ * @export
+ * @interface CreateItineraryResponseItineraryItineraryItemsInner
+ */
+export interface CreateItineraryResponseItineraryItineraryItemsInner {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'cost'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'currencyOverride'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'order': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'itineraryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'createdAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'updatedAt': string | null;
+    /**
+     * 
+     * @type {CreateItineraryResponseItineraryItineraryItemsInnerLocation}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInner
+     */
+    'location'?: CreateItineraryResponseItineraryItineraryItemsInnerLocation | null;
+}
+/**
+ * 
+ * @export
+ * @interface CreateItineraryResponseItineraryItineraryItemsInnerLocation
+ */
+export interface CreateItineraryResponseItineraryItineraryItemsInnerLocation {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'itineraryItemId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'city'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'address'?: string | null;
+    /**
+     * 
+     * @type {CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocation
+     */
+    'coordinates': CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates;
+}
+/**
+ * 
+ * @export
+ * @interface CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates
+ */
+export interface CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates {
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates
+     */
+    'lat': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateItineraryResponseItineraryItineraryItemsInnerLocationCoordinates
+     */
+    'lng': number;
+}
+/**
  * A simple error response with a message, and optional array of errors
  * @export
  * @interface ErrorResponseMessage
@@ -147,13 +362,13 @@ export interface FilteredUser {
      * @type {string}
      * @memberof FilteredUser
      */
-    'name': string;
+    'name': string | null;
     /**
      * 
      * @type {string}
      * @memberof FilteredUser
      */
-    'bio': string;
+    'bio': string | null;
     /**
      * 
      * @type {string}
@@ -171,8 +386,151 @@ export interface FilteredUser {
      * @type {string}
      * @memberof FilteredUser
      */
-    'email': string;
+    'email': string | null;
 }
+/**
+ * 
+ * @export
+ * @interface FollowUserResponse
+ */
+export interface FollowUserResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowUserResponse
+     */
+    'message': string;
+    /**
+     * 
+     * @type {FollowsIdStatusPatch200ResponseFollow}
+     * @memberof FollowUserResponse
+     */
+    'follow': FollowsIdStatusPatch200ResponseFollow;
+}
+/**
+ * 
+ * @export
+ * @interface FollowsIdStatusPatch200Response
+ */
+export interface FollowsIdStatusPatch200Response {
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200Response
+     */
+    'message': string;
+    /**
+     * 
+     * @type {FollowsIdStatusPatch200ResponseFollow}
+     * @memberof FollowsIdStatusPatch200Response
+     */
+    'follow': FollowsIdStatusPatch200ResponseFollow;
+}
+/**
+ * 
+ * @export
+ * @interface FollowsIdStatusPatch200ResponseFollow
+ */
+export interface FollowsIdStatusPatch200ResponseFollow {
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200ResponseFollow
+     */
+    'status': FollowsIdStatusPatch200ResponseFollowStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200ResponseFollow
+     */
+    'followedById': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200ResponseFollow
+     */
+    'followingId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200ResponseFollow
+     */
+    'createdAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatch200ResponseFollow
+     */
+    'updatedAt': string | null;
+}
+
+export const FollowsIdStatusPatch200ResponseFollowStatusEnum = {
+    Pending: 'pending',
+    Accepted: 'accepted',
+    NotFollowing: 'notFollowing'
+} as const;
+
+export type FollowsIdStatusPatch200ResponseFollowStatusEnum = typeof FollowsIdStatusPatch200ResponseFollowStatusEnum[keyof typeof FollowsIdStatusPatch200ResponseFollowStatusEnum];
+
+/**
+ * 
+ * @export
+ * @interface FollowsIdStatusPatchRequest
+ */
+export interface FollowsIdStatusPatchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof FollowsIdStatusPatchRequest
+     */
+    'type': FollowsIdStatusPatchRequestTypeEnum;
+}
+
+export const FollowsIdStatusPatchRequestTypeEnum = {
+    Accept: 'accept',
+    Reject: 'reject',
+    Remove: 'remove',
+    Cancel: 'cancel',
+    Unfollow: 'unfollow'
+} as const;
+
+export type FollowsIdStatusPatchRequestTypeEnum = typeof FollowsIdStatusPatchRequestTypeEnum[keyof typeof FollowsIdStatusPatchRequestTypeEnum];
+
+/**
+ * 
+ * @export
+ * @interface GetFollowRequestsResponse
+ */
+export interface GetFollowRequestsResponse {
+    /**
+     * 
+     * @type {Array<FollowsIdStatusPatch200ResponseFollow>}
+     * @memberof GetFollowRequestsResponse
+     */
+    'pendingRequests': Array<FollowsIdStatusPatch200ResponseFollow>;
+}
+/**
+ * 
+ * @export
+ * @interface GetFollowStatusResponse
+ */
+export interface GetFollowStatusResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GetFollowStatusResponse
+     */
+    'followStatus': GetFollowStatusResponseFollowStatusEnum;
+}
+
+export const GetFollowStatusResponseFollowStatusEnum = {
+    Pending: 'pending',
+    Accepted: 'accepted',
+    NotFollowing: 'notFollowing'
+} as const;
+
+export type GetFollowStatusResponseFollowStatusEnum = typeof GetFollowStatusResponseFollowStatusEnum[keyof typeof GetFollowStatusResponseFollowStatusEnum];
+
 /**
  * 
  * @export
@@ -261,19 +619,19 @@ export interface GetUserItinerariesResponseItinerariesInner {
      * @type {string}
      * @memberof GetUserItinerariesResponseItinerariesInner
      */
-    'description'?: string;
+    'description'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof GetUserItinerariesResponseItinerariesInner
      */
-    'startDate'?: string;
+    'startDate'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof GetUserItinerariesResponseItinerariesInner
      */
-    'endDate'?: string;
+    'endDate'?: string | null;
     /**
      * 
      * @type {string}
@@ -297,13 +655,13 @@ export interface GetUserItinerariesResponseItinerariesInner {
      * @type {string}
      * @memberof GetUserItinerariesResponseItinerariesInner
      */
-    'createdAt': string;
+    'createdAt': string | null;
     /**
      * 
      * @type {string}
      * @memberof GetUserItinerariesResponseItinerariesInner
      */
-    'updatedAt': string;
+    'updatedAt': string | null;
 }
 /**
  * 
@@ -352,6 +710,247 @@ export interface InternalServerError {
 /**
  * 
  * @export
+ * @interface ItinerariesIdPatchRequest
+ */
+export interface ItinerariesIdPatchRequest {
+    /**
+     * 
+     * @type {ItinerariesIdPatchRequestItineraryFields}
+     * @memberof ItinerariesIdPatchRequest
+     */
+    'itineraryFields'?: ItinerariesIdPatchRequestItineraryFields;
+    /**
+     * 
+     * @type {Array<ItinerariesIdPatchRequestUpdatedItemsInner>}
+     * @memberof ItinerariesIdPatchRequest
+     */
+    'updatedItems'?: Array<ItinerariesIdPatchRequestUpdatedItemsInner>;
+    /**
+     * 
+     * @type {Array<ItineraryItemInput>}
+     * @memberof ItinerariesIdPatchRequest
+     */
+    'newItems'?: Array<ItineraryItemInput>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ItinerariesIdPatchRequest
+     */
+    'deleteItemIds'?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface ItinerariesIdPatchRequestItineraryFields
+ */
+export interface ItinerariesIdPatchRequestItineraryFields {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestItineraryFields
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestItineraryFields
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ModelDate}
+     * @memberof ItinerariesIdPatchRequestItineraryFields
+     */
+    'startDate'?: ModelDate;
+    /**
+     * 
+     * @type {ModelDate}
+     * @memberof ItinerariesIdPatchRequestItineraryFields
+     */
+    'endDate'?: ModelDate;
+}
+/**
+ * 
+ * @export
+ * @interface ItinerariesIdPatchRequestUpdatedItemsInner
+ */
+export interface ItinerariesIdPatchRequestUpdatedItemsInner {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'cost'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'currency'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'order': number;
+    /**
+     * 
+     * @type {LocationInput}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'location': LocationInput;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesIdPatchRequestUpdatedItemsInner
+     */
+    'id': string;
+}
+/**
+ * 
+ * @export
+ * @interface ItinerariesPostRequest
+ */
+export interface ItinerariesPostRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesPostRequest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItinerariesPostRequest
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ModelDate}
+     * @memberof ItinerariesPostRequest
+     */
+    'startDate'?: ModelDate;
+    /**
+     * 
+     * @type {ModelDate}
+     * @memberof ItinerariesPostRequest
+     */
+    'endDate'?: ModelDate;
+    /**
+     * 
+     * @type {Array<ItineraryItemInput>}
+     * @memberof ItinerariesPostRequest
+     */
+    'itineraryItems': Array<ItineraryItemInput>;
+}
+/**
+ * 
+ * @export
+ * @interface ItineraryItemInput
+ */
+export interface ItineraryItemInput {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItineraryItemInput
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItineraryItemInput
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItineraryItemInput
+     */
+    'cost'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItineraryItemInput
+     */
+    'currency'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItineraryItemInput
+     */
+    'order': number;
+    /**
+     * 
+     * @type {LocationInput}
+     * @memberof ItineraryItemInput
+     */
+    'location': LocationInput;
+}
+/**
+ * 
+ * @export
+ * @interface LocationInput
+ */
+export interface LocationInput {
+    /**
+     * 
+     * @type {LocationInputCoordinates}
+     * @memberof LocationInput
+     */
+    'coordinates': LocationInputCoordinates;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationInput
+     */
+    'country'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationInput
+     */
+    'city'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationInput
+     */
+    'address'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LocationInputCoordinates
+ */
+export interface LocationInputCoordinates {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationInputCoordinates
+     */
+    'lat': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationInputCoordinates
+     */
+    'lng': number;
+}
+/**
+ * 
+ * @export
  * @interface LoginResponse
  */
 export interface LoginResponse {
@@ -361,6 +960,13 @@ export interface LoginResponse {
      * @memberof LoginResponse
      */
     'user': FilteredUser;
+}
+/**
+ * 
+ * @export
+ * @interface ModelDate
+ */
+export interface ModelDate {
 }
 /**
  * A simple response with a message
@@ -374,6 +980,55 @@ export interface ResponseMessage {
      * @memberof ResponseMessage
      */
     'message': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateItineraryItemRequest
+ */
+export interface UpdateItineraryItemRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'cost'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'currency'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'order': number;
+    /**
+     * 
+     * @type {LocationInput}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'location': LocationInput;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateItineraryItemRequest
+     */
+    'id': string;
 }
 /**
  * 
@@ -411,13 +1066,13 @@ export interface UsersMeDelete200ResponseUser {
      * @type {string}
      * @memberof UsersMeDelete200ResponseUser
      */
-    'name': string;
+    'name': string | null;
     /**
      * 
      * @type {string}
      * @memberof UsersMeDelete200ResponseUser
      */
-    'bio': string;
+    'bio': string | null;
     /**
      * 
      * @type {string}
@@ -435,7 +1090,7 @@ export interface UsersMeDelete200ResponseUser {
      * @type {string}
      * @memberof UsersMeDelete200ResponseUser
      */
-    'email': string;
+    'email': string | null;
     /**
      * 
      * @type {boolean}
@@ -724,6 +1379,278 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Follow a user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('followsIdGet', 'id', id)
+            const localVarPath = `/follows/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Check follow status with this user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdStatusGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('followsIdStatusGet', 'id', id)
+            const localVarPath = `/follows/{id}/status`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updated follow status of user
+         * @param {string} id User ID
+         * @param {FollowsIdStatusPatchRequest} [followsIdStatusPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdStatusPatch: async (id: string, followsIdStatusPatchRequest?: FollowsIdStatusPatchRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('followsIdStatusPatch', 'id', id)
+            const localVarPath = `/follows/{id}/status`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(followsIdStatusPatchRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get following or follower list of a user
+         * @param {string} id User ID
+         * @param {FollowsIdTypeGetTypeEnum} type 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdTypeGet: async (id: string, type: FollowsIdTypeGetTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('followsIdTypeGet', 'id', id)
+            // verify required parameter 'type' is not null or undefined
+            assertParamExists('followsIdTypeGet', 'type', type)
+            const localVarPath = `/follows/{id}/{type}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get follow requests
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsRequestsGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/follows/requests`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get an itinerary via id
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesIdGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('itinerariesIdGet', 'id', id)
+            const localVarPath = `/itineraries/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update an itinerary
+         * @param {string} id User ID
+         * @param {ItinerariesIdPatchRequest} [itinerariesIdPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesIdPatch: async (id: string, itinerariesIdPatchRequest?: ItinerariesIdPatchRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('itinerariesIdPatch', 'id', id)
+            const localVarPath = `/itineraries/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itinerariesIdPatchRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create an itinerary
+         * @param {ItinerariesPostRequest} [itinerariesPostRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesPost: async (itinerariesPostRequest?: ItinerariesPostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/itineraries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itinerariesPostRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Check if a username is available
          * @param {string} username A username with letters, numbers, and underscores
          * @param {*} [options] Override http request option.
@@ -988,6 +1915,104 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Follow a user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async followsIdGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FollowUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.followsIdGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.followsIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Check follow status with this user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async followsIdStatusGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFollowStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.followsIdStatusGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.followsIdStatusGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updated follow status of user
+         * @param {string} id User ID
+         * @param {FollowsIdStatusPatchRequest} [followsIdStatusPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async followsIdStatusPatch(id: string, followsIdStatusPatchRequest?: FollowsIdStatusPatchRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FollowsIdStatusPatch200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.followsIdStatusPatch(id, followsIdStatusPatchRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.followsIdStatusPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get following or follower list of a user
+         * @param {string} id User ID
+         * @param {FollowsIdTypeGetTypeEnum} type 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async followsIdTypeGet(id: string, type: FollowsIdTypeGetTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFollowStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.followsIdTypeGet(id, type, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.followsIdTypeGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get follow requests
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async followsRequestsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFollowRequestsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.followsRequestsGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.followsRequestsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get an itinerary via id
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async itinerariesIdGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateItineraryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itinerariesIdGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.itinerariesIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update an itinerary
+         * @param {string} id User ID
+         * @param {ItinerariesIdPatchRequest} [itinerariesIdPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async itinerariesIdPatch(id: string, itinerariesIdPatchRequest?: ItinerariesIdPatchRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateItineraryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itinerariesIdPatch(id, itinerariesIdPatchRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.itinerariesIdPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Create an itinerary
+         * @param {ItinerariesPostRequest} [itinerariesPostRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async itinerariesPost(itinerariesPostRequest?: ItinerariesPostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateItineraryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itinerariesPost(itinerariesPostRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.itinerariesPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Check if a username is available
          * @param {string} username A username with letters, numbers, and underscores
          * @param {*} [options] Override http request option.
@@ -1117,6 +2142,80 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         authVerifyEmailGet(token: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseMessage> {
             return localVarFp.authVerifyEmailGet(token, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Follow a user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdGet(id: string, options?: RawAxiosRequestConfig): AxiosPromise<FollowUserResponse> {
+            return localVarFp.followsIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Check follow status with this user
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdStatusGet(id: string, options?: RawAxiosRequestConfig): AxiosPromise<GetFollowStatusResponse> {
+            return localVarFp.followsIdStatusGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updated follow status of user
+         * @param {string} id User ID
+         * @param {FollowsIdStatusPatchRequest} [followsIdStatusPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdStatusPatch(id: string, followsIdStatusPatchRequest?: FollowsIdStatusPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<FollowsIdStatusPatch200Response> {
+            return localVarFp.followsIdStatusPatch(id, followsIdStatusPatchRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get following or follower list of a user
+         * @param {string} id User ID
+         * @param {FollowsIdTypeGetTypeEnum} type 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsIdTypeGet(id: string, type: FollowsIdTypeGetTypeEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetFollowStatusResponse> {
+            return localVarFp.followsIdTypeGet(id, type, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get follow requests
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        followsRequestsGet(options?: RawAxiosRequestConfig): AxiosPromise<GetFollowRequestsResponse> {
+            return localVarFp.followsRequestsGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get an itinerary via id
+         * @param {string} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesIdGet(id: string, options?: RawAxiosRequestConfig): AxiosPromise<CreateItineraryResponse> {
+            return localVarFp.itinerariesIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update an itinerary
+         * @param {string} id User ID
+         * @param {ItinerariesIdPatchRequest} [itinerariesIdPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesIdPatch(id: string, itinerariesIdPatchRequest?: ItinerariesIdPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreateItineraryResponse> {
+            return localVarFp.itinerariesIdPatch(id, itinerariesIdPatchRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create an itinerary
+         * @param {ItinerariesPostRequest} [itinerariesPostRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        itinerariesPost(itinerariesPostRequest?: ItinerariesPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreateItineraryResponse> {
+            return localVarFp.itinerariesPost(itinerariesPostRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Check if a username is available
@@ -1249,6 +2348,96 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * Follow a user
+     * @param {string} id User ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public followsIdGet(id: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).followsIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Check follow status with this user
+     * @param {string} id User ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public followsIdStatusGet(id: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).followsIdStatusGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updated follow status of user
+     * @param {string} id User ID
+     * @param {FollowsIdStatusPatchRequest} [followsIdStatusPatchRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public followsIdStatusPatch(id: string, followsIdStatusPatchRequest?: FollowsIdStatusPatchRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).followsIdStatusPatch(id, followsIdStatusPatchRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get following or follower list of a user
+     * @param {string} id User ID
+     * @param {FollowsIdTypeGetTypeEnum} type 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public followsIdTypeGet(id: string, type: FollowsIdTypeGetTypeEnum, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).followsIdTypeGet(id, type, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get follow requests
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public followsRequestsGet(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).followsRequestsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get an itinerary via id
+     * @param {string} id User ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public itinerariesIdGet(id: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).itinerariesIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update an itinerary
+     * @param {string} id User ID
+     * @param {ItinerariesIdPatchRequest} [itinerariesIdPatchRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public itinerariesIdPatch(id: string, itinerariesIdPatchRequest?: ItinerariesIdPatchRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).itinerariesIdPatch(id, itinerariesIdPatchRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create an itinerary
+     * @param {ItinerariesPostRequest} [itinerariesPostRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public itinerariesPost(itinerariesPostRequest?: ItinerariesPostRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).itinerariesPost(itinerariesPostRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Check if a username is available
      * @param {string} username A username with letters, numbers, and underscores
      * @param {*} [options] Override http request option.
@@ -1305,5 +2494,13 @@ export class DefaultApi extends BaseAPI {
     }
 }
 
+/**
+ * @export
+ */
+export const FollowsIdTypeGetTypeEnum = {
+    FollowedBy: 'followedBy',
+    Following: 'following'
+} as const;
+export type FollowsIdTypeGetTypeEnum = typeof FollowsIdTypeGetTypeEnum[keyof typeof FollowsIdTypeGetTypeEnum];
 
 

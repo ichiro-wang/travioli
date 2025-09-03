@@ -11,6 +11,14 @@ All URIs are relative to *http://localhost:5000/api*
 |[**authResendVerificationEmailPost**](#authresendverificationemailpost) | **POST** /auth/resend-verification-email | |
 |[**authSignupPost**](#authsignuppost) | **POST** /auth/signup | |
 |[**authVerifyEmailGet**](#authverifyemailget) | **GET** /auth/verify-email | |
+|[**followsIdGet**](#followsidget) | **GET** /follows/{id} | |
+|[**followsIdStatusGet**](#followsidstatusget) | **GET** /follows/{id}/status | |
+|[**followsIdStatusPatch**](#followsidstatuspatch) | **PATCH** /follows/{id}/status | |
+|[**followsIdTypeGet**](#followsidtypeget) | **GET** /follows/{id}/{type} | |
+|[**followsRequestsGet**](#followsrequestsget) | **GET** /follows/requests | |
+|[**itinerariesIdGet**](#itinerariesidget) | **GET** /itineraries/{id} | |
+|[**itinerariesIdPatch**](#itinerariesidpatch) | **PATCH** /itineraries/{id} | |
+|[**itinerariesPost**](#itinerariespost) | **POST** /itineraries | |
 |[**usersCheckUsernameGet**](#userscheckusernameget) | **GET** /users/check-username | |
 |[**usersIdGet**](#usersidget) | **GET** /users/{id} | |
 |[**usersIdItinerariesGet**](#usersiditinerariesget) | **GET** /users/{id}/itineraries | |
@@ -366,6 +374,439 @@ No authorization required
 |-------------|-------------|------------------|
 |**200** | Email successfully verified |  -  |
 |**404** | Invalid verification token provided |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **followsIdGet**
+> FollowUserResponse followsIdGet()
+
+Follow a user
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+
+const { status, data } = await apiInstance.followsIdGet(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] | User ID | defaults to undefined|
+
+
+### Return type
+
+**FollowUserResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successfully followed |  -  |
+|**201** | Successfully followed |  -  |
+|**400** | Error following user |  -  |
+|**404** | Error following user: User not found |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **followsIdStatusGet**
+> GetFollowStatusResponse followsIdStatusGet()
+
+Check follow status with this user
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+
+const { status, data } = await apiInstance.followsIdStatusGet(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] | User ID | defaults to undefined|
+
+
+### Return type
+
+**GetFollowStatusResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successfully retrieved |  -  |
+|**400** | Error checking follow status |  -  |
+|**404** | Error checking follow status: User does not exist |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **followsIdStatusPatch**
+> FollowsIdStatusPatch200Response followsIdStatusPatch()
+
+Updated follow status of user
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration,
+    FollowsIdStatusPatchRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+let followsIdStatusPatchRequest: FollowsIdStatusPatchRequest; // (optional)
+
+const { status, data } = await apiInstance.followsIdStatusPatch(
+    id,
+    followsIdStatusPatchRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **followsIdStatusPatchRequest** | **FollowsIdStatusPatchRequest**|  | |
+| **id** | [**string**] | User ID | defaults to undefined|
+
+
+### Return type
+
+**FollowsIdStatusPatch200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successfully updated follow status |  -  |
+|**400** | Error updating follow status |  -  |
+|**404** | Error updating follow status: No follow relationship exists |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **followsIdTypeGet**
+> GetFollowStatusResponse followsIdTypeGet()
+
+Get following or follower list of a user
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+let type: 'followedBy' | 'following'; // (default to undefined)
+
+const { status, data } = await apiInstance.followsIdTypeGet(
+    id,
+    type
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] | User ID | defaults to undefined|
+| **type** | [**&#39;followedBy&#39; | &#39;following&#39;**]**Array<&#39;followedBy&#39; &#124; &#39;following&#39;>** |  | defaults to undefined|
+
+
+### Return type
+
+**GetFollowStatusResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successfully retrieved follow list |  -  |
+|**400** | Error retrieving following or follower list |  -  |
+|**403** | Error retrieving following or follower list: User is private |  -  |
+|**404** | Error retrieving following or follower list: User does not exist |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **followsRequestsGet**
+> GetFollowRequestsResponse followsRequestsGet()
+
+Get follow requests
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+const { status, data } = await apiInstance.followsRequestsGet();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetFollowRequestsResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successfully retrieved requests |  -  |
+|**400** | Error retrieving requests |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **itinerariesIdGet**
+> CreateItineraryResponse itinerariesIdGet()
+
+Get an itinerary via id
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+
+const { status, data } = await apiInstance.itinerariesIdGet(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] | User ID | defaults to undefined|
+
+
+### Return type
+
+**CreateItineraryResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Got itinerary |  -  |
+|**403** | No permission to view this itinerary |  -  |
+|**404** | Itinerary not found |  -  |
+|**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **itinerariesIdPatch**
+> CreateItineraryResponse itinerariesIdPatch()
+
+Update an itinerary
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration,
+    ItinerariesIdPatchRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let id: string; //User ID (default to undefined)
+let itinerariesIdPatchRequest: ItinerariesIdPatchRequest; // (optional)
+
+const { status, data } = await apiInstance.itinerariesIdPatch(
+    id,
+    itinerariesIdPatchRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **itinerariesIdPatchRequest** | **ItinerariesIdPatchRequest**|  | |
+| **id** | [**string**] | User ID | defaults to undefined|
+
+
+### Return type
+
+**CreateItineraryResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successful update |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **itinerariesPost**
+> CreateItineraryResponse itinerariesPost()
+
+Create an itinerary
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration,
+    ItinerariesPostRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let itinerariesPostRequest: ItinerariesPostRequest; // (optional)
+
+const { status, data } = await apiInstance.itinerariesPost(
+    itinerariesPostRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **itinerariesPostRequest** | **ItinerariesPostRequest**|  | |
+
+
+### Return type
+
+**CreateItineraryResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**201** | Itinerary created |  -  |
 |**500** | Internal Server Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

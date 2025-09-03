@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Backend API
   version: 1.0.0
-  description: This is the backend API. This doc was generated on 2025-08-22.
+  description: This is the backend API. This doc was generated on 2025-09-03.
 servers:
   - url: http://localhost:5000/api
     description: Dev server
@@ -274,6 +274,186 @@ components:
               - updatedAt
       required:
         - pendingRequests
+    CreateItineraryResponse:
+      type: object
+      properties:
+        itinerary:
+          type: object
+          properties:
+            id:
+              type: string
+              format: cuid
+            title:
+              type: string
+            description:
+              type: string
+              nullable: true
+            startDate:
+              type: string
+              nullable: true
+              format: date
+            endDate:
+              type: string
+              nullable: true
+              format: date
+            currency:
+              type: string
+            isArchived:
+              type: boolean
+            ownerId:
+              type: string
+            createdAt:
+              type: string
+              nullable: true
+              format: date
+            updatedAt:
+              type: string
+              nullable: true
+              format: date
+            itineraryItems:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: cuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  cost:
+                    type: number
+                    nullable: true
+                  currencyOverride:
+                    type: string
+                    nullable: true
+                  order:
+                    type: integer
+                  itineraryId:
+                    type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                    format: date
+                  updatedAt:
+                    type: string
+                    nullable: true
+                    format: date
+                  location:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: cuid
+                      itineraryItemId:
+                        type: string
+                      country:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      address:
+                        type: string
+                        nullable: true
+                      coordinates:
+                        type: object
+                        properties:
+                          lat:
+                            type: number
+                          lng:
+                            type: number
+                        required:
+                          - lat
+                          - lng
+                    required:
+                      - id
+                      - itineraryItemId
+                      - coordinates
+                required:
+                  - id
+                  - name
+                  - order
+                  - itineraryId
+                  - createdAt
+                  - updatedAt
+          required:
+            - id
+            - title
+            - currency
+            - isArchived
+            - ownerId
+            - createdAt
+            - updatedAt
+            - itineraryItems
+      required:
+        - itinerary
+    Date:
+      anyOf:
+        - type: string
+          format: date
+        - type: string
+    LocationInput:
+      type: object
+      properties:
+        coordinates:
+          type: object
+          properties:
+            lat:
+              type: number
+              minimum: -90
+              maximum: 90
+            lng:
+              type: number
+              minimum: -180
+              maximum: 180
+          required:
+            - lat
+            - lng
+        country:
+          type: string
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 255
+        address:
+          type: string
+          maxLength: 255
+      required:
+        - coordinates
+    ItineraryItemInput:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        cost:
+          type: number
+        currency:
+          type: string
+        order:
+          type: number
+          minimum: 0
+        location:
+          $ref: "#/components/schemas/LocationInput"
+      required:
+        - name
+        - order
+        - location
+    UpdateItineraryItemRequest:
+      allOf:
+        - $ref: "#/components/schemas/ItineraryItemInput"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: cuid
+          required:
+            - id
   parameters: {}
 paths:
   /auth/signup:
@@ -932,3 +1112,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+  /itineraries:
+    post:
+      description: Create an itinerary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                startDate:
+                  $ref: "#/components/schemas/Date"
+                endDate:
+                  $ref: "#/components/schemas/Date"
+                itineraryItems:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ItineraryItemInput"
+              required:
+                - title
+                - itineraryItems
+      responses:
+        "201":
+          description: Itinerary created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateItineraryResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /itineraries/{id}:
+    get:
+      description: Get an itinerary via id
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Got itinerary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateItineraryResponse"
+        "403":
+          description: No permission to view this itinerary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "404":
+          description: Itinerary not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseMessage"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+    patch:
+      description: Update an itinerary
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+            description: User ID
+          required: true
+          description: User ID
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itineraryFields:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      maxLength: 255
+                    description:
+                      type: string
+                    startDate:
+                      $ref: "#/components/schemas/Date"
+                    endDate:
+                      $ref: "#/components/schemas/Date"
+                updatedItems:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: "#/components/schemas/UpdateItineraryItemRequest"
+                      - type: object
+                        properties: {}
+                  default: []
+                newItems:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ItineraryItemInput"
+                  default: []
+                deleteItemIds:
+                  type: array
+                  items:
+                    type: string
+                    format: cuid
+                  default: []
+      responses:
+        "200":
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateItineraryResponse"
