@@ -1,7 +1,7 @@
-import { Prisma, User } from "../generated/client/index.js";
 import { JwtPayload } from "jsonwebtoken";
 import { FilteredUser } from "../schemas/common.schema.ts";
 import { z } from "../lib/zod.openapi.ts";
+import { Prisma, User } from "@prisma/client";
 
 export type TokenType = "access" | "refresh";
 

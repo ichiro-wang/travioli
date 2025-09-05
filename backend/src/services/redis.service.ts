@@ -45,8 +45,8 @@ export class RedisService {
     value: T,
     ttl: number = this.DEFAULT_CACHE_EXPIRATION
   ): Promise<boolean> {
+    const stringifiedValue = JSON.stringify(value);
     try {
-      const stringifiedValue = JSON.stringify(value);
       return (await this.client.setEx(key, ttl, stringifiedValue)) === "OK";
     } catch (error) {
       return false;

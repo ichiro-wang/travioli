@@ -35,10 +35,10 @@ export const checkUsername = async (
   req: Request<{}, {}, {}, CheckUsernameQuery>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { username } = req.query;
-    const { username: currentUserUsername } = req.user;
+  const { username } = req.query;
+  const { username: currentUserUsername } = req.user;
 
+  try {
     // let UserService handle database interaction
     const { available, reason } = await userService.checkUsernameAvailability(
       username,
@@ -74,11 +74,10 @@ export const getUserProfile = async (
   req: Request<GetProfileParams>,
   res: Response
 ): Promise<void> => {
+  const { id: userId } = req.params;
+  const currentUser = req.user;
+
   try {
-    const { id: userId } = req.params;
-
-    const currentUser = req.user;
-
     const profileData = await userService.getUserProfileData(
       userId,
       currentUser
@@ -106,10 +105,10 @@ export const updateProfile = async (
   req: Request<{}, {}, UpdateProfileBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { name, username, bio } = req.body;
-    const currentUser = req.user;
+  const { name, username, bio } = req.body;
+  const currentUser = req.user;
 
+  try {
     const updatedUser = await userService.updateUserProfile(currentUser, {
       name,
       username,
@@ -139,10 +138,10 @@ export const softDeleteUser = async (
   req: Request<{}, {}, DeleteAccountBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { password } = req.body;
-    const currentUser = req.user;
+  const { password } = req.body;
+  const currentUser = req.user;
 
+  try {
     const deletedUser = await userService.softDeleteUser(
       currentUser.id,
       password,
@@ -170,10 +169,11 @@ export const getUserItineraries = async (
   req: Request<GetUserItinerariesParams, {}, {}, GetUserItinerariesQuery>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { id: userId } = req.params;
-    const currentUserId = req.user.id;
+  const { id: userId } = req.params;
+  const currentUserId = req.user.id;
+  const loadIndex = Math.max(0, parseInt(req.query.loadIndex || "0"));
 
+  try {
     const permissionCheck = await permissionService.checkUserViewingPermission(
       currentUserId,
       userId
@@ -183,8 +183,6 @@ export const getUserItineraries = async (
       res.status(403).json({ message: "This account is private" });
       return;
     }
-
-    const loadIndex = Math.max(0, parseInt(req.query.loadIndex || "0"));
 
     const result = await itineraryService.getItinerariesByUserId(
       userId,

@@ -39,9 +39,9 @@ export const signup = async (
   req: Request<{}, {}, SignupBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { email, username, password } = req.body;
+  const { email, username, password } = req.body;
 
+  try {
     const newUser = await authService.createUser({ email, username, password });
 
     await authService.handleVerificationEmail(email);
@@ -66,11 +66,11 @@ export const verifyEmail = async (
   req: Request<{}, {}, {}, VerifyEmailQuery>,
   res: Response
 ): Promise<void> => {
+  const { token } = req.query;
+
+  const tokenCacheKey = `await_email_verification:${token}`;
+
   try {
-    const { token } = req.query;
-
-    const tokenCacheKey = `await_email_verification:${token}`;
-
     const email = await redisService.get<string>(tokenCacheKey);
 
     if (!email) {
@@ -96,9 +96,9 @@ export const resendVerificationEmail = async (
   req: Request<{}, {}, ResendVerificationEmailBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { email } = req.body;
+  const { email } = req.body;
 
+  try {
     const existingUser = await authService.findUserByEmail(email);
 
     const genericMessage = `An email will be sent if ${email} is found and not yet verified`;
@@ -127,9 +127,9 @@ export const login = async (
   req: Request<{}, {}, LoginBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await authService.authenticateUser({ email, password });
 
     generateTokens(res, user.id);
@@ -169,15 +169,15 @@ export const login = async (
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
+  const refreshToken: string = req.cookies.refreshToken;
+  const secretKey = process.env.REFRESH_TOKEN_SECRET;
+
+  if (secretKey === undefined) {
+    res.status(400).json({ message: "No refresh token secret key" });
+    return;
+  }
+
   try {
-    const refreshToken: string = req.cookies.refreshToken;
-    const secretKey = process.env.REFRESH_TOKEN_SECRET;
-
-    if (secretKey === undefined) {
-      res.status(400).json({ message: "No refresh token secret key" });
-      return;
-    }
-
     const decodedToken = jwt.verify(
       refreshToken,
       secretKey
@@ -210,15 +210,14 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
  * - this method is for checking if a user is logged in
  */
 export const getMe = async (req: Request, res: Response): Promise<void> => {
+  const loggedInUser = req.user;
+
+  const filteredUser = filterUser(loggedInUser, true);
+
+  const response = { user: filteredUser };
+
   try {
-    const loggedInUser = req.user;
-
-    const filteredUser = filterUser(loggedInUser, true);
-
-    const response = { user: filteredUser };
-
     const validatedResponse = loginResponseSchema.parse(response);
-
     res.status(200).json(validatedResponse);
   } catch (error: unknown) {
     internalServerError(error, res, "getMe controller");
@@ -230,21 +229,21 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
  * make sure the refresh token is verified before calling this
  */
 export const refresh = async (req: Request, res: Response): Promise<void> => {
+  const user = req.user;
+
+  if (!user) {
+    userNotFoundResponse(res);
+    return;
+  }
+
+  const secretKey = process.env.REFRESH_TOKEN_SECRET;
+
+  if (!secretKey) {
+    res.status(400).json({ message: `No refresh token secret key provided` });
+    return;
+  }
+
   try {
-    const user = req.user;
-
-    if (!user) {
-      userNotFoundResponse(res);
-      return;
-    }
-
-    const secretKey = process.env.REFRESH_TOKEN_SECRET;
-
-    if (!secretKey) {
-      res.status(400).json({ message: `No refresh token secret key provided` });
-      return;
-    }
-
     const accessToken = generateToken(user.id, "refresh", "refresh");
     res.cookie("accessToken", accessToken, getTokenOptions("access"));
 

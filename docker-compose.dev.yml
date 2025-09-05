@@ -14,7 +14,7 @@ services:
       - NODE_ENV=development
       - REQUEST_ORIGIN=http://frontend:5173
       - DATABASE_URL=postgresql://user:password@db:5432/devdb
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis_cache:6379
     ports:
       - 5000:5000
     command: npm run dev
@@ -37,7 +37,7 @@ services:
       - 5173:5173
     command: npm run dev
     container_name: travioli-frontend-dev
-  redis:
+  redis_cache:
     image: redis:8.0-alpine
     ports:
       - 6379:6379

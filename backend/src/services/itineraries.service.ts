@@ -1,7 +1,7 @@
 import z from "zod";
 import prisma from "../db/prisma.js";
 import { ItineraryNotFoundError } from "../errors/itineraries.errors.js";
-import { Itinerary, ItineraryItem } from "../generated/client/index.js";
+import { Itinerary, ItineraryItem } from "@prisma/client";
 import {
   FullItinerary,
   LocationCreateSchema,
@@ -88,12 +88,15 @@ export class ItineraryService {
       throw new ItineraryNotFoundError(id);
     }
 
-    const coordinates = await tx.$queryRawUnsafe<
+    const coordinates: {
+      itineraryItemId: string;
+      coordinates: string;
+    }[] = await tx.$queryRawUnsafe<
       { itineraryItemId: string; coordinates: string }[]
     >(
       `
       SELECT 
-        l."itineraryItemId",
+        l."itineraryItemId" id,
         ST_AsGeoJSON(l."coordinates") AS coordinates
       FROM "Location" l
       JOIN "ItineraryItem" ii ON l."itineraryItemId" = ii.id
