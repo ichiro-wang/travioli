@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
 
 /**

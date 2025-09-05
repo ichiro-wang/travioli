@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
 import path from "path";
-import rateLimit from "express-rate-limit";
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/users.route.js";
@@ -25,13 +24,6 @@ app.use(
   cors({
     origin: process.env.REQUEST_ORIGIN,
     credentials: true,
-  })
-);
-
-app.use(
-  rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 min
-    max: 20,
   })
 );
 

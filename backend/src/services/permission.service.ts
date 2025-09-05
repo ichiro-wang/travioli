@@ -1,6 +1,6 @@
 import prisma from "../db/prisma.js";
 import { UserNotFoundError } from "../errors/auth.errors.js";
-import { FollowStatus } from "@prisma/client";
+import { FollowStatus } from "../generated/client/index.js";
 import { AuthService } from "./auth.service.js";
 
 export class PermissionService {
@@ -37,10 +37,7 @@ export class PermissionService {
 
     const follow = await prisma.follows.findUnique({
       where: {
-        followedById_followingId: {
-          followedById: currentUserId,
-          followingId: targetUserId,
-        },
+        followedById_followingId: { followedById: currentUserId, followingId: targetUserId },
       },
       select: { status: true },
     });

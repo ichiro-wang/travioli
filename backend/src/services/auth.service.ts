@@ -1,7 +1,7 @@
 import prisma from "../db/prisma.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { User } from "@prisma/client";
+import { User } from "../generated/client/index.js";
 import {
   EmailAlreadyExistsError,
   EmailNotVerifiedError,
@@ -132,9 +132,9 @@ export class AuthService {
    * this function is called when a user clicks the link in their email to verify that the email belongs to them
    */
   async verifyEmail(email: string): Promise<User> {
-    const currentTime = new Date();
-
     try {
+      const currentTime = new Date();
+
       const user = await prisma.user.update({
         where: { email },
         data: { verifiedAt: currentTime },

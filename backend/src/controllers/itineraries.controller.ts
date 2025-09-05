@@ -47,10 +47,10 @@ export const createItinerary = async (
   req: Request<{}, {}, CreateItineraryBody>,
   res: Response
 ): Promise<void> => {
-  const { title, description, startDate, endDate, itineraryItems } = req.body;
-  const currentUserId = req.user.id;
-
   try {
+    const { title, description, startDate, endDate, itineraryItems } = req.body;
+    const currentUserId = req.user.id;
+
     const fullItinerary = await prisma.$transaction(async (tx) => {
       const itinerary = await itineraryService.createItinerary(
         {
@@ -104,10 +104,10 @@ export const getItinerary = async (
   req: Request<GetItineraryParams>,
   res: Response
 ): Promise<void> => {
-  const { id } = req.params;
-  const currentUserId = req.user.id;
-
   try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
+
     const itinerary = await prisma.$transaction(async (tx) => {
       return await itineraryService.getItineraryById(id, tx);
     });
@@ -116,6 +116,8 @@ export const getItinerary = async (
       currentUserId,
       itinerary.ownerId
     );
+
+    console.log(currentUserId, itinerary.ownerId, checkPermission);
 
     if (!checkPermission.hasPermission) {
       res
@@ -141,16 +143,16 @@ export const updateItinerary = async (
   req: Request<UpdateItineraryParams, {}, UpdateItineraryBody>,
   res: Response
 ): Promise<void> => {
-  const { id } = req.params;
-  const {
-    itineraryFields,
-    newItems = [],
-    deleteItemIds = [],
-    updatedItems = [],
-  } = req.body;
-  const currentUserId = req.user.id;
-
   try {
+    const { id } = req.params;
+    const {
+      itineraryFields,
+      newItems = [],
+      deleteItemIds = [],
+      updatedItems = [],
+    } = req.body;
+    const currentUserId = req.user.id;
+
     const existingItinerary = await prisma.$transaction(async (tx) => {
       return await itineraryService.getItineraryById(id, tx);
     });
@@ -269,10 +271,10 @@ export const deleteItinerary = async (
   req: Request<DeleteItineraryParams>,
   res: Response
 ): Promise<void> => {
-  const { id } = req.params;
-  const currentUserId = req.user.id;
-
   try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
+
     const isOwner = await itineraryService.ownsItinerary(currentUserId, id);
 
     if (!isOwner) {

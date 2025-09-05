@@ -6,9 +6,7 @@
     "dev": "nodemon",
     "test": "vitest run",
     "generate:openapi": "tsx ./scripts/generateOpenApi.ts",
-    "generate:zod": "npx prisma generate zod",
-    "build": "tsc",
-    "start": "node ./dist/src/server.js"
+    "generate:zod": "npx prisma generate zod"
   },
   "type": "module",
   "keywords": [],
@@ -24,7 +22,6 @@
     "cuid": "^3.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemailer": "^7.0.5",

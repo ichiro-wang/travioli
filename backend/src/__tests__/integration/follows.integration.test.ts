@@ -500,6 +500,8 @@ describe("get follow list integration tests", () => {
       .get(`/api/follows/${testData.user.id}/followedBy?loadIndex=0`)
       .set("Cookie", testData.accessTokenCookie);
 
+    console.log("++++", res.body);
+
     expect(res.statusCode).toBe(200);
     expect(res.body.followedBy).toBeInstanceOf(Array);
     expect(res.body.followedBy.length).toBeGreaterThanOrEqual(1);

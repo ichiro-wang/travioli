@@ -7,7 +7,7 @@ import {
   InvalidUpdateStatusActionError,
   NoFollowRelationshipError,
 } from "../errors/follow.errors.js";
-import { Follows, FollowStatus } from "@prisma/client";
+import { Follows, FollowStatus } from "../generated/client/index.js";
 import { FilteredUser } from "../types/global.js";
 import {
   FollowAction,
