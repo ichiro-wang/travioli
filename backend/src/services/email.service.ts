@@ -13,7 +13,6 @@ export class EmailService {
     /**
      * using Gmail SMTP to send emails
      */
-    console.log("GMAIL_USER", process.env.GMAIL_USER);
 
     this.transporter = nodemailer.createTransport({
       service: "gmail",

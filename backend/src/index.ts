@@ -36,6 +36,10 @@ app.get("/api/ping", (_, res) => {
   res.status(200).json({ message: "pong" });
 });
 
+app.get("/api/pong", (_, res) => {
+  res.status(200).json({ message: "ping" });
+});
+
 const spec = path.join(cwd(), "openapi-docs.yml");
 app.use("/api/spec", express.static(spec));
 

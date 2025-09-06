@@ -12,11 +12,7 @@ services:
     container_name: watchtower
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: prod-final-stage
-    image: ichirojwang/travioli-backend
+    image: ichirojwang/travioli-backend:latest
     env_file: ./backend/.env
     ports:
       - 5000:5000
