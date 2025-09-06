@@ -2,7 +2,7 @@ import { TokenType } from "../types/global.js";
 
 export class NoSecretKeyError extends Error {
   constructor(tokenType: TokenType) {
-    super(`No ${tokenType} token secret key provided`);
+    super(`No ${tokenType} token secret key provided (Server side error)`);
   }
 }
 

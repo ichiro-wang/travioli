@@ -1,0 +1,40 @@
+# containerized production environment
+# just simulating the production environment
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: prod-final-stage
+    image: ichirojwang/travioli-backend
+    env_file: ./backend/.env
+    ports:
+      - 5000:5000
+    command: sh -c "npx prisma db push --skip-generate && npm run start"
+    depends_on:
+      - database
+      - redis_cache
+    container_name: travioli-backend
+
+  # running local postgres db for simulating production
+  database:
+    image: postgis/postgis:17-3.5-alpine
+    env_file: ./backend/.env
+    volumes:
+      - travioli_database:/var/lib/postgresql/data
+    container_name: travioli-database
+  
+  # running local redis cache for simulating production
+  redis_cache:
+    image: redis:8.0-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - travioli_redis:/data
+    container_name: travioli-redis
+
+
+volumes:
+  travioli_database:
+  travioli_redis:

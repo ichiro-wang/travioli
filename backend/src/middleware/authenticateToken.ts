@@ -4,7 +4,7 @@ import { internalServerError } from "../utils/internalServerError.js";
 import { DecodedToken, TokenType } from "../types/global.js";
 import { userNotFoundResponse } from "../utils/responseHelpers.js";
 import { authService, redisService } from "../services/index.js";
-import { User } from "../generated/client/index.js";
+import { User } from "@prisma/client";
 import { USER_CACHE_EXPIRATION } from "../types/types.js";
 
 /**
@@ -22,15 +22,21 @@ export const authenticateToken = async (
     const token: string = req.cookies[tokenName];
 
     if (!token) {
-      res.status(401).json({ message: `Unauthorized - No ${tokenType} token provided` });
+      res
+        .status(401)
+        .json({ message: `Unauthorized - No ${tokenType} token provided` });
       return;
     }
 
-    const secretKeyType = isAccessToken ? "ACCESS_TOKEN_SECRET" : "REFRESH_TOKEN_SECRET";
+    const secretKeyType = isAccessToken
+      ? "ACCESS_TOKEN_SECRET"
+      : "REFRESH_TOKEN_SECRET";
     const secretKey = process.env[secretKeyType];
 
     if (!secretKey) {
-      res.status(400).json({ message: `No ${tokenType} token secret key provided` });
+      res
+        .status(400)
+        .json({ message: `No ${tokenType} token secret key provided` });
       return;
     }
 
@@ -47,7 +53,9 @@ export const authenticateToken = async (
     // refresh tokens are stateful and verified using redis, allowing us to revoke them
     // we don't want to allow an invalid/revoked refresh token to make requests
     if (!isAccessToken) {
-      const isBlacklisted = await redisService.checkIfTokenBlacklisted(decodedToken.jti);
+      const isBlacklisted = await redisService.checkIfTokenBlacklisted(
+        decodedToken.jti
+      );
 
       if (isBlacklisted) {
         res.status(401).json({ message: "Invalid refresh token provided" });
@@ -94,10 +102,18 @@ export const authenticateToken = async (
   }
 };
 
-export const authenticateAccessToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const authenticateAccessToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   return authenticateToken(req, res, next, "access");
 };
 
-export const authenticateRefreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const authenticateRefreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   return authenticateToken(req, res, next, "refresh");
 };

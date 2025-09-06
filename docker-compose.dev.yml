@@ -4,7 +4,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: base
     image: travioli-backend-dev
     volumes:
       - ./backend:/usr/src/app
@@ -15,6 +16,7 @@ services:
       - REQUEST_ORIGIN=http://frontend:5173
       - DATABASE_URL=postgresql://user:password@db:5432/devdb
       - REDIS_URL=redis://redis:6379
+    env_file: ./backend/.env
     ports:
       - 5000:5000
     command: npm run dev
@@ -25,7 +27,8 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: base
     image: travioli-frontend-dev
     volumes:
       - ./frontend:/usr/src/app

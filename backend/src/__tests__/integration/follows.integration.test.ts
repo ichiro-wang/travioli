@@ -3,7 +3,7 @@ import prisma from "../../db/prisma.js";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { setUpTestData, takeDownTest, TestData } from "./helpers.js";
 import { app } from "../../index.js";
-import { FollowStatus } from "../../generated/client/index.js";
+import { FollowStatus } from "@prisma/client";
 import { FollowAction } from "../../types/types.js";
 
 describe("follow user integration tests", () => {
@@ -499,8 +499,6 @@ describe("get follow list integration tests", () => {
     const res = await request(app)
       .get(`/api/follows/${testData.user.id}/followedBy?loadIndex=0`)
       .set("Cookie", testData.accessTokenCookie);
-
-    console.log("++++", res.body);
 
     expect(res.statusCode).toBe(200);
     expect(res.body.followedBy).toBeInstanceOf(Array);

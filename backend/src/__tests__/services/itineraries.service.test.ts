@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { ItineraryService } from "../../services/itineraries.service.js";
-import { Itinerary, ItineraryItem } from "../../generated/client/index.js";
+import { Itinerary, ItineraryItem } from "@prisma/client";
 import prisma from "../../db/prisma.js";
 import { ItineraryNotFoundError } from "../../errors/itineraries.errors.js";
 

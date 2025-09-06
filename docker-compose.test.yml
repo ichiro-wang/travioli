@@ -4,7 +4,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.test
+      dockerfile: Dockerfile
+      target: base
     image: travioli-backend-test
     volumes:
       - ./backend:/usr/src/app

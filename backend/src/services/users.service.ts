@@ -5,7 +5,7 @@ import {
   UsernameAlreadyExistsError,
   UserNotFoundError,
 } from "../errors/auth.errors.js";
-import { FollowStatus, User } from "../generated/client/index.js";
+import { FollowStatus, User } from "@prisma/client";
 import { FilteredUser } from "../types/global.js";
 import { FollowRelation, USER_CACHE_EXPIRATION } from "../types/types.js";
 import { filterUser } from "../utils/filterUser.js";

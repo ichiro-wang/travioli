@@ -11,7 +11,7 @@ import {
   UpdateFollowStatusParams,
   updateFollowStatusResponseSchema,
 } from "../schemas/follows.schema.js";
-import { FollowStatus } from "../generated/client/index.js";
+import { FollowStatus } from "@prisma/client";
 import { internalServerError } from "../utils/internalServerError.js";
 import { followService, permissionService } from "../services/index.js";
 import { UserNotFoundError } from "../errors/auth.errors.js";
@@ -22,7 +22,6 @@ import {
   InvalidUpdateStatusActionError,
   NoFollowRelationshipError,
 } from "../errors/follow.errors.js";
-import { id } from "zod/locales";
 
 /**
  * get the followedBy or following list of a user
@@ -37,8 +36,6 @@ export const getFollowList = async (
     // ensure data is validated first. check validateData middleware
     const { id: targetUserId, type: relationType } = req.params;
     const currentUserId = req.user.id;
-
-    console.log(targetUserId, relationType);
 
     const permissionCheck = await permissionService.checkUserViewingPermission(
       currentUserId,

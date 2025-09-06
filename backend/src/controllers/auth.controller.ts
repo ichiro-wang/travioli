@@ -245,7 +245,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const accessToken = generateToken(user.id, "refresh", "refresh");
+    const accessToken = generateToken(user.id, "access", "refresh");
     res.cookie("accessToken", accessToken, getTokenOptions("access"));
 
     res.status(200).json({ message: "Token refreshed successfully" });

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { UserService } from "../../services/users.service.js";
 import { AuthService } from "../../services/auth.service.js";
-import { FollowStatus, User } from "../../generated/client/index.js";
+import { FollowStatus, User } from "@prisma/client";
 import prisma from "../../db/prisma.js";
 import { FollowService } from "../../services/follows.service.js";
 import { FollowRelation } from "../../types/types.js";

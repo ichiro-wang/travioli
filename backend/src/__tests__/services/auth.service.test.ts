@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { AuthService } from "../../services/auth.service.js";
 import prisma from "../../db/prisma.js";
 import bcrypt from "bcryptjs";
-import { User } from "../../generated/client/index.js";
+import { User } from "@prisma/client";
 import { EmailService } from "../../services/email.service.js";
 import { RedisService } from "../../services/redis.service.js";
 

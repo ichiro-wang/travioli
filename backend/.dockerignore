@@ -1,3 +1,10 @@
-node_modules
+.dockerignore
+.env*
+.gitignore
+Dockerfile*
 dist
-.env
+node_modules
+nodemon.json
+scripts
+vite.config.ts
+prisma/migrations

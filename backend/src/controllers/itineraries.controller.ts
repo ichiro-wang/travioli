@@ -117,8 +117,6 @@ export const getItinerary = async (
       itinerary.ownerId
     );
 
-    console.log(currentUserId, itinerary.ownerId, checkPermission);
-
     if (!checkPermission.hasPermission) {
       res
         .status(403)

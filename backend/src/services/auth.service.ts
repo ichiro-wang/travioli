@@ -1,7 +1,7 @@
 import prisma from "../db/prisma.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { User } from "../generated/client/index.js";
+import { User } from "@prisma/client";
 import {
   EmailAlreadyExistsError,
   EmailNotVerifiedError,
