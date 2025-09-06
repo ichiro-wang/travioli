@@ -17,13 +17,20 @@ services:
       - REDIS_URL=redis://redis:6379
     command: sh -c "tail -f /dev/null"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     container_name: travioli-backend-test
   redis:
     image: redis:8.0-alpine
     ports:
       - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     container_name: travioli-redis-test
   db:
     # running local postgres db for testing
@@ -36,6 +43,11 @@ services:
     volumes:
       - test_database:/var/lib/postgresql/data
     container_name: travioli-database-test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "testdb"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   backend_test_node_modules:
