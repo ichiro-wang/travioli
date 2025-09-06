@@ -31,7 +31,12 @@ jobs:
           GMAIL_HOST: ${{ secrets.GMAIL_HOST }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-        run: docker compose -f docker-compose.test.yml exec -T backend npm run test
+        run: |
+          docker compose -f docker-compose.test.yml exec -T \
+            -e GMAIL_HOST='${{ secrets.GMAIL_HOST }}' \
+            -e GMAIL_USER='${{ secrets.GMAIL_USER }}' \
+            -e GMAIL_PASS='${{ secrets.GMAIL_PASS }}' \
+            backend sh -c "npm run test"
 
       - name: Stop services
         run: docker compose -f docker-compose.test.yml down -v

@@ -287,8 +287,12 @@ export const deleteItinerary = async (
     res.status(200).json({
       message: `Itinerary "${deletedItinerary.title}" successfully deleted`,
     });
-    return;
   } catch (error: unknown) {
-    internalServerError(error, res, `${deleteItinerary.name} controller`);
+    if (error instanceof ItineraryNotFoundError) {
+      res.status(404).json({ message: error.message });
+      return;
+    }
+
+    internalServerError(error, res, "deleteItinerary controller");
   }
 };

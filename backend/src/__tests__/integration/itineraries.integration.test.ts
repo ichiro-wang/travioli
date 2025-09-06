@@ -627,7 +627,7 @@ describe("delete itinerary integration tests", () => {
       .delete(DELETE_URL("csomerandomitinerary777"))
       .set("Cookie", testData.accessTokenCookie);
 
-    expect(res.statusCode).toBe(500); // This would trigger internal server error due to service throwing ItineraryNotFoundError
+    expect(res.statusCode).toBe(404); 
   });
 
   it("should fail to delete other user's itinerary", async () => {
