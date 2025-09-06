@@ -27,14 +27,10 @@ jobs:
         run: docker compose -f docker-compose.test.yml exec -T backend sh -c "npx prisma db push"
 
       - name: Execute tests inside backend test container
-        run: |
-          docker compose -f docker-compose.test.yml exec -T backend sh -c 
-            "
-            GMAIL_HOST='${{ secrets.GMAIL_HOST }}' \
-            GMAIL_USER='${{ secrets.GMAIL_USER }}' \
-            GMAIL_PASS='${{ secrets.GMAIL_PASS }}' \
-            npm run test
-            "
+        run: docker compose -f docker-compose.test.yml exec -T backend sh -c "GMAIL_HOST='${{ secrets.GMAIL_HOST }}' \
+              GMAIL_USER='${{ secrets.GMAIL_USER }}' \
+              GMAIL_PASS='${{ secrets.GMAIL_PASS }}' \
+              npm run test"
 
       - name: Stop services
         run: docker compose -f docker-compose.test.yml down -v
