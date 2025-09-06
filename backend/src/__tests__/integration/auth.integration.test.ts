@@ -2,7 +2,7 @@ import request from "supertest";
 import prisma from "../../db/prisma.js";
 import bcrypt from "bcryptjs";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { takeDownTest } from "./helpers.js";
+import { expectResponse, takeDownTest } from "./helpers.js";
 import { app } from "../../index.js";
 
 describe("signup integration tests", () => {
@@ -27,7 +27,7 @@ describe("signup integration tests", () => {
   it("should signup a user successfully", async () => {
     const res = await request(app).post(SIGNUP_URL).send(validSignupData);
 
-    expect(res.statusCode).toBe(201);
+    expectResponse(res, 201);
     expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
@@ -44,7 +44,7 @@ describe("signup integration tests", () => {
     // try to create a user with the same email
     const res = await request(app).post(SIGNUP_URL).send(validSignupData);
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/email.*already exists/i);
   });
 
@@ -61,7 +61,7 @@ describe("signup integration tests", () => {
     // try to create a user with the same username
     const res = await request(app).post(SIGNUP_URL).send(validSignupData);
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/username.*already exists/i);
   });
 
@@ -70,7 +70,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, confirmPassword: "password456" });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid input data/i);
     expect(res.body.errors.join(",")).toMatch(/passwords do not match/i);
   });
@@ -80,7 +80,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, email: "bad email" });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid input data/i);
     expect(res.body.errors.join(",")).toMatch(/invalid email format/i);
   });
@@ -91,7 +91,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, username: "bad username" });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid input data/i);
     expect(res.body.errors.join(",")).toMatch(/username can only contain/i);
   });
@@ -102,7 +102,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, username: "12" });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid input data/i);
     expect(res.body.errors.join(",")).toMatch(/minimum 3/i);
   });
@@ -113,7 +113,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, username: "123" });
 
-    expect(res.statusCode).toBe(201);
+    expectResponse(res, 201);
     expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
@@ -126,7 +126,7 @@ describe("signup integration tests", () => {
         username: "1234567890123456789012345678901",
       });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.errors.join(",")).toMatch(/maximum 30/i);
   });
 
@@ -136,7 +136,7 @@ describe("signup integration tests", () => {
       .post(SIGNUP_URL)
       .send({ ...validSignupData, username: "123456789012345678901234567890" });
 
-    expect(res.statusCode).toBe(201);
+    expectResponse(res, 201);
     expect(res.body.message).toMatch(/check email to complete signup/i);
   });
 
@@ -150,7 +150,7 @@ describe("signup integration tests", () => {
         confirmPassword: "1234567",
       });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.errors.join(",")).toMatch(/password must be at least 8/i);
   });
 });
@@ -192,7 +192,7 @@ describe("login integration tests", () => {
   it("should login a user successfully", async () => {
     const res = await request(app).post(LOGIN_URL).send({ email, password });
 
-    expect(res.statusCode).toBe(200);
+    expectResponse(res, 200);
     expect(res.body.user.id).toBeDefined();
     expect(res.body.user).toHaveProperty("email", "lebronjames@gmail.com");
 
@@ -208,7 +208,7 @@ describe("login integration tests", () => {
       .send({ email: "random_email@gmail.com", password });
 
     // backend gives generic message without telling if email exists or not
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid credentials/i);
   });
 
@@ -222,7 +222,7 @@ describe("login integration tests", () => {
       .post(LOGIN_URL)
       .send({ email: "lebronjames@gmail.com", password });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/email not verified/i);
   });
 
@@ -231,7 +231,7 @@ describe("login integration tests", () => {
       .post(LOGIN_URL)
       .send({ email, password: "bad_password" });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.message).toMatch(/invalid credentials/i);
   });
 
@@ -252,7 +252,7 @@ describe("login integration tests", () => {
       password,
     });
 
-    expect(res.statusCode).toBe(200);
+    expectResponse(res, 200);
     expect(res.body.user.id).toBeDefined();
     expect(res.body.user).toHaveProperty("email", "deleted@gmail.com");
 
@@ -267,7 +267,7 @@ describe("login integration tests", () => {
       .post(LOGIN_URL)
       .send({ email: "bad email", password });
 
-    expect(res.statusCode).toBe(400);
+    expectResponse(res, 400);
     expect(res.body.errors.join(",")).toMatch(/invalid email format/i);
   });
 });
@@ -304,7 +304,7 @@ describe("logout integration tests", () => {
       .post(LOGIN_URL)
       .send({ email, password });
 
-    expect(loginRes.statusCode).toBe(200);
+    expectResponse(loginRes, 200);
     expect(loginRes.body.user.id).toBeDefined();
 
     let setCookieHeader = loginRes.headers["set-cookie"];
@@ -317,7 +317,7 @@ describe("logout integration tests", () => {
       .post(LOGOUT_URL)
       .set("Cookie", setCookieHeader[1]);
 
-    expect(res.statusCode).toBe(200);
+    expectResponse(res, 200);
     expect(res.body.message).toMatch(/logged out successfully/i);
 
     setCookieHeader = res.headers["set-cookie"];
@@ -367,7 +367,7 @@ describe("get-me integration tests", () => {
     // send get request with cookie set
     const res = await request(app).get(ME_URL).set("Cookie", jwtCookie);
 
-    expect(res.statusCode).toBe(200);
+    expectResponse(res, 200);
     expect(res.body.user).toHaveProperty("email", email);
   });
 
@@ -375,7 +375,7 @@ describe("get-me integration tests", () => {
     // send without JWT cookie, which should fail
     const res = await request(app).get(ME_URL);
 
-    expect(res.statusCode).toBe(401);
+    expectResponse(res, 401);
     expect(res.body.message).toMatch(/no access token provided/i);
   });
 });

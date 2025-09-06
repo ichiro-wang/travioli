@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 import prisma from "../../db/prisma.js";
-import request from "supertest";
+import request, { Response } from "supertest";
 import { app } from "../../index.js";
+import { expect } from "vitest";
 
 const LOGIN_URL = "/api/auth/login";
 
@@ -111,4 +112,14 @@ export const takeDownTest = async () => {
   await prisma.itinerary.deleteMany();
   await prisma.itineraryItem.deleteMany();
   await prisma.location.deleteMany();
+};
+
+export const expectResponse = (res: Response, expectedStatus: number) => {
+  if (res.statusCode !== expectedStatus) {
+    console.log(`Expected status ${expectedStatus} but got ${res.statusCode}`);
+    console.log(`Response body:`, JSON.stringify(res.body, null, 2));
+    console.log(`Response headers:`, res.headers);
+  }
+
+  expect(res.statusCode).toBe(expectedStatus);
 };
