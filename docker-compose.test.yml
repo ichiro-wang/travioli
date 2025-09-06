@@ -17,6 +17,9 @@ services:
       - REDIS_URL=redis://redis:6379
       - ACCESS_TOKEN_SECRET=access_secret
       - REFRESH_TOKEN_SECRET=refresh_secret
+      - GMAIL_HOST=${GMAIL_HOST}
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_PASS=${GMAIL_PASS}
     command: sh -c "tail -f /dev/null"
     depends_on:
       db:
