@@ -5,7 +5,7 @@ import { NoSecretKeyError } from "../errors/jwt.errors.js";
 import { randomUUID } from "crypto";
 import { isInDevelopmentEnv } from "../utils/isInDevelopmentEnv.js";
 
-const ACCESS_TIME_MINUTES = 1;
+const ACCESS_TIME_MINUTES = 15;
 const REFRESH_TIME_DAYS = 7;
 
 interface GenerateTokensReturn {

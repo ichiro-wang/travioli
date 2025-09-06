@@ -3,6 +3,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
+FROM base AS dev
+FROM base AS test
+
 FROM base AS prod-build-stage
 COPY ./ ./
 RUN npx prisma generate && \
@@ -19,6 +22,7 @@ RUN npm ci --only=production && \
 
 COPY --from=prod-build-stage /usr/src/app/dist ./dist
 COPY --from=prod-build-stage /usr/src/app/prisma/schema.prisma ./prisma/
+COPY --from=prod-build-stage /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=prod-build-stage /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 
 CMD [ "node", "./dist/src/server.js" ]

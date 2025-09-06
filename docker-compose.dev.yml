@@ -5,8 +5,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: base
-    image: travioli-backend-dev
+      target: dev
+    image: travioli-backend:dev
     volumes:
       - ./backend:/usr/src/app
       - backend_dev_node_modules:/usr/src/app/node_modules
@@ -28,8 +28,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: base
-    image: travioli-frontend-dev
+      target: dev
+    image: travioli-frontend:dev
     volumes:
       - ./frontend:/usr/src/app
       - frontend_dev_node_modules:/usr/src/app/node_modules

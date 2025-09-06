@@ -2,6 +2,15 @@
 # just simulating the production environment
 
 services:
+
+  watchtower:
+    image: containrrr/watchtower
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=60 # poll every 60 sec
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    container_name: watchtower
+
   backend:
     build:
       context: ./backend
@@ -16,6 +25,8 @@ services:
       - database
       - redis_cache
     container_name: travioli-backend
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # running local postgres db for simulating production
   database:
@@ -24,6 +35,8 @@ services:
     volumes:
       - travioli_database:/var/lib/postgresql/data
     container_name: travioli-database
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
   
   # running local redis cache for simulating production
   redis_cache:
@@ -33,6 +46,8 @@ services:
     volumes:
       - travioli_redis:/data
     container_name: travioli-redis
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
 
 volumes:

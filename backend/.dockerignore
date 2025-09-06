@@ -1,6 +1,6 @@
 .dockerignore
 .env*
-.gitignore
+.git*
 Dockerfile*
 dist
 node_modules

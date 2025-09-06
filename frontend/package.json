@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate:client": "openapi-generator-cli generate -i ../backend/openapi-docs.yml -g typescript-axios -o ./src/api"
+    "generate:client": "openapi-generator-cli generate -i ../backend/public/openapi-docs.yml -g typescript-axios -o ./src/api"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
