@@ -211,6 +211,7 @@ export const getFollowStatus = async (
       res.status(400).json({
         message: "You do not have a follow relationship with yourself",
       });
+      return;
     }
 
     const validatedResponse = getFollowStatusResponseSchema.parse({
