@@ -6,6 +6,7 @@ on:
     # only when the backend is updated
     paths:
       - backend/**
+      - .github/workflows/backend.yml
 
 jobs:
   # verify tests pass before building
@@ -19,11 +20,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build backend image
-        run: docker build --target test -t travioli-backend:test ./backend
-
-      - name: Start services w/ Docker Compose
-        run: docker compose -f docker-compose.test.yml up -d
+      - name: Build and start services w/ Docker Compose
+        run: docker compose -f docker-compose.test.yml up -d --build
 
       - name: Execute tests inside backend test container
         run: docker compose -f docker-compose.test.yml exec backend sh -c "npm run test"
