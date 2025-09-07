@@ -8,7 +8,7 @@
     "generate:openapi": "tsx ./scripts/generateOpenApi.ts",
     "generate:zod": "npx prisma generate zod",
     "docker:sync": "docker exec -it travioli-backend-dev sh -c 'npm i'",
-    "build": "tsc",
+    "build": "tsc && cp -r ./public ./dist/public",
     "start": "node ./dist/src/server.js"
   },
   "type": "module",

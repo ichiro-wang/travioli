@@ -18,5 +18,13 @@
   },
   "ts-node": {
     "esm": true
-  }
+  },
+  "include": ["./src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/**",
+    "Dockerfile*",
+    "vite.config.ts",
+    "nodemon.json"
+  ]
 }

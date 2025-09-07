@@ -40,7 +40,7 @@ app.get("/api/pong", (_, res) => {
   res.status(200).json({ message: "ping" });
 });
 
-const spec = path.join(cwd(), "openapi-docs.yml");
+const spec = path.join(cwd(), "public", "openapi-docs.yml");
 app.use("/api/spec", express.static(spec));
 
 const server: http.Server = http.createServer(app);

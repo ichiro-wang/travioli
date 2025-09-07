@@ -16,6 +16,7 @@ describe("create itinerary integration tests", () => {
   });
 
   it("should successfully create itinerary with basic fields", async () => {
+    // test data created with help of chatgpt
     const itineraryData = {
       title: "Summer Trip to Japan",
       description: "A two-week adventure in Japan",
@@ -627,7 +628,7 @@ describe("delete itinerary integration tests", () => {
       .delete(DELETE_URL("csomerandomitinerary777"))
       .set("Cookie", testData.accessTokenCookie);
 
-    expect(res.statusCode).toBe(404); 
+    expect(res.statusCode).toBe(404);
   });
 
   it("should fail to delete other user's itinerary", async () => {
