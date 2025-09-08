@@ -13,6 +13,7 @@
 
 **Supporting**  
 - **Frontend**: TanStack Query (server state), React Router, TailwindCSS
+  - Frontend is currently under construction
 - **Backend**: OpenAPI (API docs), Prisma ORM, JWT auth, Nodemailer
 - **Infra**: Docker
 - **Testing**: Vitest, Supertest
