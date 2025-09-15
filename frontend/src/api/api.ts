@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Backend API
- * This is the backend API. This doc was generated on 2025-09-03.
+ * This is the backend API. This doc was generated on 2025-09-11.
  *
  * The version of the OpenAPI document: 1.0.0
  * 
@@ -1348,9 +1348,9 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authVerifyEmailGet: async (token: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        authVerifyEmailPost: async (token: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'token' is not null or undefined
-            assertParamExists('authVerifyEmailGet', 'token', token)
+            assertParamExists('authVerifyEmailPost', 'token', token)
             const localVarPath = `/auth/verify-email`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1359,7 +1359,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -1908,10 +1908,10 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async authVerifyEmailGet(token: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authVerifyEmailGet(token, options);
+        async authVerifyEmailPost(token: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authVerifyEmailPost(token, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.authVerifyEmailGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.authVerifyEmailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2140,8 +2140,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authVerifyEmailGet(token: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseMessage> {
-            return localVarFp.authVerifyEmailGet(token, options).then((request) => request(axios, basePath));
+        authVerifyEmailPost(token: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseMessage> {
+            return localVarFp.authVerifyEmailPost(token, options).then((request) => request(axios, basePath));
         },
         /**
          * Follow a user
@@ -2343,8 +2343,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public authVerifyEmailGet(token: string, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).authVerifyEmailGet(token, options).then((request) => request(this.axios, this.basePath));
+    public authVerifyEmailPost(token: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).authVerifyEmailPost(token, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

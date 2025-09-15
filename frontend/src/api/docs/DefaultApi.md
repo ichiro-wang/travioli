@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost:5000/api*
 |[**authRefreshGet**](#authrefreshget) | **GET** /auth/refresh | |
 |[**authResendVerificationEmailPost**](#authresendverificationemailpost) | **POST** /auth/resend-verification-email | |
 |[**authSignupPost**](#authsignuppost) | **POST** /auth/signup | |
-|[**authVerifyEmailGet**](#authverifyemailget) | **GET** /auth/verify-email | |
+|[**authVerifyEmailPost**](#authverifyemailpost) | **POST** /auth/verify-email | |
 |[**followsIdGet**](#followsidget) | **GET** /follows/{id} | |
 |[**followsIdStatusGet**](#followsidstatusget) | **GET** /follows/{id}/status | |
 |[**followsIdStatusPatch**](#followsidstatuspatch) | **PATCH** /follows/{id}/status | |
@@ -325,8 +325,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **authVerifyEmailGet**
-> ResponseMessage authVerifyEmailGet()
+# **authVerifyEmailPost**
+> ResponseMessage authVerifyEmailPost()
 
 Verify email
 
@@ -343,7 +343,7 @@ const apiInstance = new DefaultApi(configuration);
 
 let token: string; // (default to undefined)
 
-const { status, data } = await apiInstance.authVerifyEmailGet(
+const { status, data } = await apiInstance.authVerifyEmailPost(
     token
 );
 ```

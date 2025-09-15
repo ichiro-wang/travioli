@@ -1,14 +1,15 @@
+import SignupForm from "@/components/auth/SignupForm";
 import FullPage from "@/components/FullPage";
 import Logo from "@/components/Logo";
-import { Button } from "@/components/ui/button";
+import { useSetDocumentTitle } from "@/hooks/custom/useSetDocumentTitle";
 
 const Signup = () => {
+  useSetDocumentTitle("Signup");
+
   return (
     <FullPage className="flex gap-5">
       <Logo />
-      <div>
-        signup form <Button>Button</Button>
-      </div>
+      <SignupForm />
     </FullPage>
   );
 };

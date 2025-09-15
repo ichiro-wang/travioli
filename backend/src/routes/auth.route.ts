@@ -28,7 +28,7 @@ import {
 const router = express.Router();
 
 router.post("/signup", validateData(signupSchema), signup);
-router.get("/verify-email", validateData(verifyEmailSchema), verifyEmail);
+router.post("/verify-email", validateData(verifyEmailSchema), verifyEmail);
 router.post(
   "/resend-verification-email",
   validateData(resendVerificationEmailSchema),

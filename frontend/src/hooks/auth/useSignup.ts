@@ -1,6 +1,7 @@
 import type { AuthSignupPostRequest } from "@/api";
 import { api } from "@/hooks";
 import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
@@ -14,12 +15,12 @@ export const useSignup = () => {
     mutationFn: (credentials: AuthSignupPostRequest) => {
       return api.authSignupPost(credentials);
     },
-    onSuccess: (_, args) => {
-      // change this later to pass in a token associated with an email, not the straight up email
-      navigate(`/verify-email?email=${args.email}`);
+    onSuccess: () => {
+      navigate(`/pending-verification`);
     },
     onError: (error) => {
       console.log(error.message);
+      toast.error("Error with signup: " + error.message);
     },
   });
 

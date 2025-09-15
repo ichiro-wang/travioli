@@ -114,12 +114,7 @@ export class AuthService {
 
     // swap these when using frontend vs backend
     // frontend:
-    // const verificationMessage = `<p>Verify your email <a href=${process.env.REQUEST_ORIGIN}/verify-email?token=${email_verif_token}>here</a>.</p>`;
-    // backend:
-    const verificationMessage = `
-      <p>Verify your email 
-        <a href=http://localhost/api/auth/verify-email?token=${email_verif_token}>here</a>.
-      </p>`;
+    const verificationMessage = `<p>Verify your email <a href=${process.env.REQUEST_ORIGIN}/verify-email?token=${email_verif_token}>here</a>.</p>`;
 
     await this.emailService.sendEmail(
       recipient,

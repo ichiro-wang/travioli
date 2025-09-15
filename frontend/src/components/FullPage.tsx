@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 interface Props {
@@ -8,7 +9,10 @@ interface Props {
 const FullPage = ({ className, children }: Props) => {
   return (
     <div
-      className={`flex h-screen w-screen items-center justify-center ${className}`}
+      className={cn(
+        "flex h-screen w-screen items-center justify-center",
+        className
+      )}
     >
       {children}
     </div>

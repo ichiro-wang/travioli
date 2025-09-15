@@ -9,13 +9,13 @@ export const useRefresh = () => {
   } = useMutation({
     mutationFn: api.authRefreshGet,
 
-    onSuccess: () => {
-      console.log("Token refreshed successfully");
-    },
+    // onSuccess: () => {
+    //   console.log("Token refreshed successfully");
+    // },
 
-    onError: (error) => {
-      console.log(error.message);
-    },
+    // onError: (error) => {
+    //   console.log(error.message);
+    // },
   });
 
   return { refresh, isLoading, error };

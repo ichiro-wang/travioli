@@ -25,13 +25,13 @@ export type SignupBody = z.infer<typeof signupSchema>["body"];
 
 export const verifyEmailSchema = z
   .object({
-    query: z.object({
+    body: z.object({
       token: z.string(),
     }),
   })
   .openapi("VerifyEmailRequest");
 
-export type VerifyEmailQuery = z.infer<typeof verifyEmailSchema>["query"];
+export type VerifyEmailBody = z.infer<typeof verifyEmailSchema>["body"];
 
 export const resendVerificationEmailSchema = z
   .object({

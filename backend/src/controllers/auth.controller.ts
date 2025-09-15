@@ -12,7 +12,7 @@ import {
   loginResponseSchema,
   ResendVerificationEmailBody,
   SignupBody,
-  VerifyEmailQuery,
+  VerifyEmailBody,
 } from "../schemas/auth.schemas.js";
 import { authService, redisService } from "../services/index.js";
 import {
@@ -63,11 +63,11 @@ export const signup = async (
 };
 
 export const verifyEmail = async (
-  req: Request<{}, {}, {}, VerifyEmailQuery>,
+  req: Request<{}, {}, VerifyEmailBody>,
   res: Response
 ): Promise<void> => {
   try {
-    const { token } = req.query;
+    const { token } = req.body;
 
     const tokenCacheKey = `await_email_verification:${token}`;
 

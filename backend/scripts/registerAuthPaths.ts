@@ -75,11 +75,11 @@ export const registerAuthPaths = (registry: OpenAPIRegistry): void => {
   });
 
   registry.registerPath({
-    method: "get",
+    method: "post",
     path: "/auth/verify-email",
     description: "Verify email",
     request: {
-      query: verifyEmailSchema.shape.query,
+      query: verifyEmailSchema.shape.body,
     },
     responses: {
       200: genericMessageResponse("Email successfully verified"),

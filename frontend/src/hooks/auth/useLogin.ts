@@ -1,6 +1,7 @@
 import type { AuthLoginPostRequest } from "@/api";
 import { api } from "@/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
@@ -16,11 +17,11 @@ export const useLogin = () => {
       return api.authLoginPost(credentials);
     },
     onSuccess: (res) => {
-      console.log(res.data.user);
       queryClient.setQueryData(["me"], res.data.user);
       navigate("/home");
     },
     onError: (error) => {
+      toast.error("Error with login: " + error.message);
       console.log(error.message);
     },
   });

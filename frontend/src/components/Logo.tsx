@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface Props {
   className?: string;
   width?: number;
@@ -6,9 +8,9 @@ interface Props {
 const Logo = ({ className, width = 300 }: Props) => {
   return (
     <img
-      className={className}
-      src="/primary-logo.png"
-      alt="Logo"
+      className={cn(className)}
+      src="/primary-logo.webp"
+      alt="/primary-logo.png"
       width={width}
     />
   );

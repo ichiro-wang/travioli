@@ -2,10 +2,10 @@ openapi: 3.0.0
 info:
   title: Backend API
   version: 1.0.0
-  description: This is the backend API. This doc was generated on 2025-09-03.
+  description: This is the backend API. This doc was generated on 2025-09-11.
 servers:
   - url: http://localhost:5000/api
-    description: Dev server
+    description: Backend server
 components:
   schemas:
     ResponseMessage:
@@ -563,7 +563,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
   /auth/verify-email:
-    get:
+    post:
       description: Verify email
       parameters:
         - schema:
