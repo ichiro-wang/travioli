@@ -1,27 +1,19 @@
-import { useGetMe } from "@/hooks/auth/useGetMe";
-import { useEffect, type ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import FullPage from "@/components/FullPage";
+import { useAuthGuard } from "@/hooks/auth/useAuthGuard";
+import { type ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const navigate = useNavigate();
-  const { data, isLoading } = useGetMe();
-
-  useEffect(() => {
-    if (!isLoading && !data) {
-      console.log("Please log in")
-      navigate("/login", { replace: true });
-    }
-  }, [data, isLoading, navigate]);
+  const { data, isLoading } = useAuthGuard();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <FullPage>loading...</FullPage>;
   }
 
-  return children;
+  return data && children;
 };
 
 export default ProtectedRoute;

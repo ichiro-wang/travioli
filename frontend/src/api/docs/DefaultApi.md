@@ -1,13 +1,13 @@
 # DefaultApi
 
-All URIs are relative to *http://localhost:5000/api*
+All URIs are relative to *http://localhost/api*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**authLoginPost**](#authloginpost) | **POST** /auth/login | |
 |[**authLogoutPost**](#authlogoutpost) | **POST** /auth/logout | |
 |[**authMeGet**](#authmeget) | **GET** /auth/me | |
-|[**authRefreshGet**](#authrefreshget) | **GET** /auth/refresh | |
+|[**authRefreshPost**](#authrefreshpost) | **POST** /auth/refresh | |
 |[**authResendVerificationEmailPost**](#authresendverificationemailpost) | **POST** /auth/resend-verification-email | |
 |[**authSignupPost**](#authsignuppost) | **POST** /auth/signup | |
 |[**authVerifyEmailPost**](#authverifyemailpost) | **POST** /auth/verify-email | |
@@ -171,8 +171,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **authRefreshGet**
-> ResponseMessage authRefreshGet()
+# **authRefreshPost**
+> ResponseMessage authRefreshPost()
 
 Refresh JWT
 
@@ -187,7 +187,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new DefaultApi(configuration);
 
-const { status, data } = await apiInstance.authRefreshGet();
+const { status, data } = await apiInstance.authRefreshPost();
 ```
 
 ### Parameters

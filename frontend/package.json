@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate:client": "openapi-generator-cli generate -i ../backend/public/openapi-docs.yml -g typescript-axios -o ./src/api --additional-properties=axiosVersion=^1.12.0"
+    "generate:client": "openapi-generator-cli generate -i ../backend/public/openapi-docs.yml -g typescript-axios -o ./src/api --additional-properties=axiosVersion=^1.12.0",
+    "docker:sync": "docker exec -it travioli-frontend-dev sh -c 'npm i'"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

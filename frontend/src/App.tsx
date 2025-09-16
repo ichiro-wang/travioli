@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
 import Signup from "./pages/Signup";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/home" element={<p>hi</p>} />
+            <Route path="/home" element={<Home />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

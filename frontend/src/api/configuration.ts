@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Backend API
- * This is the backend API. This doc was generated on 2025-09-11.
+ * This is the backend API. This doc was generated on 2025-09-16.
  *
  * The version of the OpenAPI document: 1.0.0
  * 

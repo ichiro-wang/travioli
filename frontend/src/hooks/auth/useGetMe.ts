@@ -6,12 +6,11 @@ export const useGetMe = () => {
     data,
     isPending: isLoading,
     error,
-    refetch,
   } = useQuery({
     queryKey: ["me"],
     queryFn: () => api.authMeGet(),
     retry: false,
   });
 
-  return { data, isLoading, error, refetch };
+  return { data, isLoading, error };
 };

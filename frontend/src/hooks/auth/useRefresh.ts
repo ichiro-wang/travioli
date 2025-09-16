@@ -1,21 +1,33 @@
 import { api } from "@/hooks";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export const useRefresh = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const {
     mutate: refresh,
     isPending: isLoading,
     error,
   } = useMutation({
-    mutationFn: api.authRefreshGet,
+    mutationFn: () => api.authRefreshPost(),
 
-    // onSuccess: () => {
-    //   console.log("Token refreshed successfully");
-    // },
+    onSuccess: () => {
+      /**
+       * invalidating will cause useGetMe to refetch the getMe route
+       *
+       * https://tanstack.com/query/v5/docs/framework/react/guides/query-invalidation
+       * - If the query is currently being rendered via useQuery or related hooks, it will also be refetched in the background
+       */
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+    },
 
-    // onError: (error) => {
-    //   console.log(error.message);
-    // },
+    onError: (error) => {
+      console.error("Error refreshing token");
+      console.log(error);
+      navigate("/login", { replace: true });
+    },
   });
 
   return { refresh, isLoading, error };

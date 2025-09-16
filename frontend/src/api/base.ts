@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Backend API
- * This is the backend API. This doc was generated on 2025-09-11.
+ * This is the backend API. This doc was generated on 2025-09-16.
  *
  * The version of the OpenAPI document: 1.0.0
  * 
@@ -19,7 +19,7 @@ import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 
-export const BASE_PATH = "http://localhost:5000/api".replace(/\/+$/, "");
+export const BASE_PATH = "http://localhost/api".replace(/\/+$/, "");
 
 /**
  *
