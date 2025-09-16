@@ -128,7 +128,7 @@ export const registerAuthPaths = (registry: OpenAPIRegistry): void => {
   });
 
   registry.registerPath({
-    method: "get",
+    method: "post",
     path: "/auth/refresh",
     description: "Refresh JWT",
     responses: {

@@ -2,9 +2,9 @@ openapi: 3.0.0
 info:
   title: Backend API
   version: 1.0.0
-  description: This is the backend API. This doc was generated on 2025-09-11.
+  description: This is the backend API. This doc was generated on 2025-09-16.
 servers:
-  - url: http://localhost:5000/api
+  - url: http://localhost/api
     description: Backend server
 components:
   schemas:
@@ -642,7 +642,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
   /auth/refresh:
-    get:
+    post:
       description: Refresh JWT
       responses:
         "200":

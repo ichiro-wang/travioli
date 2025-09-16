@@ -33,7 +33,7 @@ const getOpenApiDocumentation = () => {
       version: "1.0.0",
       description: `This is the backend API. This doc was generated on ${formattedDate}.`,
     },
-    servers: [{ url: "http://localhost:5000/api", description: "Backend server" }],
+    servers: [{ url: "http://localhost/api", description: "Backend server" }],
   });
 };
 
