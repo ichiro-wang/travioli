@@ -12,16 +12,16 @@
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
 **Supporting**  
-- **Frontend**: TanStack Query (server state), React Router, TailwindCSS
+- **Frontend**: TanStack Query (server state), React Router, Tailwind, shadcn
   - Frontend is currently under construction
-- **Backend**: OpenAPI (API docs), Prisma ORM, JWT auth, Nodemailer
-- **Infra**: Docker
+- **Backend**: OpenAPI (API docs), Zod (validation), Prisma ORM, JWT authorization, Nodemailer
+- **Infra**: Docker, GitHub Actions (CI/CD)
 - **Testing**: Vitest, Supertest
 
 ---  
 
 ### API Docs 📜
-- Full OpenAPI spec available [here](./backend/openapi-docs.yml)
+- Full OpenAPI spec available [here](./backend/public/openapi-docs.yml)
 
 ### Tests ✅
 - Backend unit and integration tests with **Vitest** + **Supertest** → [tests folder](./backend/src/__tests__/)
