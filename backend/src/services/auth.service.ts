@@ -80,7 +80,7 @@ export class AuthService {
      * give the user a message reminding to verify their email
      */
     if (!user.verifiedAt) {
-      throw new EmailNotVerifiedError();
+      throw new EmailNotVerifiedError(user.email);
     }
 
     const isPasswordCorrect = await this.verifyPassword(

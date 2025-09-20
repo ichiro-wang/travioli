@@ -39,17 +39,26 @@ export const signup = async (
   req: Request<{}, {}, SignupBody>,
   res: Response
 ): Promise<void> => {
-  try {
-    const { email, username, password } = req.body;
+  const { email, username, password } = req.body;
 
+  try {
     const newUser = await authService.createUser({ email, username, password });
 
     await authService.handleVerificationEmail(email);
 
     res.status(201).json({ message: "Check email to complete signup" });
   } catch (error: unknown) {
+    if (error instanceof EmailAlreadyExistsError) {
+      // resend the verification email if email already exists
+      await authService.handleVerificationEmail(error.email);
+      res.status(400).json({
+        message:
+          "You have already signed up. Please check email for verification link",
+      });
+      return;
+    }
+
     if (
-      error instanceof EmailAlreadyExistsError ||
       error instanceof UsernameAlreadyExistsError ||
       error instanceof NoSecretKeyError ||
       error instanceof EmailSendError
@@ -150,7 +159,12 @@ export const login = async (
     }
 
     if (error instanceof EmailNotVerifiedError) {
-      res.status(400).json({ message: error.message });
+      // resend the verification email
+      await authService.handleVerificationEmail(error.email);
+      res.status(400).json({
+        message:
+          "A verification email has been sent. Please verify your email before logging in.",
+      });
       return;
     }
 
