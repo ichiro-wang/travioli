@@ -3,6 +3,7 @@ import { api } from "@/hooks";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import type { ApiError } from "@/types/api";
 
 export const useVerifyEmail = () => {
   const navigate = useNavigate();
@@ -14,9 +15,7 @@ export const useVerifyEmail = () => {
     isPending: isLoading,
     error,
   } = useMutation({
-    mutationFn: (token: string) => {
-      return api.authVerifyEmailPost(token);
-    },
+    mutationFn: (token: string) => api.authVerifyEmailPost(token),
 
     onSuccess: (res) => {
       console.log(res.data.message);
@@ -27,9 +26,9 @@ export const useVerifyEmail = () => {
       }, 5000);
     },
 
-    onError: (error) => {
-      console.log(error.message);
-      toast.error("Error with verifying email: " + error.message);
+    onError: (error: ApiError) => {
+      console.log(error.response?.data.message);
+      toast.error("Error verifying email: " + error.response?.data.message);
     },
   });
 

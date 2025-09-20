@@ -7,11 +7,17 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import ButtonGroup from "../ButtonGroup";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Link } from "react-router-dom";
 
 const SignupForm = () => {
-  const { signup, isLoading } = useSignup();
+  const { signup, isLoading, error } = useSignup();
 
   const {
     register,
@@ -33,6 +39,9 @@ const SignupForm = () => {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Sign up</CardTitle>
+        {error && (
+          <CardDescription>{error.response?.data.message}</CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         <Form className="gap-3" onSubmit={handleSubmit(onSubmit, onFormError)}>

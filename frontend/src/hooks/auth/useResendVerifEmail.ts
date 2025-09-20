@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/hooks";
 import toast from "react-hot-toast";
+import type { ApiError } from "@/types/api";
 
 export const useResendVerifEmail = () => {
   const {
@@ -9,18 +10,17 @@ export const useResendVerifEmail = () => {
     isPending: isLoading,
     error,
   } = useMutation({
-    mutationFn: (email: string) => {
-      return api.authResendVerificationEmailPost({ email });
-    },
+    mutationFn: (email: string) =>
+      api.authResendVerificationEmailPost({ email }),
 
     onSuccess: () => {
       console.log("Verification email sent");
       toast.success("Verification email sent");
     },
 
-    onError: (error) => {
-      console.log(error.message);
-      toast.error(error.message);
+    onError: (error: ApiError) => {
+      console.error(error.response?.data.message);
+      toast.error("Error resending email: " + error.response?.data.message);
     },
   });
 

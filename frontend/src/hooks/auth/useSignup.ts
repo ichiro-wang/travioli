@@ -1,7 +1,7 @@
 import type { AuthSignupPostRequest } from "@/api";
 import { api } from "@/hooks";
+import type { ApiError } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
@@ -12,15 +12,15 @@ export const useSignup = () => {
     isPending: isLoading,
     error,
   } = useMutation({
-    mutationFn: (credentials: AuthSignupPostRequest) => {
-      return api.authSignupPost(credentials);
-    },
+    mutationFn: (credentials: AuthSignupPostRequest) =>
+      api.authSignupPost(credentials),
+
     onSuccess: () => {
       navigate(`/pending-verification`);
     },
-    onError: (error) => {
-      console.log(error.message);
-      toast.error("Error with signup: " + error.message);
+
+    onError: (error: ApiError) => {
+      console.error("Error with signup: " + error.response?.data.message);
     },
   });
 

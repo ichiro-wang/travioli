@@ -1,4 +1,5 @@
 import { api } from "@/hooks";
+import type { ApiError } from "@/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +21,8 @@ export const useLogout = () => {
       queryClient.clear(); // invalidate all queries
       navigate("/login");
     },
-    onError: (error) => {
-      console.log(error.message);
-      toast.error("Error with logout: " + error.message);
+    onError: (error: ApiError) => {
+      toast.error("Error with logout: " + error.response?.data.message);
     },
   });
 
