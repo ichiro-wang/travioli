@@ -12,5 +12,5 @@ export const useGetMe = () => {
     retry: false,
   });
 
-  return { data, isLoading, error };
+  return { user: data?.data.user, isLoading, error };
 };

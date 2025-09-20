@@ -1,16 +1,9 @@
-import FullPage from "@/components/FullPage";
-import { Button } from "@/components/ui/button";
-import { useRefresh } from "@/hooks/auth/useRefresh";
+import { useGetMe } from "@/hooks/auth/useGetMe";
+import { Navigate } from "react-router-dom";
 
 const Home = () => {
-  const { refresh, isLoading, error } = useRefresh();
-  return (
-    <FullPage>
-      <Button onClick={() => refresh()} disabled={isLoading}>
-        refresh token
-      </Button>
-    </FullPage>
-  );
+  const { user } = useGetMe();
+  return <Navigate replace={false} to={`/${user?.username}`} />;
 };
 
 export default Home;

@@ -8,6 +8,7 @@ import ButtonGroup from "../ButtonGroup";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useLogin } from "@/hooks/auth/useLogin";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const { login, isLoading } = useLogin();
@@ -75,7 +76,7 @@ const LoginForm = () => {
                 type="button"
                 className="p-0"
               >
-                <a href="/signup">Sign up</a>
+                <Link to="/signup">Sign up</Link>
               </Button>
             </small>
           </ButtonGroup>

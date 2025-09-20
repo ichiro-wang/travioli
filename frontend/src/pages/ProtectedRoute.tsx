@@ -7,13 +7,13 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { data, isLoading } = useAuthGuard();
+  const { user, isLoading } = useAuthGuard();
 
   if (isLoading) {
     return <FullPage>loading...</FullPage>;
   }
 
-  return data && children;
+  return user && children;
 };
 
 export default ProtectedRoute;

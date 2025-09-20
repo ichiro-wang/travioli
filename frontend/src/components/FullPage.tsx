@@ -10,7 +10,7 @@ const FullPage = ({ className, children }: Props) => {
   return (
     <div
       className={cn(
-        "flex h-screen w-screen items-center justify-center",
+        "flex h-screen w-full items-center justify-center",
         className
       )}
     >

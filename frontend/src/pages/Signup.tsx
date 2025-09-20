@@ -7,7 +7,7 @@ const Signup = () => {
   useSetDocumentTitle("Signup");
 
   return (
-    <FullPage className="flex gap-5">
+    <FullPage className="flex gap-5 bg-[url(/travioli-signup.webp)] bg-cover">
       <Logo />
       <SignupForm />
     </FullPage>

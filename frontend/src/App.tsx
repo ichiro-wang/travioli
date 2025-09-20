@@ -8,11 +8,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
+import User from "./pages/User";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60000,
+      staleTime: 6000,
     },
   },
 });
@@ -23,6 +25,11 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/pending-verification" element={<PageNotFound />} />
+
+          {/* user can access below once logged in */}
           <Route
             element={
               <ProtectedRoute>
@@ -30,11 +37,10 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/home" element={<Home />} />
+            <Route index element={<Home />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/:username" element={<User />} />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/pending-verification" element={<Signup />} />
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

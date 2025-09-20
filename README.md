@@ -24,4 +24,4 @@
 - Full OpenAPI spec available [here](./backend/public/openapi-docs.yml)
 
 ### Tests ✅
-- Backend unit and integration tests with **Vitest** + **Supertest** → [tests folder](./backend/src/__tests__/)
+- Backend unit and integration tests with **Vitest** + **Supertest** -> [tests folder](./backend/src/__tests__/)

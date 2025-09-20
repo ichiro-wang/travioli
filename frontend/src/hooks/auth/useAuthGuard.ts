@@ -13,7 +13,7 @@ import { AxiosError } from "axios";
  */
 export const useAuthGuard = () => {
   const navigate = useNavigate();
-  const { data, isLoading, error } = useGetMe();
+  const { user, isLoading, error } = useGetMe();
   const { refresh } = useRefresh();
 
   useEffect(() => {
@@ -26,5 +26,5 @@ export const useAuthGuard = () => {
     }
   }, [error, refresh, navigate]);
 
-  return { data, isLoading };
+  return { user, isLoading };
 };

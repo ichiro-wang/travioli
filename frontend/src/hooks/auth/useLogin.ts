@@ -17,8 +17,8 @@ export const useLogin = () => {
       return api.authLoginPost(credentials);
     },
     onSuccess: (res) => {
-      queryClient.setQueryData(["me"], res.data.user);
-      navigate("/home");
+      queryClient.setQueryData(["me"], res);
+      navigate(`/${res.data.user.username}`);
     },
     onError: (error) => {
       toast.error("Error with login: " + error.message);
