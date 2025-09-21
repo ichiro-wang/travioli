@@ -45,7 +45,9 @@ describe("signup integration tests", () => {
     const res = await request(app).post(SIGNUP_URL).send(validSignupData);
 
     expectResponse(res, 400);
-    expect(res.body.message).toMatch(/you have already signed up.*check email*verif*link/i);
+    expect(res.body.message).toMatch(
+      /you have already signed up.*check email.*verif\w* link/i
+    );
   });
 
   it("should fail if username already exists", async () => {
@@ -223,7 +225,9 @@ describe("login integration tests", () => {
       .send({ email: "lebronjames@gmail.com", password });
 
     expectResponse(res, 400);
-    expect(res.body.message).toMatch(/a verif*email*sent.*please verify*before logging in/i);
+    expect(res.body.message).toMatch(
+      /a verification email has been sent.*please verify your email before logging in/i
+    );
   });
 
   it("should fail if password incorrect", async () => {
