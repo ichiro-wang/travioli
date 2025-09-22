@@ -1,8 +1,8 @@
-# Travioli ✈️
+# Travioli ( ^_^)
 
-## Tech Stack 🛠️
+## Tech Stack (⌐■_■)
 
-**Core**
+**Core** (★‿★)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
@@ -11,17 +11,18 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
-**Supporting**  
-- **Frontend**: TanStack Query (server state), React Router, Tailwind, shadcn
-  - Frontend is currently under construction
-- **Backend**: OpenAPI (API docs), Zod (validation), Prisma ORM, JWT authorization, Nodemailer
-- **Infra**: Docker, GitHub Actions (CI/CD)
-- **Testing**: Vitest, Supertest
+**Supporting** (^-^)ノ
+- **Frontend** (✿◕‿◕): TanStack Query (server state), React Router, Tailwind, shadcn
+  - Frontend is currently under construction (¬‿¬)
+- **Backend** (ノಠ益ಠ)ノ: OpenAPI (API docs), Zod (validation), Prisma ORM, JWT authorization, Nodemailer
+- **Infra** (▰˘◡˘▰): Docker, GitHub Actions (CI/CD)
+- **Testing** (ง •̀_•́)ง: Vitest, Supertest
 
 ---  
 
-### API Docs 📜
+### API Docs (☞ﾟヮﾟ)☞
 - Full OpenAPI spec available [here](./backend/public/openapi-docs.yml)
 
-### Tests ✅
+### Tests (ง’̀-‘́)ง
 - Backend unit and integration tests with **Vitest** + **Supertest** -> [tests folder](./backend/src/__tests__/)
+
