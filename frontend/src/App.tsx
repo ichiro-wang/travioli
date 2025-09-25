@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import User from "./pages/User";
 import Settings from "./pages/Settings";
+import MapDisplay from "./components/map/MapDisplay";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +39,7 @@ function App() {
             }
           >
             <Route index element={<Home />} />
+            <Route path="/create" element={<MapDisplay />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/:username" element={<User />} />
           </Route>

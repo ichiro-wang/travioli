@@ -5,7 +5,7 @@ export const useSetDocumentTitle = (title: string | undefined) => {
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = title ? `${base} | ${title}` : base;
+    document.title = title ? `${title} - ${base}` : base;
 
     return () => {
       document.title = previousTitle;

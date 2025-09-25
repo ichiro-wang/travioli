@@ -7,19 +7,20 @@ import {
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import { NavigationMenu, NavigationMenuList } from "./ui/navigation-menu";
-import { useGetMe } from "@/hooks/auth/useGetMe";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 import SearchDropdown from "./SearchDropdown";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
-  const { user } = useGetMe();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <NavigationMenu
       viewport={false}
-      className="flex-none py-2 border-b-slate-500 border-b-1"
+      className="flex-none py-2 border-b-slate-500 border-b-1 z-50"
     >
       <NavigationMenuList className="gap-3">
         <NavigationMenuItem>
@@ -28,6 +29,15 @@ const Navbar = () => {
 
         {/* search dropdown is its own MenuItem */}
         <SearchDropdown />
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger
+            showDownIcon={false}
+            onClick={() => navigate("/create")}
+          >
+            Create
+          </NavigationMenuTrigger>
+        </NavigationMenuItem>
 
         <NavigationMenuItem>
           <NavigationMenuTrigger className="gap-2">
@@ -42,7 +52,7 @@ const Navbar = () => {
               <li>
                 <NavigationMenuLink asChild>
                   <Link
-                    to={`/${user?.username}`}
+                    to={`/${user.username}`}
                     className="flex-row items-center gap-2"
                   >
                     <UserRound />

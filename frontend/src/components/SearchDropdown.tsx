@@ -7,7 +7,10 @@ import {
 } from "./ui/navigation-menu";
 import React, { useState } from "react";
 
-const noSearchResults: string[] = ["Start typing to search..."];
+const noSearchResults: string[] = [
+  "Start typing to search...",
+  "Search does not work yet",
+];
 const mockSearchResults: string[] = ["Account 1", "Account 2", "Account 3"];
 
 const SearchDropdown = () => {
@@ -55,7 +58,7 @@ const SearchDropdown = () => {
           <p className="text-left pb-2 mb-2 border-b-1">Search results</p>
           <ul className="flex flex-col gap-3">
             {searchResults.map((res) => (
-              <li>{res}</li>
+              <li key={res}>{res}</li>
             ))}
           </ul>
         </NavigationMenuContent>

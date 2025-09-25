@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
+  CardErrorDescription,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -33,18 +33,11 @@ const LoginForm = () => {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Log in</CardTitle>
-        {error && (
-          <CardDescription className="text-red-500">
-            {error.response?.data.message}
-          </CardDescription>
-        )}
+        <CardErrorDescription error={error?.response?.data.message} />
       </CardHeader>
       <CardContent>
-        <Form className="gap-3" onSubmit={handleSubmit(onSubmit, onFormError)}>
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.email?.message}
-          >
+        <Form onSubmit={handleSubmit(onSubmit, onFormError)}>
+          <Form.FormRow error={formErrors?.email?.message}>
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -55,10 +48,7 @@ const LoginForm = () => {
             />
           </Form.FormRow>
 
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.password?.message}
-          >
+          <Form.FormRow error={formErrors?.password?.message}>
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
@@ -76,7 +66,7 @@ const LoginForm = () => {
           </Form.FormRow>
 
           <ButtonGroup className="">
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" isLoading={isLoading} className="min-w-20">
               Log in
             </Button>
             <small>
@@ -87,7 +77,9 @@ const LoginForm = () => {
                 type="button"
                 className="p-0"
               >
-                <Link to="/signup">Sign up</Link>
+                <Link className="text-blue-600" to="/signup">
+                  Sign up
+                </Link>
               </Button>
             </small>
           </ButtonGroup>

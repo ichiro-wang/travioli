@@ -18,7 +18,7 @@ export const useAuthGuard = () => {
 
   useEffect(() => {
     if (error) {
-      if ((error as AxiosError).status === 401) {
+      if (error instanceof AxiosError && error.status === 401) {
         refresh(undefined);
       } else {
         navigate("/login", { replace: true });

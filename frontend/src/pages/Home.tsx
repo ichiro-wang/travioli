@@ -1,9 +1,9 @@
-import { useGetMe } from "@/hooks/auth/useGetMe";
+import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const Home = () => {
-  const { user } = useGetMe();
-  return <Navigate replace={false} to={`/${user?.username}`} />;
+  const { user } = useAuth();
+  return <Navigate replace={false} to={`/${user.username}`} />;
 };
 
 export default Home;

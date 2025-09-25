@@ -11,6 +11,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardErrorDescription,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -39,16 +40,11 @@ const SignupForm = () => {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Sign up</CardTitle>
-        {error && (
-          <CardDescription>{error.response?.data.message}</CardDescription>
-        )}
+        <CardErrorDescription error={error?.response?.data.message} />
       </CardHeader>
       <CardContent>
-        <Form className="gap-3" onSubmit={handleSubmit(onSubmit, onFormError)}>
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.email?.message}
-          >
+        <Form onSubmit={handleSubmit(onSubmit, onFormError)}>
+          <Form.FormRow error={formErrors?.email?.message}>
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -59,10 +55,7 @@ const SignupForm = () => {
             />
           </Form.FormRow>
 
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.username?.message}
-          >
+          <Form.FormRow error={formErrors?.username?.message}>
             <Label htmlFor="username">Username</Label>
             <Input
               id="username"
@@ -88,10 +81,7 @@ const SignupForm = () => {
             />
           </Form.FormRow>
 
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.password?.message}
-          >
+          <Form.FormRow error={formErrors?.password?.message}>
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
@@ -108,10 +98,7 @@ const SignupForm = () => {
             />
           </Form.FormRow>
 
-          <Form.FormRow
-            className="grid gap-2"
-            error={formErrors?.confirmPassword?.message}
-          >
+          <Form.FormRow error={formErrors?.confirmPassword?.message}>
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
@@ -128,7 +115,7 @@ const SignupForm = () => {
           </Form.FormRow>
 
           <ButtonGroup className="">
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" isLoading={isLoading} className="min-w-20">
               Sign up
             </Button>
             <small>
@@ -139,7 +126,9 @@ const SignupForm = () => {
                 type="button"
                 className="p-0"
               >
-                <Link to="/login">Log in</Link>
+                <Link className="text-blue-600" to="/login">
+                  Log in
+                </Link>
               </Button>
             </small>
           </ButtonGroup>

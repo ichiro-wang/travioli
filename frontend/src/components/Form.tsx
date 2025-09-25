@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import {
   createContext,
   useContext,
@@ -18,7 +18,7 @@ interface FormProps {
 const Form = ({ onSubmit, title, className, children }: FormProps) => {
   return (
     <FormContext.Provider value="form">
-      <form onSubmit={onSubmit} className={`flex flex-col ${className}`}>
+      <form onSubmit={onSubmit} className={cn("grid gap-3", className)}>
         {title && <h1 className="mb-4 text-2xl font-semibold">{title}</h1>}
         {children}
       </form>
@@ -37,7 +37,7 @@ const FormRow = ({ error, className, children }: FormRowProps) => {
   if (!context) throw new Error("FormRow not used in Form component");
 
   return (
-    <div className={cn(className)}>
+    <div className={cn("grid gap-2", className)}>
       {children}
       {error && <span className="text-red-500">{error}</span>}
     </div>
