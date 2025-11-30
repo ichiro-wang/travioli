@@ -13,7 +13,6 @@
 
 **Supporting**
 - **Frontend**: TanStack Query (server state), React Router, Tailwind, shadcn
-  - Frontend is currently unfinished
 - **Backend**: OpenAPI (API docs), Zod (validation), Prisma ORM, JWT authorization, Nodemailer
 - **Infra**: Docker, GitHub Actions (CI/CD)
 - **Testing**: Vitest, Supertest
@@ -25,5 +24,6 @@
 
 ## Tests (ง’̀-‘́)ง
 - Backend unit and integration tests with **Vitest** + **Supertest** -> [tests folder](./backend/src/__tests__/)
+
 
 
