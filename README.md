@@ -14,10 +14,11 @@
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
 
 **Supporting**
-- **Frontend**: TanStack Query (server state), React Router, Tailwind, shadcn
-- **Backend**: OpenAPI (API docs), Zod (validation), Prisma ORM, JWT authorization, Nodemailer
+- **Frontend**: Google Maps API, TanStack Query, React Router, Tailwind, shadcn
+- **Backend**: OpenAPI, Zod, JWT authorization, Nodemailer
 - **Infra**: Docker, GitHub Actions (CI/CD)
 - **Testing**: Vitest, Supertest
 
