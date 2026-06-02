@@ -39,10 +39,12 @@ function App() {
             }
           >
             <Route index element={<Home />} />
+            <Route path="/i/:itineraryId" element={<MapDisplay />} />
             <Route path="/create" element={<MapDisplay />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/:username" element={<User />} />
           </Route>
+
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

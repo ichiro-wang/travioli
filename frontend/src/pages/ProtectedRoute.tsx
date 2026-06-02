@@ -1,7 +1,9 @@
 import FullPage from "@/components/FullPage";
+import { Loader } from "@/components/ui/loader";
 import { AuthContext } from "@/context/AuthContext";
 import { useAuthGuard } from "@/hooks/auth/useAuthGuard";
 import { type ReactNode } from "react";
+import PageNotFound from "./PageNotFound";
 
 interface Props {
   children: ReactNode;
@@ -11,11 +13,14 @@ const ProtectedRoute = ({ children }: Props) => {
   const { user, isLoading } = useAuthGuard();
 
   if (isLoading) {
-    return <FullPage>loading...</FullPage>;
+    return (
+      <FullPage>
+        <Loader />
+      </FullPage>
+    );
   }
 
-  // user should not be null at this point but this keeps typescript happy
-  if (!user) return null;
+  if (!user) return <PageNotFound />;
 
   /**
    * by using context to pass in `user` instead of retrieving via useGetMe or useAuthGuard,
