@@ -18,7 +18,7 @@ export const useDeactivateAccount = () => {
       return api.usersMeDelete(password);
     },
 
-    onSuccess: (res) => {
+    onSuccess: () => {
       toast.success("Account deactivated");
       queryClient.clear(); // invalidate all queries
       navigate("/login", { replace: true });

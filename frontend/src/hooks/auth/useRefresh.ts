@@ -1,5 +1,4 @@
 import { api } from "@/hooks";
-import type { ApiError } from "@/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +23,7 @@ export const useRefresh = () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },
 
-    onError: (error: ApiError) => {
+    onError: () => {
       // error refreshing token should log out user
       console.error("Logging out...");
       navigate("/login", { replace: true });
