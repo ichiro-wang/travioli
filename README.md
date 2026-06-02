@@ -2,7 +2,7 @@
 
 ## Demo
 
-<video src="docs/demo.mp4" controls width="800"></video>
+![Demo](docs/demo.gif)
 
 ## Tech Stack (⌐■_■)
 
