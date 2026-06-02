@@ -56,8 +56,8 @@ export const createItinerary = async (
         {
           title,
           description: description || undefined,
-          startDate: startDate || undefined,
-          endDate: endDate || undefined,
+          startDate: startDate ? new Date(startDate) : undefined,
+          endDate: endDate ? new Date(endDate) : undefined,
           ownerId: currentUserId,
         },
         tx
