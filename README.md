@@ -1,5 +1,9 @@
 # Travioli ( ^_^)
 
+## Demo
+
+<video src="docs/demo.mp4" controls width="800"></video>
+
 ## Tech Stack (⌐■_■)
 
 **Core**
