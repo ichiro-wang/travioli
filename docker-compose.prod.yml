@@ -23,6 +23,20 @@ services:
     container_name: travioli-backend
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+      args:
+        VITE_MAPS_API: ${VITE_MAPS_API}
+    image: travioli-frontend:prod
+    ports:
+      - 80:80
+    container_name: travioli-frontend
+    depends_on:
+      - backend
 
   # running local postgres db for simulating production
   database:
